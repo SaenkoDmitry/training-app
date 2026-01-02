@@ -115,10 +115,10 @@ func GetBackExercises() []models.Exercise {
 		{
 			Name: "Сгибание рук с супинацией гантелями (двуглавая мышца плеча)",
 			Sets: []models.Set{
-				{Reps: 16, Weight: 14},
-				{Reps: 16, Weight: 14},
-				{Reps: 16, Weight: 14},
-				{Reps: 16, Weight: 14},
+				{Reps: 14, Weight: 15},
+				{Reps: 14, Weight: 15},
+				{Reps: 14, Weight: 15},
+				{Reps: 14, Weight: 15},
 			},
 			RestInSeconds: 120,
 		},
@@ -131,6 +131,65 @@ func GetBackExercises() []models.Exercise {
 				{Reps: 6, Weight: 20},
 			},
 			Hint:          "⚠️ Важно для безопасности плеч в супинации:\n- Не размахивайте гантелями в нижней точке \n- Опускайте на 90%, оставляя легкий сгиб в локте \n- При болях в переднем плече - уменьшите амплитуду и вес",
+			RestInSeconds: 120,
+		},
+	}
+}
+
+func GetChestExercises() []models.Exercise {
+	return []models.Exercise{
+		{
+			Name: "Жим лежа широким хватом (грудные мышцы)",
+			Sets: []models.Set{
+				{Reps: 16, Weight: 45},
+				{Reps: 15, Weight: 55},
+				{Reps: 14, Weight: 65},
+				{Reps: 14, Weight: 65},
+				{Reps: 14, Weight: 65},
+			},
+			RestInSeconds: 180,
+		},
+		{
+			Name: "Жим горизонтально в тренажере Technogym (грудные мышцы)",
+			Sets: []models.Set{
+				{Reps: 12, Weight: 60},
+				{Reps: 12, Weight: 60},
+				{Reps: 12, Weight: 60},
+				{Reps: 12, Weight: 60},
+			},
+			RestInSeconds: 120,
+		},
+		{
+			Name: "Сведение рук в тренажере бабочка (грудные мышцы)",
+			Sets: []models.Set{
+				{Reps: 14, Weight: 17},
+				{Reps: 14, Weight: 17},
+				{Reps: 14, Weight: 17},
+				{Reps: 14, Weight: 17},
+			},
+			RestInSeconds: 120,
+		},
+	}
+}
+
+func GetShoulderExercises() []models.Exercise {
+	return []models.Exercise{
+		{
+			Name: "Французский жим с гантелями лежа (трехглавая мышца плеча / трицепс)",
+			Sets: []models.Set{
+				{Reps: 14, Weight: 16},
+				{Reps: 14, Weight: 16},
+				{Reps: 14, Weight: 16},
+			},
+			RestInSeconds: 120,
+		},
+		{
+			Name: "Разгибание на трицепс с верхнего блока канатной рукоятью (трехглавая мышца плеча / трицепс)",
+			Sets: []models.Set{
+				{Reps: 12, Weight: 17},
+				{Reps: 12, Weight: 17},
+				{Reps: 12, Weight: 17},
+			},
 			RestInSeconds: 120,
 		},
 	}

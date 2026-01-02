@@ -170,12 +170,13 @@ func (s *serviceImpl) createWorkoutDay(chatID int64, workoutType string) {
 		workoutDay.Exercises = templates.GetLegExercises()
 	case "back":
 		workoutDay.Exercises = templates.GetBackExercises()
-	// case "chest":
-	// 	workoutDay.Exercises = getChestExercises()
-	// case "shoulders":
-	// 	workoutDay.Exercises = getShoulderExercises()
-	// case "cardio":
-	// 	workoutDay.Exercises = getCardioExercises()
+	case "chest_and_shoulders":
+		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetChestExercises()...)
+		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetShoulderExercises()...)
+		// case "shoulders":
+		// 	workoutDay.Exercises = getShoulderExercises()
+		// case "cardio":
+		// 	workoutDay.Exercises = getCardioExercises()
 	}
 
 	s.workoutsRepo.Create(&workoutDay)

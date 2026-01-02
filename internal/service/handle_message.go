@@ -60,13 +60,13 @@ func (s *serviceImpl) showWorkoutTypeMenu(chatID int64) {
 			tgbotapi.NewInlineKeyboardButtonData("🦵 Ноги", "create_workout_legs"),
 			tgbotapi.NewInlineKeyboardButtonData("🏋️‍♂️ Спина", "create_workout_back"),
 		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData("⚡️ Грудь&Плечи", "create_workout_chest_and_shoulders"),
+		),
 		// tgbotapi.NewInlineKeyboardRow(
-		// tgbotapi.NewInlineKeyboardButtonData("💪 Руки", "create_workout_arms"),
-		// 	tgbotapi.NewInlineKeyboardButtonData("🫀 Грудь", "create_workout_chest"),
-		// ),
-		// tgbotapi.NewInlineKeyboardRow(
+		//  tgbotapi.NewInlineKeyboardButtonData("💪 Руки", "create_workout_arms"),
 		// 	tgbotapi.NewInlineKeyboardButtonData("🌀 Плечи", "create_workout_shoulders"),
-		// 	tgbotapi.NewInlineKeyboardButtonData("⚡️ Кардио", "create_workout_cardio"),
+		// 	tgbotapi.NewInlineKeyboardButtonData("🫀 Кардио", "create_workout_cardio"),
 		// ),
 	)
 
