@@ -29,28 +29,28 @@ func main() {
 		log.Panic("Failed to connect database")
 	}
 
-        db.AutoMigrate(&models.User{}, &models.WorkoutDay{}, &models.Exercise{}, &models.Set{}, &models.WorkoutSession{})
+	db.AutoMigrate(&models.User{}, &models.WorkoutDay{}, &models.Exercise{}, &models.Set{}, &models.WorkoutSession{})
 
-        log.Printf("Authorized on account %s", bot.Self.UserName)
+	log.Printf("Authorized on account %s", bot.Self.UserName)
 
-        usersRepo := users.NewRepo(db)
-        workoutsRepo := workouts.NewRepo(db)
-        exercisesRepo := exercises.NewRepo(db)
-        setsRepo := sets.NewRepo(db)
-        sessionsRepo := sessions.NewRepo(db)
+	usersRepo := users.NewRepo(db)
+	workoutsRepo := workouts.NewRepo(db)
+	exercisesRepo := exercises.NewRepo(db)
+	setsRepo := sets.NewRepo(db)
+	sessionsRepo := sessions.NewRepo(db)
 
-        svc := service.NewService(bot, usersRepo, workoutsRepo, exercisesRepo, setsRepo, sessionsRepo)
+	svc := service.NewService(bot, usersRepo, workoutsRepo, exercisesRepo, setsRepo, sessionsRepo)
 
-        u := tgbotapi.NewUpdate(0)
-        u.Timeout = 30
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 30
 
-        updates := bot.GetUpdatesChan(u)
+	updates := bot.GetUpdatesChan(u)
 
-        for update := range updates {
-                if update.Message != nil {
-                        svc.HandleMessage(update.Message)
-                } else if update.CallbackQuery != nil {
-                        svc.HandleCallback(update.CallbackQuery)
-                }
-        }
+	for update := range updates {
+		if update.Message != nil {
+			svc.HandleMessage(update.Message)
+		} else if update.CallbackQuery != nil {
+			svc.HandleCallback(update.CallbackQuery)
+		}
+	}
 }
