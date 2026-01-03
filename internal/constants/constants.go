@@ -1,12 +1,12 @@
 package constants
 
 const (
-	LegsWorkoutID   = "legs"
-	LegsWorkoutName = "Ноги"
+	LegsAndShouldersWorkoutID   = "legs_and_shoulders"
+	LegsAndShouldersWorkoutName = "Ноги & плечи"
 
-	BackAndArmsWorkoutID   = "back_and_arms"
-	BackAndArmsWorkoutName = "Спина & бицепс"
+	BackAndBicepsWorkoutID   = "back_and_biceps"
+	BackAndBicepsWorkoutName = "Спина & бицепс"
 
-	ChestAndShouldersID   = "chest_and_shoulders"
-	ChestAndShouldersName = "Грудь и плечи"
+	ChestAndTricepsID   = "chest_and_triceps"
+	ChestAndtricepsName = "Грудь и трицепс"
 )

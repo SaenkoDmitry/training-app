@@ -47,6 +47,11 @@ func GetLegExercises() []models.Exercise {
 			},
 			RestInSeconds: 90,
 		},
+	}
+}
+
+func GetShoulderExercises() []models.Exercise {
+	return []models.Exercise{
 		{
 			Name: "Обратные разведения в пек-дек (задняя дельтовидная мышца)",
 			Sets: []models.Set{
@@ -115,7 +120,7 @@ func GetBackExercises() []models.Exercise {
 	}
 }
 
-func GetArmsExercises() []models.Exercise {
+func GetBicepsExercises() []models.Exercise {
 	return []models.Exercise{
 		{
 			Name: "Сгибание рук с супинацией гантелями (двуглавая мышца плеча)",
@@ -180,7 +185,7 @@ func GetChestExercises() []models.Exercise {
 	}
 }
 
-func GetShoulderExercises() []models.Exercise {
+func GetTricepsExercises() []models.Exercise {
 	return []models.Exercise{
 		{
 			Name: "Французский жим с гантелями лежа (трехглавая мышца плеча / трицепс)",

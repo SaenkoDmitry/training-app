@@ -172,14 +172,15 @@ func (s *serviceImpl) createWorkoutDay(chatID int64, workoutType string) {
 		Completed: false,
 	}
 	switch workoutType {
-	case constants.LegsWorkoutID:
-		workoutDay.Exercises = templates.GetLegExercises()
-	case constants.BackAndArmsWorkoutID:
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetBackExercises()...)
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetArmsExercises()...)
-	case constants.ChestAndShouldersID:
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetChestExercises()...)
+	case constants.LegsAndShouldersWorkoutID:
+		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetLegExercises()...)
 		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetShoulderExercises()...)
+	case constants.BackAndBicepsWorkoutID:
+		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetBackExercises()...)
+		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetBicepsExercises()...)
+	case constants.ChestAndTricepsID:
+		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetChestExercises()...)
+		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetTricepsExercises()...)
 		// case "shoulders":
 		// 	workoutDay.Exercises = getShoulderExercises()
 		// case "cardio":
