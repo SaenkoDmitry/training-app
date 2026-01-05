@@ -67,7 +67,7 @@ func (e *Exercise) Status() string {
 	allSets := len(e.Sets)
 
 	status := "🔴"
-	if int(completedExerciseSets) >= allSets {
+	if completedExerciseSets >= allSets {
 		status = "🟢"
 	} else if completedExerciseSets > 0 {
 		status = "🟡"
@@ -98,10 +98,46 @@ type Set struct {
 	ID          int64 `gorm:"primaryKey"`
 	ExerciseID  int64
 	Reps        int
+	FactReps    int
 	Weight      float32
+	FactWeight  float32
 	Completed   bool
 	CompletedAt *time.Time
 	Index       int
+}
+
+func (s *Set) FormatReps() string {
+	if s.FactReps != 0 {
+		return fmt.Sprintf("<strike>%d</strike> <b>%d</b>", s.Reps, s.FactReps)
+	}
+	return fmt.Sprintf("%d", s.Reps)
+}
+
+func (s *Set) FormatWeight() string {
+	if s.FactWeight != float32(0) {
+		return fmt.Sprintf("<strike>%.0f</strike> <b>%.0f</b>", s.Weight, s.FactWeight)
+	}
+	return fmt.Sprintf("%.0f", s.Weight)
+}
+
+func (s *Set) GetRealReps() int {
+	if s == nil {
+		return 0
+	}
+	if s.FactReps > 0 {
+		return s.FactReps
+	}
+	return s.Reps
+}
+
+func (s *Set) GetRealWeight() float32 {
+	if s == nil {
+		return 0
+	}
+	if s.FactWeight > 0 {
+		return s.FactWeight
+	}
+	return s.Weight
 }
 
 type WorkoutSession struct {

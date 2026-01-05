@@ -2,13 +2,13 @@ package service
 
 import (
 	"fmt"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/constants"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/templates"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/SaenkoDmitry/training-tg-bot/internal/constants"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
-	"github.com/SaenkoDmitry/training-tg-bot/internal/templates"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/utils"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -179,20 +179,42 @@ func (s *serviceImpl) createWorkoutDay(chatID int64, workoutType string) {
 		StartedAt: time.Now(),
 		Completed: false,
 	}
-	switch workoutType {
-	case constants.LegsAndShouldersWorkoutID:
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetLegExercises()...)
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetShoulderExercises()...)
-	case constants.BackAndBicepsWorkoutID:
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetBackExercises()...)
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetBicepsExercises()...)
-	case constants.ChestAndTricepsID:
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetChestExercises()...)
-		workoutDay.Exercises = append(workoutDay.Exercises, templates.GetTricepsExercises()...)
-		// case "shoulders":
-		// 	workoutDay.Exercises = getShoulderExercises()
-		// case "cardio":
-		// 	workoutDay.Exercises = getCardioExercises()
+
+	previousWorkout, _ := s.workoutsRepo.FindPreviousByType(user.ID, workoutType)
+
+	if previousWorkout.ID > 0 {
+		fmt.Println("createWorkoutDay: берем настройки количества повторений и веса из последней тренировки")
+		for _, exercise := range previousWorkout.Exercises {
+			newExercise := models.Exercise{
+				Name:          exercise.Name,
+				Hint:          exercise.Hint,
+				RestInSeconds: exercise.RestInSeconds,
+			}
+			for _, set := range exercise.Sets {
+				newSet := models.Set{
+					Reps:   set.GetRealReps(),
+					Weight: set.GetRealWeight(),
+					Index:  set.Index,
+				}
+				newExercise.Sets = append(newExercise.Sets, newSet)
+			}
+			workoutDay.Exercises = append(workoutDay.Exercises, newExercise)
+		}
+	} else {
+		fmt.Println("createWorkoutDay: берем настройки количества повторений и веса из preset-ов")
+		switch workoutType {
+		case constants.LegsAndShouldersWorkoutID:
+			workoutDay.Exercises = append(workoutDay.Exercises, templates.GetLegExercises()...)
+			workoutDay.Exercises = append(workoutDay.Exercises, templates.GetShoulderExercises()...)
+		case constants.BackAndBicepsWorkoutID:
+			workoutDay.Exercises = append(workoutDay.Exercises, templates.GetBackExercises()...)
+			workoutDay.Exercises = append(workoutDay.Exercises, templates.GetBicepsExercises()...)
+		case constants.ChestAndTricepsID:
+			workoutDay.Exercises = append(workoutDay.Exercises, templates.GetChestExercises()...)
+			workoutDay.Exercises = append(workoutDay.Exercises, templates.GetTricepsExercises()...)
+			// case "cardio":
+			// 	workoutDay.Exercises = getCardioExercises()
+		}
 	}
 
 	s.workoutsRepo.Create(&workoutDay)
@@ -352,11 +374,11 @@ func (s *serviceImpl) showCurrentExerciseSession(chatID int64, workoutID int64) 
 
 	var text strings.Builder
 
-	text.WriteString(fmt.Sprintf("🏋️‍♂️ *Тренировка: %s*\n\n", utils.GetWorkoutNameByID(workoutDay.Name)))
-	text.WriteString(fmt.Sprintf("*Упражнение %d/%d:* %s\n\n", exerciseIndex+1, len(workoutDay.Exercises), exercise.Name))
+	text.WriteString(fmt.Sprintf("🏋️‍♂️ <b>Тренировка: %s</b>\n\n", utils.GetWorkoutNameByID(workoutDay.Name)))
+	text.WriteString(fmt.Sprintf("<b>Упражнение %d/%d:</b> %s\n\n", exerciseIndex+1, len(workoutDay.Exercises), exercise.Name))
 
 	for _, set := range exercise.Sets {
-		text.WriteString(fmt.Sprintf("%d повторов по %.0f кг: ", set.Reps, set.Weight))
+		text.WriteString(fmt.Sprintf("• %s повторов по %s кг: ", set.FormatReps(), set.FormatWeight()))
 		if set.Completed {
 			text.WriteString(fmt.Sprintf("✅, %s", set.CompletedAt.Add(3*time.Hour).Format("15:04:05")))
 		} else {
@@ -365,11 +387,11 @@ func (s *serviceImpl) showCurrentExerciseSession(chatID int64, workoutID int64) 
 		text.WriteString("\n")
 	}
 	if exercise.Hint != "" {
-		text.WriteString("\n **⚠️Советы:** \n")
+		text.WriteString("\n <b>⚠️Техника выполнения:</b> \n")
 		text.WriteString(fmt.Sprintf("%s", exercise.Hint))
 	}
 
-	text.WriteString("\n\n *Что делаем?*")
+	text.WriteString("\n\n <b>Что делаем?</b>")
 
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
@@ -399,7 +421,7 @@ func (s *serviceImpl) showCurrentExerciseSession(chatID int64, workoutID int64) 
 	)
 
 	msg := tgbotapi.NewMessage(chatID, text.String())
-	msg.ParseMode = "Markdown"
+	msg.ParseMode = "Html"
 	msg.ReplyMarkup = keyboard
 	s.bot.Send(msg)
 }
@@ -592,15 +614,15 @@ func (s *serviceImpl) showWorkoutStatistics(chatID int64, workoutID int64) {
 			if !set.Completed {
 				continue
 			}
-			exerciseWeight += float64(set.Weight) * float64(set.Reps)
-			maxWeight = max(maxWeight, float64(set.Weight))
+			exerciseWeight += float64(set.GetRealWeight()) * float64(set.GetRealReps())
+			maxWeight = max(maxWeight, float64(set.GetRealWeight()))
 		}
 		totalWeight += exerciseWeight
 
 		lastSet := exercise.Sets[len(exercise.Sets)-1]
 		text.WriteString(fmt.Sprintf("• *%s:* \n", exercise.Name))
 		text.WriteString(fmt.Sprintf("  • Выполнено: %d из %d повторений\n", exercise.CompletedSets(), len(exercise.Sets)))
-		text.WriteString(fmt.Sprintf("  • Рабочий вес: %d \\* %.0f кг \n", lastSet.Reps, lastSet.Weight))
+		text.WriteString(fmt.Sprintf("  • Рабочий вес: %d \\* %.0f кг \n", lastSet.GetRealReps(), lastSet.GetRealWeight()))
 		text.WriteString(fmt.Sprintf("  • Общий вес: %.0f кг \n\n", exerciseWeight))
 	}
 

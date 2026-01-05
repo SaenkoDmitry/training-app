@@ -13,6 +13,7 @@ type Repo interface {
 	Find(userID int64) ([]models.WorkoutDay, error)
 	Delete(workout *models.WorkoutDay) error
 	Save(workout *models.WorkoutDay) error
+	FindPreviousByType(userID int64, workoutType string) (models.WorkoutDay, error)
 }
 
 type repoImpl struct {
@@ -57,4 +58,13 @@ func (u *repoImpl) Delete(workout *models.WorkoutDay) error {
 func (u *repoImpl) Save(workout *models.WorkoutDay) error {
 	u.db.Save(workout)
 	return nil
+}
+
+func (u *repoImpl) FindPreviousByType(userID int64, workoutType string) (models.WorkoutDay, error) {
+	var workout models.WorkoutDay
+	u.db.Where("user_id = ? AND name = ? AND completed = ?", userID, workoutType, true).
+		Order("started_at DESC").
+		Preload("Exercises.Sets").
+		First(&workout)
+	return workout, nil
 }

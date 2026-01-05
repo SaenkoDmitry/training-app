@@ -172,7 +172,9 @@ func (s *serviceImpl) handleState(chatID int64, text string) {
 
 			nextSet := exercise.NextSet()
 			if nextSet.ID != 0 {
-				nextSet.Reps = int(reps)
+				if int(reps) != nextSet.Reps {
+					nextSet.FactReps = int(reps)
+				}
 				s.setsRepo.Save(&nextSet)
 
 				msg := tgbotapi.NewMessage(chatID, fmt.Sprintf(
@@ -202,7 +204,9 @@ func (s *serviceImpl) handleState(chatID int64, text string) {
 
 			nextSet := exercise.NextSet()
 			if nextSet.ID != 0 {
-				nextSet.Weight = float32(weight)
+				if float32(weight) != nextSet.Weight {
+					nextSet.FactWeight = float32(weight)
+				}
 				s.setsRepo.Save(&nextSet)
 
 				msg := tgbotapi.NewMessage(chatID, fmt.Sprintf(
