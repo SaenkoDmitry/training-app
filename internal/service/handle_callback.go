@@ -730,7 +730,7 @@ func (s *serviceImpl) showStatistics(chatID int64, period string) {
 	var statsText strings.Builder
 	statsText.WriteString("📅 *Статистика за неделю*\n\n")
 	statsText.WriteString(fmt.Sprintf("✅ Силовых тренировок: %d\n", completedStrengthWorkouts))
-	statsText.WriteString(fmt.Sprintf("⏱️ Среднее время сил. тренировки: %s\n", utils.FormatDuration(avgTime)))
+	statsText.WriteString(fmt.Sprintf("⏱️ Среднее время тренировки: %s\n", utils.FormatDuration(avgTime)))
 	statsText.WriteString(fmt.Sprintf("🫀 Общее время кардио: %d мин\n", cardioTime))
 
 	msg := tgbotapi.NewMessage(chatID, statsText.String())
