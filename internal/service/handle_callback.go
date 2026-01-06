@@ -276,10 +276,10 @@ func (s *serviceImpl) showWorkoutDetails(chatID int64, workoutID int64) {
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData("🗑️ Удалить",
 					fmt.Sprintf("confirm_delete_%d", workoutID)),
-				tgbotapi.NewInlineKeyboardButtonData("Статистика", fmt.Sprintf("stats_workout_%d", workoutID)),
 			),
 			tgbotapi.NewInlineKeyboardRow(
-				tgbotapi.NewInlineKeyboardButtonData("🔙 В меню", "back_to_menu"),
+				tgbotapi.NewInlineKeyboardButtonData("Статистика", fmt.Sprintf("stats_workout_%d", workoutID)),
+				tgbotapi.NewInlineKeyboardButtonData("🔙 Назад", "my_workouts"),
 			),
 		)
 	}
@@ -393,18 +393,7 @@ func (s *serviceImpl) showCurrentExerciseSession(chatID int64, workoutID int64) 
 	}
 
 	for _, set := range exercise.Sets {
-		if set.Reps > 0 {
-			text.WriteString(fmt.Sprintf("• %s повторов по %s кг: ", set.FormatReps(), set.FormatWeight()))
-		}
-		if set.Minutes > 0 {
-			text.WriteString(fmt.Sprintf("• %s минут: ", set.FormatMinutes()))
-		}
-		if set.Completed {
-			text.WriteString(fmt.Sprintf("✅, %s", set.CompletedAt.Add(3*time.Hour).Format("15:04:05")))
-		} else {
-			text.WriteString("🚀")
-		}
-		text.WriteString("\n")
+		text.WriteString(set.String(workoutDay.Completed))
 	}
 
 	if hint := exerciseObj.GetHint(); hint != "" {

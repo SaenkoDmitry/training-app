@@ -50,14 +50,12 @@ func (w *WorkoutDay) String() string {
 		if !ok {
 			continue
 		}
-		text.WriteString(fmt.Sprintf("%s %d. %s\n", exercise.Status(), i+1, exerciseObj.GetName()))
-		lastSet := exercise.Sets[len(exercise.Sets)-1]
+		text.WriteString(fmt.Sprintf("*%s %d. %s*\n", exercise.Status(), i+1, exerciseObj.GetName()))
 
-		if lastSet.GetRealReps() > 0 {
-			text.WriteString(fmt.Sprintf("Рабочий вес: %d \\* %.0f кг \n\n", lastSet.Reps, lastSet.Weight))
-		} else if lastSet.GetRealMinutes() > 0 {
-			text.WriteString(fmt.Sprintf("  • Общее время: %d минут \n\n", lastSet.GetRealMinutes()))
+		for _, set := range exercise.Sets {
+			text.WriteString(set.String(w.Completed))
 		}
+		text.WriteString("\n")
 	}
 
 	return text.String()
@@ -115,6 +113,27 @@ type Set struct {
 	Completed   bool
 	CompletedAt *time.Time
 	Index       int
+}
+
+func (s *Set) String(done bool) string {
+	var text strings.Builder
+	if s.Reps > 0 {
+		text.WriteString(fmt.Sprintf("• %s повторов по %s кг: ", s.FormatReps(), s.FormatWeight()))
+	}
+	if s.Minutes > 0 {
+		text.WriteString(fmt.Sprintf("• %s минут: ", s.FormatMinutes()))
+	}
+	if s.Completed {
+		text.WriteString(fmt.Sprintf("✅, %s", s.CompletedAt.Add(3*time.Hour).Format("15:04:05")))
+	} else {
+		if done {
+			text.WriteString("💔")
+		} else {
+			text.WriteString("🚀")
+		}
+	}
+	text.WriteString("\n")
+	return text.String()
 }
 
 func (s *Set) FormatReps() string {
