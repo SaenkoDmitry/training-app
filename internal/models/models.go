@@ -67,6 +67,7 @@ type Exercise struct {
 	Name          string
 	Sets          []Set `gorm:"foreignKey:ExerciseID"`
 	RestInSeconds int
+	Index         int
 }
 
 func (e *Exercise) Status() string {

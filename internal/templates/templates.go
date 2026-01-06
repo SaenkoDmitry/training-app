@@ -16,6 +16,7 @@ func GetLegExercises() []models.Exercise {
 				{Reps: 12, Weight: 60, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         1,
 		},
 		{
 			Name: constants.FlexionOfLowerLegWhileSitting,
@@ -26,6 +27,7 @@ func GetLegExercises() []models.Exercise {
 				{Reps: 14, Weight: 40, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         2,
 		},
 		{
 			Name: constants.PlatformLegPress,
@@ -38,6 +40,7 @@ func GetLegExercises() []models.Exercise {
 				{Reps: 12, Weight: 260, Index: 6},
 			},
 			RestInSeconds: 180,
+			Index:         3,
 		},
 		{
 			Name: constants.LiftingLegsAtTheElbow,
@@ -47,6 +50,7 @@ func GetLegExercises() []models.Exercise {
 				{Reps: 25, Weight: 0, Index: 3},
 			},
 			RestInSeconds: 90,
+			Index:         4,
 		},
 	}
 }
@@ -62,6 +66,7 @@ func GetShoulderExercises() []models.Exercise {
 				{Reps: 15, Weight: 15, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         5,
 		},
 		{
 			Name: constants.ExtensionOfBarbell,
@@ -72,6 +77,7 @@ func GetShoulderExercises() []models.Exercise {
 				{Reps: 12, Weight: 40, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         6,
 		},
 	}
 }
@@ -87,6 +93,7 @@ func GetBackExercises() []models.Exercise {
 				{Reps: 12, Weight: 14, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         1,
 		},
 		{
 			Name: constants.VerticalTractionInALeverSimulator,
@@ -97,6 +104,7 @@ func GetBackExercises() []models.Exercise {
 				{Reps: 10, Weight: 100, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         2,
 		},
 		{
 			Name: constants.HorizontalDeadliftInABlockSimulatorWithAnEmphasisOnTheChest,
@@ -107,6 +115,7 @@ func GetBackExercises() []models.Exercise {
 				{Reps: 12, Weight: 60, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         3,
 		},
 		{
 			Name: constants.DumbbellDeadliftWithEmphasisOnTheBench,
@@ -117,6 +126,7 @@ func GetBackExercises() []models.Exercise {
 				{Reps: 12, Weight: 20, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         4,
 		},
 	}
 }
@@ -132,6 +142,7 @@ func GetBicepsExercises() []models.Exercise {
 				{Reps: 14, Weight: 15, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         5,
 		},
 		{
 			Name: constants.HammerBendsWithDumbbells,
@@ -142,6 +153,7 @@ func GetBicepsExercises() []models.Exercise {
 				{Reps: 6, Weight: 20, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         6,
 		},
 	}
 }
@@ -158,6 +170,7 @@ func GetChestExercises() []models.Exercise {
 				{Reps: 14, Weight: 65, Index: 5},
 			},
 			RestInSeconds: 180,
+			Index:         1,
 		},
 		{
 			Name: constants.HorizontalBenchPressInTheTechnoGymSimulator,
@@ -168,6 +181,7 @@ func GetChestExercises() []models.Exercise {
 				{Reps: 12, Weight: 60, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         2,
 		},
 		{
 			Name: constants.BringingArmsTogetherInTheButterflySimulator,
@@ -178,6 +192,7 @@ func GetChestExercises() []models.Exercise {
 				{Reps: 14, Weight: 17, Index: 4},
 			},
 			RestInSeconds: 120,
+			Index:         3,
 		},
 	}
 }
@@ -192,6 +207,7 @@ func GetTricepsExercises() []models.Exercise {
 				{Reps: 14, Weight: 16, Index: 3},
 			},
 			RestInSeconds: 120,
+			Index:         4,
 		},
 		{
 			Name: constants.ExtensionOfTricepsFromTheUpperBlockWithARopeHandle,
@@ -201,6 +217,7 @@ func GetTricepsExercises() []models.Exercise {
 				{Reps: 12, Weight: 17, Index: 3},
 			},
 			RestInSeconds: 120,
+			Index:         5,
 		},
 	}
 }
@@ -212,12 +229,14 @@ func GetCardioExercises() []models.Exercise {
 			Sets: []models.Set{
 				{Minutes: 15, Index: 1},
 			},
+			Index: 1,
 		},
 		{
 			Name: constants.RunningOnTrack,
 			Sets: []models.Set{
 				{Minutes: 15, Index: 1},
 			},
+			Index: 2,
 		},
 	}
 }
