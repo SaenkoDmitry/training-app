@@ -114,7 +114,7 @@ func (s *serviceImpl) showWorkoutProgress(chatID, workoutID int64) {
 	workoutDay, _ := s.workoutsRepo.Get(workoutID)
 
 	var text strings.Builder
-	text.WriteString(fmt.Sprintf("📊 *Прогресс: %s*\n\n", utils.GetWorkoutNameByID(workoutDay.Name)))
+	text.WriteString(fmt.Sprintf("📊 <b>Прогресс: %s</b>\n\n", utils.GetWorkoutNameByID(workoutDay.Name)))
 
 	totalExercises := len(workoutDay.Exercises)
 	totalSets := 0
@@ -135,7 +135,7 @@ func (s *serviceImpl) showWorkoutProgress(chatID, workoutID int64) {
 		progressPercent = (completedSets * 100) / totalSets
 	}
 
-	text.WriteString(fmt.Sprintf("\n📈 *Общий прогресс:*\n"))
+	text.WriteString(fmt.Sprintf("\n📈 <b>Общий прогресс:</b>\n"))
 	text.WriteString(fmt.Sprintf("• Упражнений: %d/%d\n", completedExercises, totalExercises))
 	text.WriteString(fmt.Sprintf("• Подходов: %d/%d\n", completedSets, totalSets))
 	text.WriteString(fmt.Sprintf("• Прогресс: %d%%\n", progressPercent))
@@ -158,7 +158,7 @@ func (s *serviceImpl) showWorkoutProgress(chatID, workoutID int64) {
 		if setsPerMinute > 0 {
 			remainingSets := totalSets - completedSets
 			remainingMinutes := float64(remainingSets) / setsPerMinute
-			text.WriteString(fmt.Sprintf("⏰ *Прогноз окончания:* ~%.0f минут\n", remainingMinutes))
+			text.WriteString(fmt.Sprintf("⏰ <b>Прогноз окончания:</b> ~%.0f минут\n", remainingMinutes))
 		}
 	}
 
@@ -170,7 +170,7 @@ func (s *serviceImpl) showWorkoutProgress(chatID, workoutID int64) {
 	)
 
 	msg := tgbotapi.NewMessage(chatID, text.String())
-	msg.ParseMode = "Markdown"
+	msg.ParseMode = "Html"
 	msg.ReplyMarkup = keyboard
 	s.bot.Send(msg)
 }
@@ -231,7 +231,7 @@ func (s *serviceImpl) showCreatedWorkout(chatID int64, workoutID int64) {
 	workoutDay, _ := s.workoutsRepo.Get(workoutID)
 
 	var exercisesText strings.Builder
-	exercisesText.WriteString(fmt.Sprintf("✅ *Тренировка создана:*\n\n"))
+	exercisesText.WriteString(fmt.Sprintf("✅ <b>Тренировка создана:</b>\n\n"))
 	exercisesText.WriteString(workoutDay.String())
 	exercisesText.WriteString("\n Выберите действие:")
 
@@ -243,7 +243,7 @@ func (s *serviceImpl) showCreatedWorkout(chatID int64, workoutID int64) {
 	)
 
 	msg := tgbotapi.NewMessage(chatID, exercisesText.String())
-	msg.ParseMode = "Markdown"
+	msg.ParseMode = "Html"
 	msg.ReplyMarkup = keyboard
 	s.bot.Send(msg)
 }
@@ -286,7 +286,7 @@ func (s *serviceImpl) showWorkoutDetails(chatID int64, workoutID int64) {
 	}
 
 	msg := tgbotapi.NewMessage(chatID, text.String())
-	msg.ParseMode = "Markdown"
+	msg.ParseMode = "Html"
 	msg.ReplyMarkup = keyboard
 	s.bot.Send(msg)
 }

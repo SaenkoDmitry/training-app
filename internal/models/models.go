@@ -40,17 +40,17 @@ func (w *WorkoutDay) Status() string {
 func (w *WorkoutDay) String() string {
 	var text strings.Builder
 
-	text.WriteString(fmt.Sprintf("*Тип:* %s \n", utils.GetWorkoutNameByID(w.Name)))
-	text.WriteString(fmt.Sprintf("*Статус:* %s\n", w.Status()))
-	text.WriteString(fmt.Sprintf("*Дата:* 📅 %s\n\n", w.StartedAt.Add(3*time.Hour).Format("02.01.2006")))
-	text.WriteString("*Упражнения:*\n")
+	text.WriteString(fmt.Sprintf("<b>Тип:</b> %s \n", utils.GetWorkoutNameByID(w.Name)))
+	text.WriteString(fmt.Sprintf("<b>Статус:</b> %s\n", w.Status()))
+	text.WriteString(fmt.Sprintf("<b>Дата:</b> 📅 %s\n\n", w.StartedAt.Add(3*time.Hour).Format("02.01.2006")))
+	text.WriteString("<b>Упражнения:</b>\n")
 
 	for i, exercise := range w.Exercises {
 		exerciseObj, ok := constants.AllExercises[exercise.Name]
 		if !ok {
 			continue
 		}
-		text.WriteString(fmt.Sprintf("*%s %d. %s*\n", exercise.Status(), i+1, exerciseObj.GetName()))
+		text.WriteString(fmt.Sprintf("<b>%s %d. %s</b>\n", exercise.Status(), i+1, exerciseObj.GetName()))
 
 		for _, set := range exercise.Sets {
 			text.WriteString(set.String(w.Completed))
