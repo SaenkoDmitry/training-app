@@ -15,7 +15,7 @@ func TestSplitPreset(t *testing.T) {
 		want []Exercise
 	}{
 		{
-			name: "",
+			name: "strength workout",
 			args: args{
 				preset: "7:[12*14,12*14,12*14,12*14];8:[10*100,10*100,10*100,10*100];9:[12*40,12*40,12*50,12*50];10:[12*20,12*20,12*20,12*20];11:[14*15,14*15,14*15,14*15];12:[5*15,10*10,10*10,10*10]",
 			},
@@ -76,6 +76,26 @@ func TestSplitPreset(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "cardio workout",
+			args: args{
+				preset: "19:[10];20:[15]",
+			},
+			want: []Exercise{
+				{
+					ID: 19,
+					Sets: []Set{
+						{Minutes: 10},
+					},
+				},
+				{
+					ID: 20,
+					Sets: []Set{
+						{Minutes: 15},
+					},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -113,6 +133,13 @@ func TestIsValidPreset(t *testing.T) {
 			name: "many words",
 			args: args{
 				preset: "12*14,3*5,100*200",
+			},
+			want: true,
+		},
+		{
+			name: "with cardio",
+			args: args{
+				preset: "12*14,20,100*200",
 			},
 			want: true,
 		},

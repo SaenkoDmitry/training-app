@@ -331,7 +331,7 @@ func (s *serviceImpl) editProgram(chatID int64, programID int64) {
 			tgbotapi.NewInlineKeyboardButtonData(dayType.Name, fmt.Sprintf("edit_day_type_%d", dayType.ID)),
 		)
 
-		text.WriteString(fmt.Sprintf("• *%s*\n", dayType.Name))
+		text.WriteString(fmt.Sprintf("*%d. %s*\n", i+1, dayType.Name))
 		text.WriteString(fmt.Sprintf("%s \n\n", s.formatPreset(dayType.Preset)))
 	}
 	text.WriteString("*Выберите день, в который хотите добавить упражнения:*")
@@ -363,10 +363,15 @@ func (s *serviceImpl) formatPreset(preset string) string {
 		if err != nil {
 			continue
 		}
-		buffer.WriteString(fmt.Sprintf("*%s (отдых: %d сек)*\n", exerciseType.Name, exerciseType.RestInSeconds))
-		for _, set := range ex.Sets {
-			buffer.WriteString(fmt.Sprintf("    • %d повторений по %.0f кг\n", set.Reps, set.Weight))
+		buffer.WriteString(fmt.Sprintf("• *%s*\n", exerciseType.Name))
+		buffer.WriteString(fmt.Sprintf("    • "))
+		for i, set := range ex.Sets {
+			if i > 0 {
+				buffer.WriteString(", ")
+			}
+			buffer.WriteString(fmt.Sprintf("%d \\* %.0f кг", set.Reps, set.Weight))
 		}
+		buffer.WriteString("\n")
 	}
 	return buffer.String()
 }

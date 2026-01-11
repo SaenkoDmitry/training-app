@@ -32,8 +32,9 @@ type Exercise struct {
 }
 
 type Set struct {
-	Reps   int
-	Weight float32
+	Reps    int
+	Weight  float32
+	Minutes int
 }
 
 func SplitPreset(preset string) []Exercise {
@@ -60,20 +61,27 @@ func SplitPreset(preset string) []Exercise {
 
 		approaches := strings.Split(second[1:len(second)-1], ",")
 		for _, approach := range approaches {
-			temp2 := strings.Split(approach, "*")
-			reps, _ := strconv.ParseInt(temp2[0], 10, 64)
-			weight, _ := strconv.ParseFloat(temp2[1], 32)
-			result[len(result)-1].Sets = append(result[len(result)-1].Sets, Set{
-				Reps:   int(reps),
-				Weight: float32(weight),
-			})
+			if strings.Contains(approach, "*") {
+				temp2 := strings.Split(approach, "*")
+				reps, _ := strconv.ParseInt(temp2[0], 10, 64)
+				weight, _ := strconv.ParseFloat(temp2[1], 32)
+				result[len(result)-1].Sets = append(result[len(result)-1].Sets, Set{
+					Reps:   int(reps),
+					Weight: float32(weight),
+				})
+			} else {
+				minutes, _ := strconv.ParseInt(approach, 10, 64)
+				result[len(result)-1].Sets = append(result[len(result)-1].Sets, Set{
+					Minutes: int(minutes),
+				})
+			}
 		}
 	}
 	return result
 }
 
 func IsValidPreset(preset string) bool {
-	pattern := `^\d+\*\d+(,\d+\*\d+)*$`
+	pattern := `^(\d+|\d+\*\d+)(,(\d+|\d+\*\d+))*$`
 	matched, err := regexp.MatchString(pattern, preset)
 	if err != nil {
 		return false
