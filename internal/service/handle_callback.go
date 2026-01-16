@@ -744,6 +744,13 @@ func (s *serviceImpl) removeLastSet(chatID int64, exerciseID int64) {
 	if err != nil || len(exercise.Sets) == 0 {
 		return
 	}
+	if len(exercise.Sets) == 1 {
+		msg := tgbotapi.NewMessage(chatID, "Нельзя удалить единственный подход, удалите упражнение целиком кликом на 🗑")
+		msg.ParseMode = "Html"
+		s.bot.Send(msg)
+		return
+	}
+
 	lastSet := exercise.Sets[len(exercise.Sets)-1]
 	err = s.setsRepo.Delete(lastSet.ID)
 	if err != nil {
