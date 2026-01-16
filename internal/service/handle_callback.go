@@ -797,6 +797,13 @@ func (s *serviceImpl) unpinAndCancelTimer(chatID int64, timerID string) {
 }
 
 func (s *serviceImpl) startRestTimerWithExercise(chatID int64, seconds int, exerciseID int64) {
+	if seconds == 0 {
+		msg := tgbotapi.NewMessage(chatID, "У этого упражнения не предусмотрен отдых! 😐")
+		msg.ParseMode = "Html"
+		s.bot.Send(msg)
+		return
+	}
+
 	msg := tgbotapi.NewMessage(chatID, fmt.Sprintf(messages.RestTimer, seconds))
 	newTimerID := s.timerStore.NewTimer(chatID)
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
