@@ -10,6 +10,7 @@ import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/sets"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/users"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/workouts"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/service/statistics"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"sync"
 )
@@ -32,6 +33,8 @@ type serviceImpl struct {
 	exerciseTypesRepo      exercisetypes.Repo
 	exerciseGroupTypesRepo exercisegrouptypes.Repo
 	userStatesMachine      *UserStatesMachine
+	timerStore             *TimerStore
+	statisticsService      statistics.Service
 }
 
 type UserStatesMachine struct {
@@ -83,5 +86,7 @@ func NewService(
 		setsRepo:               setsRepo,
 		sessionsRepo:           sessionsRepo,
 		userStatesMachine:      NewUserStatesMachine(),
+		timerStore:             NewTimerStore(),
+		statisticsService:      statistics.NewService(usersRepo, dayTypesRepo, workoutsRepo, exerciseTypesRepo, exerciseGroupTypesRepo),
 	}
 }

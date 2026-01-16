@@ -30,7 +30,7 @@ func (s *Set) String(done bool) string {
 	if s.Minutes > 0 {
 		text.WriteString(fmt.Sprintf("• %s минут: ", s.FormatMinutes()))
 	} else {
-		text.WriteString(fmt.Sprintf("• %s повторов по %s кг: ", s.FormatReps(), s.FormatWeight()))
+		text.WriteString(fmt.Sprintf("• %s повторений по %s кг: ", s.FormatReps(), s.FormatWeight()))
 	}
 
 	if s.Completed {
