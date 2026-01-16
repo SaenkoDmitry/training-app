@@ -787,7 +787,9 @@ func (s *serviceImpl) completeExerciseSet(chatID int64, exerciseID int64) {
 	}
 
 	s.showCurrentExerciseSession(chatID, exercise.WorkoutDayID)
-	s.startRestTimerWithExercise(chatID, exerciseType.RestInSeconds, exerciseID)
+	if exerciseType.RestInSeconds > 0 {
+		s.startRestTimerWithExercise(chatID, exerciseType.RestInSeconds, exerciseID)
+	}
 }
 
 func (s *serviceImpl) unpinAndCancelTimer(chatID int64, timerID string) {
