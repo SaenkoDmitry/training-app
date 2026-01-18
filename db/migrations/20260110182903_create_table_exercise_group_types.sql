@@ -9,5 +9,5 @@ CREATE TABLE exercise_group_types
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE .exercise_group_types;
+DROP TABLE exercise_group_types;
 -- +goose StatementEnd
