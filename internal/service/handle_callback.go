@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"github.com/SaenkoDmitry/training-tg-bot/internal/constants"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/users"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/service/tghelpers"
 	"strings"
@@ -57,7 +56,7 @@ func (s *serviceImpl) selectExerciseForCurrentWorkout(chatID int64, workoutID in
 		return
 	}
 
-	text := fmt.Sprintf("*Тип:* %s \n\n *Выберите упражнение из списка:*", group.Name)
+	text := fmt.Sprintf("<b>Тип:</b> %s \n\n <b>Выберите упражнение из списка:</b>", group.Name)
 
 	rows := make([][]tgbotapi.InlineKeyboardButton, 0)
 
@@ -78,9 +77,11 @@ func (s *serviceImpl) selectExerciseForCurrentWorkout(chatID int64, workoutID in
 
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(rows...)
 
-	msg := tgbotapi.NewMessage(chatID, text)
-	msg.ParseMode = constants.MarkdownParseMode
-	msg.ReplyMarkup = keyboard
+	msg := tghelpers.NewMessageBuilder().
+		WithChatID(chatID).
+		WithText(text).
+		WithReplyMarkup(keyboard).
+		Build()
 	_, _ = tghelpers.SendMessage(s.bot, msg, method)
 }
 
@@ -89,7 +90,10 @@ func (s *serviceImpl) GetUserByChatID(chatID int64) (*models.User, error) {
 	user, err := s.usersRepo.GetByChatID(chatID)
 	if err != nil {
 		if errors.Is(err, users.NotFoundUserErr) {
-			msg := tgbotapi.NewMessage(chatID, "Сначала создайте пользователя в боте, через команду /start")
+			msg := tghelpers.NewMessageBuilder().
+				WithChatID(chatID).
+				WithText("Сначала создайте пользователя в боте, через команду /start").
+				Build()
 			_, _ = tghelpers.SendMessage(s.bot, msg, method)
 		}
 	}
