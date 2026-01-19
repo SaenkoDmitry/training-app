@@ -14,6 +14,7 @@ type Repo interface {
 	GetTop10() ([]models.User, error)
 	Save(user *models.User) error
 	Create(chatID int64, from *tgbotapi.User) (*models.User, error)
+	GetByID(ID int64) (*models.User, error)
 	GetByChatID(chatID int64) (*models.User, error)
 }
 
@@ -55,6 +56,17 @@ func (u *repoImpl) GetByChatID(chatID int64) (*models.User, error) {
 	var user models.User
 
 	result := u.db.Where("chat_id = ?", chatID).First(&user)
+
+	if result.Error != nil {
+		return nil, NotFoundUserErr
+	}
+	return &user, nil
+}
+
+func (u *repoImpl) GetByID(ID int64) (*models.User, error) {
+	var user models.User
+
+	result := u.db.Where("id = ?", ID).First(&user)
 
 	if result.Error != nil {
 		return nil, NotFoundUserErr

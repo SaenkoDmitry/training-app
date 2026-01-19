@@ -184,8 +184,13 @@ func (s *serviceImpl) showWorkoutsByUser(chatID, userID int64) {
 		return
 	}
 
+	user, err := s.usersRepo.GetByID(userID)
+	if err != nil {
+		return
+	}
+
 	if len(workouts) == 0 {
-		msg := tgbotapi.NewMessage(chatID, "📭 У пользователя пока нет созданных тренировок.")
+		msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("📭 У пользователя %s пока нет созданных тренировок.", user.ShortName()))
 		keyboard := tgbotapi.NewInlineKeyboardMarkup(
 			tgbotapi.NewInlineKeyboardRow(
 				tgbotapi.NewInlineKeyboardButtonData(messages.BackToMenu, "back_to_menu"),
@@ -196,7 +201,7 @@ func (s *serviceImpl) showWorkoutsByUser(chatID, userID int64) {
 		return
 	}
 
-	text := fmt.Sprintf("📋 <b>Тренировки пользователя (%d):</b>\n\n", len(workouts))
+	text := fmt.Sprintf("📋 <b>Тренировки пользователя '%s'</b>\n\n", user.ShortName())
 	for i, workout := range workouts {
 		status := "🟡"
 		if workout.Completed {
@@ -388,22 +393,14 @@ func (s *serviceImpl) users(chatID int64, user *models.User) {
 		return
 	}
 	var text bytes.Buffer
-	text.WriteString("<b>Пользователи:</b>\n\n")
+	text.WriteString(fmt.Sprintf("<b>%s:</b>\n\n", messages.Users))
 	for i, u := range userObjs {
 		if i%2 == 0 {
 			rows = append(rows, tgbotapi.NewInlineKeyboardRow())
 		}
-		userFullName := fmt.Sprintf("%s (", u.Username)
-		if u.FirstName != "" {
-			userFullName += u.FirstName
-		}
-		if u.LastName != "" {
-			userFullName += " " + u.LastName
-		}
-		userFullName += ")\n\n"
-		text.WriteString("• " + userFullName)
+		text.WriteString(fmt.Sprintf("• %s\n\n", u.FullName()))
 		rows[len(rows)-1] = append(rows[len(rows)-1],
-			tgbotapi.NewInlineKeyboardButtonData(userFullName, fmt.Sprintf("workout_show_by_user_id_%d", u.ID)),
+			tgbotapi.NewInlineKeyboardButtonData(u.Username, fmt.Sprintf("workout_show_by_user_id_%d", u.ID)),
 		)
 	}
 	msg := tghelpers.NewMessageBuilder().WithChatID(chatID).WithText(text.String()).WithReplyMarkup(rows).Build()
@@ -417,7 +414,7 @@ func (s *serviceImpl) admin(chatID int64, user *models.User) {
 	method := "admin"
 	rows := make([][]tgbotapi.InlineKeyboardButton, 0)
 	rows = append(rows, tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("Пользователи", "/admin/users"),
+		tgbotapi.NewInlineKeyboardButtonData(messages.Users, "/admin/users"),
 	))
 	msg := tghelpers.NewMessageBuilder().WithChatID(chatID).WithText("<b>👨🏻‍💻 Админ панель</b>").WithReplyMarkup(rows).Build()
 	_, _ = tghelpers.SendMessage(s.bot, msg, method)
