@@ -7,7 +7,8 @@ CREATE TABLE exercise_types
     url                      TEXT,
     exercise_group_type_code TEXT NOT NULL REFERENCES exercise_group_types (code),
     rest_in_seconds          INT,
-    accent                   TEXT
+    accent                   TEXT,
+    units                    TEXT
 );
 -- +goose StatementEnd
 
