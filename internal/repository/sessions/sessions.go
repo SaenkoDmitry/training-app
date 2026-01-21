@@ -29,7 +29,7 @@ func (u *repoImpl) Create(session *models.WorkoutSession) error {
 }
 
 func (u *repoImpl) GetByWorkoutID(workoutID int64) (session models.WorkoutSession, err error) {
-	err = u.db.Where("workout_day_id = ? AND is_active = ?", workoutID, true).
+	err = u.db.Where("workout_day_id = ?", workoutID).
 		Order("started_at DESC").
 		First(&session).Error
 	return session, err
