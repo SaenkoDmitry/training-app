@@ -2,6 +2,7 @@ package summary
 
 import (
 	"math"
+	"time"
 
 	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
 )
@@ -26,7 +27,7 @@ func (s *serviceImpl) BuildTotal(workouts []models.WorkoutDay, groupCodesMap map
 		if !w.Completed {
 			continue
 		}
-		date := w.StartedAt.Format("2006-01-02")
+		date := w.StartedAt.Add(3 * time.Hour).Format("2006-01-02")
 
 		for _, e := range w.Exercises {
 			if e.CompletedSets() == 0 {
@@ -73,7 +74,7 @@ func (s *serviceImpl) BuildByDate(workouts []models.WorkoutDay) map[string]*Date
 	result := make(map[string]*DateSummary)
 
 	for _, w := range workouts {
-		date := w.StartedAt.Format("2006-01-02")
+		date := w.StartedAt.Add(3 * time.Hour).Format("2006-01-02")
 
 		d, ok := result[date]
 		if !ok {
@@ -113,7 +114,7 @@ func (s *serviceImpl) BuildExerciseProgress(
 			continue
 		}
 
-		date := w.StartedAt.Format("2006-01-02")
+		date := w.StartedAt.Add(3 * time.Hour).Format("2006-01-02")
 
 		for _, e := range w.Exercises {
 			if e.ExerciseType.Name != exerciseName {

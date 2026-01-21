@@ -213,7 +213,7 @@ func (s *serviceImpl) showWorkoutsByUser(chatID, userID int64) {
 				)
 			}
 		}
-		date := workout.StartedAt.Format("02.01.2006 15:04")
+		date := workout.StartedAt.Add(3 * time.Hour).Format("02.01.2006 15:04")
 
 		dayType := workout.WorkoutDayType
 
@@ -269,7 +269,7 @@ func (s *serviceImpl) showMyWorkouts(chatID int64, offset int) {
 				)
 			}
 		}
-		date := workout.StartedAt.Format("02.01.2006 15:04")
+		date := workout.StartedAt.Add(3 * time.Hour).Format("02.01.2006 15:04")
 
 		dayType := workout.WorkoutDayType
 

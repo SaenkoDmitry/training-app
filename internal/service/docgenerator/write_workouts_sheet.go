@@ -2,6 +2,7 @@ package docgenerator
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/SaenkoDmitry/training-tg-bot/internal/messages"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
@@ -34,7 +35,7 @@ func (s *serviceImpl) writeWorkoutsSheet(f *excelize.File, workouts []models.Wor
 	for _, w := range workouts {
 		for _, e := range w.Exercises {
 			for i, set := range e.Sets {
-				_ = f.SetCellValue(sheet, fmt.Sprintf("A%d", row), w.StartedAt.Format("2006-01-02"))
+				_ = f.SetCellValue(sheet, fmt.Sprintf("A%d", row), w.StartedAt.Add(3*time.Hour).Format("2006-01-02"))
 				_ = f.SetCellValue(sheet, fmt.Sprintf("B%d", row), w.WorkoutDayType.Name)
 				_ = f.SetCellValue(sheet, fmt.Sprintf("C%d", row), e.ExerciseType.Name)
 				_ = f.SetCellValue(sheet, fmt.Sprintf("D%d", row), groupCodesMap[e.ExerciseType.ExerciseGroupTypeCode])
