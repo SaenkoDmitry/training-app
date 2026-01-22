@@ -258,7 +258,7 @@ func (s *serviceImpl) showMyWorkouts(chatID int64, offset int) {
 
 	var rows [][]tgbotapi.InlineKeyboardButton
 
-	text := fmt.Sprintf("📋 <b>Ваши тренировки (%d):</b>\n\n", count)
+	text := fmt.Sprintf("📋 <b>Ваши тренировки (%d-%d из %d):</b>\n\n", offset+1, min(offset+limit, int(count)), count)
 	for i, workout := range workouts {
 		status := "🟡"
 		if workout.Completed {
@@ -269,7 +269,7 @@ func (s *serviceImpl) showMyWorkouts(chatID int64, offset int) {
 				)
 			}
 		}
-		date := workout.StartedAt.Add(3 * time.Hour).Format("02.01.2006 15:04")
+		date := workout.StartedAt.Add(3 * time.Hour).Format("02.01.2006 в 15:04")
 
 		dayType := workout.WorkoutDayType
 
@@ -285,7 +285,7 @@ func (s *serviceImpl) showMyWorkouts(chatID int64, offset int) {
 				fmt.Sprintf("workout_show_progress_%d", workout.ID)))
 	}
 
-	text += "Выберите тренировку для просмотра:"
+	text += "<b>Выберите тренировку для просмотра:</b>"
 
 	rows = append(rows, []tgbotapi.InlineKeyboardButton{})
 	fmt.Println("offset", offset, "limit", limit, "count", count)
