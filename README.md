@@ -14,8 +14,8 @@ A Telegram bot for tracking workout training sessions.
 
 ### Export to Excel
 <p align="left">
-  <img width="200" height="450" src="/screenshots/excel_0.png">
-  <img width="200" height="450" src="/screenshots/excel_1.png">
+  <img width="300" height="150" src="/screenshots/excel_0.png">
+  <img width="300" height="150" src="/screenshots/excel_1.png">
 </p>
 
 ## Project Structure
