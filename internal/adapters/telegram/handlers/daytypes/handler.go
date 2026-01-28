@@ -46,6 +46,10 @@ func NewHandler(
 
 func (h *Handler) RouteCallback(chatID int64, data string) {
 	switch {
+	case strings.HasPrefix(data, "day_type_view_"):
+		dayTypeID, _ := strconv.ParseInt(strings.TrimPrefix(data, "day_type_view_"), 10, 64)
+		h.ViewDayType(chatID, dayTypeID)
+
 	case strings.HasPrefix(data, "day_type_edit_"):
 		dayTypeID, _ := strconv.ParseInt(strings.TrimPrefix(data, "day_type_edit_"), 10, 64)
 		h.selectDayTypeExercise(chatID, dayTypeID)
@@ -100,4 +104,18 @@ func (h *Handler) confirmDeleteDayType(chatID int64, dayTypeID int64) {
 	}
 
 	h.presenter.ShowConfirmDelete(chatID, res)
+}
+
+func (h *Handler) ViewDayType(chatID int64, dayTypeID int64) {
+	res, err := h.getDayUC.Execute(dayTypeID)
+	if err != nil {
+		h.commonPresenter.HandleInternalError(err, chatID, h.getDayUC.Name())
+		return
+	}
+	programsResult, err := h.getProgramUC.Execute(res.WorkoutProgramID)
+	if err != nil {
+		h.commonPresenter.HandleInternalError(err, chatID, h.getDayUC.Name())
+		return
+	}
+	h.presenter.ViewDayType(chatID, res, programsResult)
 }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/changes/userstatemachine"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/daytypes"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/exercises/presenter"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/programs"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/groups"
@@ -31,6 +32,8 @@ type Handler struct {
 	exercisePresenter *presenter.Presenter
 	programPresenter  *programs.Presenter
 
+	dayTypesHandler *daytypes.Handler
+
 	userStatesMachine *userstatemachine.UserStatesMachine
 
 	showCurrentSessionUC *session.ShowCurrentExerciseSessionUseCase
@@ -57,6 +60,7 @@ func NewHandler(
 	dayTypeGetUC *daytypeusecases.GetUseCase,
 	exerciseTypeListUC *exercisecases.ExerciseTypeListUseCase,
 	editProgramUC *programusecases.GetUseCase,
+	dayTypesHandler *daytypes.Handler,
 ) *Handler {
 	return &Handler{
 		presenter:            NewPresenter(bot),
@@ -74,6 +78,7 @@ func NewHandler(
 		dayTypeGetUC:         dayTypeGetUC,
 		exerciseTypeListUC:   exerciseTypeListUC,
 		getProgramUC:         editProgramUC,
+		dayTypesHandler:      dayTypesHandler,
 	}
 }
 
@@ -295,9 +300,7 @@ func (h *Handler) RouteMessage(chatID int64, text string) {
 			return
 		}
 
-		if editResult, editErr := h.getProgramUC.Execute(dayType.WorkoutProgramID); editErr == nil {
-			h.programPresenter.ViewProgram(chatID, editResult)
-		}
+		h.dayTypesHandler.ViewDayType(chatID, dayType.ID)
 	}
 }
 

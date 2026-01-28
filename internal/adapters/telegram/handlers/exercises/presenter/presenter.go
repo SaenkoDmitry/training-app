@@ -113,15 +113,14 @@ func (p *Presenter) ShowSelectExerciseForProgramDayDialog(chatID, dayTypeID int6
 
 	rows := make([][]tgbotapi.InlineKeyboardButton, 0)
 
-	for _, exercise := range exerciseTypes {
+	for _, exerciseType := range exerciseTypes {
 		rows = append(rows, tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData(
-				exercise.Name,
-				fmt.Sprintf("change_program_day_add_exercise_%d_%d", dayTypeID, exercise.ID),
+				exerciseType.Name,
+				fmt.Sprintf("change_program_day_add_exercise_%d_%d", dayTypeID, exerciseType.ID),
 			),
 		))
 	}
-	fmt.Println("rows", len(rows), rows)
 
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(rows...)
 	msg := tgbotapi.NewMessage(chatID, text)
