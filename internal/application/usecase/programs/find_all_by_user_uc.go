@@ -2,6 +2,7 @@ package programs
 
 import (
 	"errors"
+
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/programs"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/users"
@@ -23,7 +24,7 @@ func NewFindAllByUserUseCase(
 }
 
 func (uc *FindAllByUserUseCase) Name() string {
-	return "Управление программами"
+	return "Показать программы"
 }
 
 var (
