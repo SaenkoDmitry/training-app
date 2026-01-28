@@ -50,13 +50,13 @@ func (h *Handler) RouteCallback(chatID int64, data string) {
 	case strings.HasPrefix(data, "program_management"):
 		h.programManagement(chatID)
 
+	case strings.HasPrefix(data, "program_view_all_days_"):
+		programID, _ := strconv.ParseInt(strings.TrimPrefix(data, "program_view_all_days_"), 10, 64)
+		h.viewAllDays(chatID, programID)
+
 	case strings.HasPrefix(data, "program_view_"):
 		programID, _ := strconv.ParseInt(strings.TrimPrefix(data, "program_view_"), 10, 64)
 		h.ViewProgram(chatID, programID)
-
-	case strings.HasPrefix(data, "program_day_delete_"):
-		programID, _ := strconv.ParseInt(strings.TrimPrefix(data, "program_day_delete_"), 10, 64)
-		h.deleteDayOfProgram(chatID, programID)
 
 	case strings.HasPrefix(data, "program_change_"):
 		programID, _ := strconv.ParseInt(strings.TrimPrefix(data, "program_change_"), 10, 64)
@@ -150,11 +150,11 @@ func (h *Handler) confirmDeleteProgram(chatID int64, programID int64) {
 	h.presenter.ConfirmDeleteDialog(chatID, res)
 }
 
-func (h *Handler) deleteDayOfProgram(chatID int64, programID int64) {
+func (h *Handler) viewAllDays(chatID int64, programID int64) {
 	res, err := h.getProgramUC.Execute(programID)
 	if err != nil {
 		h.commonPresenter.HandleInternalError(err, chatID, h.getProgramUC.Name())
 		return
 	}
-	h.presenter.DeleteDayOfProgram(chatID, res)
+	h.presenter.ViewAllDays(chatID, res)
 }

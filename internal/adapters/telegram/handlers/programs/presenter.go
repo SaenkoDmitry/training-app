@@ -6,8 +6,6 @@ import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/constants"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/messages"
-	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
-	"github.com/SaenkoDmitry/training-tg-bot/internal/utils"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -74,29 +72,29 @@ func (p *Presenter) ShowSelectDayTypeDialog(chatID int64, dayTypeID int64, res *
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) DeleteDayOfProgram(chatID int64, res *dto.GetProgram) {
+func (p *Presenter) ViewAllDays(chatID int64, res *dto.GetProgram) {
 	program := res.Program
 
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	text := &bytes.Buffer{}
 
-	text.WriteString(fmt.Sprintf("<b>Программа: %s</b>\n\n", program.Name))
-	text.WriteString("<b>Список дней:</b>\n\n")
+	text.WriteString(fmt.Sprintf("<b>Программа:</b> %s\n", program.Name))
 
 	for i, dayType := range program.DayTypes {
 		if i%2 == 0 {
 			buttons = append(buttons, tgbotapi.NewInlineKeyboardRow())
 		}
 		buttons[len(buttons)-1] = append(buttons[len(buttons)-1],
-			tgbotapi.NewInlineKeyboardButtonData(dayType.Name, fmt.Sprintf("day_type_confirm_delete_%d", dayType.ID)),
+			tgbotapi.NewInlineKeyboardButtonData(dayType.Name, fmt.Sprintf("day_type_view_%d", dayType.ID)),
 		)
-
-		text.WriteString(fmt.Sprintf("<b>%d.</b> %s\n", i+1, dayType.Name))
 	}
+	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData(messages.BackTo, fmt.Sprintf("program_view_%d", program.ID)),
+	))
 
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(buttons...)
 
-	text.WriteString("\n<b>Выберите день, который хотите удалить:</b>")
+	text.WriteString("\n<b>Выберите день для просмотра:</b>")
 
 	msg := tgbotapi.NewMessage(chatID, text.String())
 	msg.ParseMode = constants.HtmlParseMode
@@ -106,7 +104,6 @@ func (p *Presenter) DeleteDayOfProgram(chatID int64, res *dto.GetProgram) {
 
 func (p *Presenter) ViewProgram(chatID int64, res *dto.GetProgram) {
 	program := res.Program
-	//exerciseTypesMap := res.ExerciseTypesMap
 
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	text := &bytes.Buffer{}
@@ -115,27 +112,19 @@ func (p *Presenter) ViewProgram(chatID int64, res *dto.GetProgram) {
 	text.WriteString("<b>Список дней:</b>\n\n")
 
 	for i, dayType := range program.DayTypes {
-		//if i%2 == 0 {
-		//	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow())
-		//}
-		//buttons[len(buttons)-1] = append(buttons[len(buttons)-1],
-		//	tgbotapi.NewInlineKeyboardButtonData(dayType.Name, fmt.Sprintf("day_type_edit_%d", dayType.ID)),
-		//)
-
 		text.WriteString(fmt.Sprintf("<b>%d.</b> %s\n", i+1, dayType.Name))
-		//text.WriteString(fmt.Sprintf("%s \n\n", formatPreset(dayType.Preset, exerciseTypesMap)))
 	}
 
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("➕ Добавить день", fmt.Sprintf("change_day_name_%d", program.ID)),
-		tgbotapi.NewInlineKeyboardButtonData("➖ Удалить день", fmt.Sprintf("program_day_delete_%d", program.ID)),
-	))
-	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("🎟️ Переименовать", fmt.Sprintf("change_name_of_program_%d", program.ID)),
 		tgbotapi.NewInlineKeyboardButtonData("👑 Выбрать текущей", fmt.Sprintf("program_change_%d", program.ID)),
+		tgbotapi.NewInlineKeyboardButtonData("🎟️ Переименовать", fmt.Sprintf("change_name_of_program_%d", program.ID)),
 	))
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData("🗑 Удалить", fmt.Sprintf("program_confirm_delete_%d", program.ID)),
+		tgbotapi.NewInlineKeyboardButtonData("➕ Еще день", fmt.Sprintf("change_day_name_%d", program.ID)),
+		tgbotapi.NewInlineKeyboardButtonData("🗑 Удалить всю", fmt.Sprintf("program_confirm_delete_%d", program.ID)),
+	))
+	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData("🕹️ Управление днями", fmt.Sprintf("program_view_all_days_%d", program.ID)),
 		tgbotapi.NewInlineKeyboardButtonData(messages.BackTo, "program_management"),
 	))
 
@@ -167,29 +156,4 @@ func (p *Presenter) ConfirmDeleteDialog(chatID int64, res *dto.GetProgram) {
 	msg.ParseMode = constants.MarkdownParseMode
 	msg.ReplyMarkup = keyboard
 	p.bot.Send(msg)
-}
-
-func formatPreset(preset string, exerciseTypesMap map[int64]models.ExerciseType) string {
-	exercises := utils.SplitPreset(preset)
-	buffer := &bytes.Buffer{}
-	for _, ex := range exercises {
-		exerciseType, ok := exerciseTypesMap[ex.ID]
-		if !ok {
-			continue
-		}
-		buffer.WriteString(fmt.Sprintf("• <u>%s</u>\n", exerciseType.Name))
-		buffer.WriteString(fmt.Sprintf("    • "))
-		for i, set := range ex.Sets {
-			if i > 0 {
-				buffer.WriteString(", ")
-			}
-			if set.Minutes > 0 {
-				buffer.WriteString(fmt.Sprintf("%d мин", set.Minutes))
-			} else {
-				buffer.WriteString(fmt.Sprintf("%d * %.0f кг", set.Reps, set.Weight))
-			}
-		}
-		buffer.WriteString("\n")
-	}
-	return buffer.String()
 }

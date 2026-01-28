@@ -89,7 +89,7 @@ func New(token string, useCases *usecase.Container) (*App, error) {
 	changesHandler := changes.NewHandler(bot,
 		useCases.ShowCurrentExerciseSessionUC, useCases.UpdateNextSetUC, useCases.FindAllProgramsByUserUC, useCases.RenameProgramUC,
 		useCases.GetAllGroupsUC, useCases.DayTypesCreateUC, useCases.UpdateDateTypeUC, useCases.GetDayTypeUC,
-		useCases.ExerciseTypeListUC, useCases.GetProgramUC)
+		useCases.ExerciseTypeListUC, useCases.GetProgramUC, dayTypesHandler)
 
 	r := router.New(
 		bot,
