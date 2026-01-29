@@ -59,14 +59,15 @@ func (uc *CreateUseCase) Execute(chatID, dayTypeID int64) (*dto.CreateWorkout, e
 }
 
 func (uc *CreateUseCase) buildExercises(workoutID int64, dayTypeID int64, user *models.User) ([]models.Exercise, error) {
-	previousWorkout, err := uc.workoutsRepo.FindPreviousByType(user.ID, dayTypeID, *user.ActiveProgramID)
+	activeProgramID := *user.ActiveProgramID
+	previousWorkout, err := uc.workoutsRepo.FindPreviousByType(user.ID, dayTypeID, activeProgramID)
 	if err != nil {
-		return uc.createExercisesFromPresets(workoutID, dayTypeID)
+		return uc.createExercisesFromPresets(workoutID, dayTypeID, activeProgramID)
 	}
-	return uc.createExercisesFromLastWorkout(workoutID, previousWorkout.ID)
+	return uc.createExercisesFromLastWorkout(workoutID, previousWorkout.ID, activeProgramID)
 }
 
-func (uc *CreateUseCase) createExercisesFromPresets(workoutDayID, dayTypeID int64) ([]models.Exercise, error) {
+func (uc *CreateUseCase) createExercisesFromPresets(workoutDayID, dayTypeID, activeProgramID int64) ([]models.Exercise, error) {
 	method := "createExercisesFromPresets"
 	fmt.Printf("%s: берем настройки количества повторений и веса из preset-ов\n", method)
 
@@ -84,7 +85,7 @@ func (uc *CreateUseCase) createExercisesFromPresets(workoutDayID, dayTypeID int6
 			Index:          index,
 		}
 
-		if prevEx, prevErr := uc.exercisesRepo.FindPreviousByType(presetEx.ID); prevErr == nil {
+		if prevEx, prevErr := uc.exercisesRepo.FindPreviousByType(presetEx.ID, activeProgramID); prevErr == nil {
 			newExercise.Sets = buildSetsFrom(prevEx)
 		} else {
 			for idx2, set := range presetEx.Sets {
@@ -104,7 +105,7 @@ func (uc *CreateUseCase) createExercisesFromPresets(workoutDayID, dayTypeID int6
 	return objs, nil
 }
 
-func (uc *CreateUseCase) createExercisesFromLastWorkout(workoutDayID, previousWorkoutID int64) ([]models.Exercise, error) {
+func (uc *CreateUseCase) createExercisesFromLastWorkout(workoutDayID, previousWorkoutID, activeProgramID int64) ([]models.Exercise, error) {
 	method := "createExercisesFromLastWorkout"
 	fmt.Printf("%s: берем настройки количества повторений и веса из последней тренировки: %d\n", method, previousWorkoutID)
 
@@ -120,7 +121,7 @@ func (uc *CreateUseCase) createExercisesFromLastWorkout(workoutDayID, previousWo
 			Index:          prevWorkoutEx.Index,
 		}
 
-		if prevEx, prevErr := uc.exercisesRepo.FindPreviousByType(prevWorkoutEx.ExerciseTypeID); prevErr == nil {
+		if prevEx, prevErr := uc.exercisesRepo.FindPreviousByType(prevWorkoutEx.ExerciseTypeID, activeProgramID); prevErr == nil {
 			newExercise.Sets = buildSetsFrom(prevEx)
 		} else {
 			newExercise.Sets = buildSetsFrom(prevWorkoutEx)
