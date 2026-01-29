@@ -37,23 +37,31 @@ func (w *WorkoutDay) Status() string {
 func (w *WorkoutDay) String() string {
 	var text strings.Builder
 
-	text.WriteString(fmt.Sprintf("<b>Тип:</b> %s \n", w.WorkoutDayType.Name))
+	text.WriteString(fmt.Sprintf("<b>День:</b> <u>%s</u> \n", w.WorkoutDayType.Name))
+	text.WriteString(fmt.Sprintf("<b>Начата:</b> 📅 %s\n", utils.FormatDateTime(w.StartedAt)))
 	text.WriteString(fmt.Sprintf("<b>Статус:</b> %s\n", w.Status()))
 	if w.Completed {
 		text.WriteString(fmt.Sprintf("<b>Длительность:</b> %s\n", utils.BetweenTimes(w.StartedAt, w.EndedAt)))
 	}
-	text.WriteString(fmt.Sprintf("<b>Дата:</b> 📅 %s\n\n", w.StartedAt.Add(3*time.Hour).Format("02.01.2006")))
+	text.WriteString("\n")
 
 	if len(w.Exercises) > 0 {
-		text.WriteString("<b>Упражнения:</b>\n")
+		text.WriteString("<b>УПРАЖНЕНИЯ:</b>\n")
 	}
 
 	for i, exercise := range w.Exercises {
+		sumWeight := float32(0)
 		exerciseObj := exercise.ExerciseType
-		text.WriteString(fmt.Sprintf("<b>%s %d. %s</b>\n", exercise.Status(), i+1, exerciseObj.Name))
+		text.WriteString(fmt.Sprintf("<b>%d. %s</b>\n", i+1, exerciseObj.Name))
 
 		for _, set := range exercise.Sets {
+			if set.Completed {
+				sumWeight += set.GetRealWeight() * float32(set.GetRealReps())
+			}
 			text.WriteString(set.String(w.Completed))
+		}
+		if sumWeight > 0 {
+			text.WriteString(fmt.Sprintf("<u>Общий вес</u>: %.0f кг\n", sumWeight))
 		}
 		text.WriteString("\n")
 	}

@@ -42,6 +42,7 @@ const (
 	BackToMenu        = "🔙 В меню"
 	StartWorkout      = "▶️ Начать тренировку"
 	MyWorkouts        = "📋 Мои тренировки"
+	YourWorkouts      = "📋 Ваши тренировки"
 	Stats             = "📊 Статистика"
 	StatsWeek         = "📅 За неделю"
 	StatsMonth        = "🗓️ За месяц"

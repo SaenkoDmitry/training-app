@@ -125,3 +125,31 @@ func EqualArrays(arr1, arr2 []string) bool {
 	}
 	return reflect.DeepEqual(m1, m2)
 }
+
+func FormatDateTime(dateTime time.Time) string {
+	dateTimeInMSK := dateTime.Add(3 * time.Hour)
+	d := dateTimeInMSK.Format("02.01.2006")
+	weekDay := getRussianWeekDay(dateTimeInMSK.Weekday())
+	t := dateTimeInMSK.Format("15:04")
+	return fmt.Sprintf("%s (%s) в %s", d, weekDay, t)
+}
+
+func getRussianWeekDay(weekday time.Weekday) string {
+	switch weekday {
+	case time.Monday:
+		return "ПН"
+	case time.Tuesday:
+		return "ВТ"
+	case time.Wednesday:
+		return "СР"
+	case time.Thursday:
+		return "ЧТ"
+	case time.Friday:
+		return "ПТ"
+	case time.Saturday:
+		return "СБ"
+	case time.Sunday:
+		return "ВС"
+	}
+	return ""
+}

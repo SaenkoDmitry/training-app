@@ -167,5 +167,9 @@ func (s *serviceImpl) writeProgressChart(
 		fmt.Println("error while build chart:", err.Error())
 	}
 
-	return firstRow + 15
+	return firstRow + betweenExerciseRows
 }
+
+const (
+	betweenExerciseRows = 20
+)
