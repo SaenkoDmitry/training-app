@@ -38,9 +38,11 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           script: |
+            sudo systemctl stop training-tg-bot
+
             cd /opt/training-tg-bot
             echo "TELEGRAM_TOKEN=${{ secrets.TELEGRAM_TOKEN }}" > .env
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-            sudo systemctl daemon-reload
-            sudo systemctl restart training-tg-bot
+
+            sudo systemctl start training-tg-bot
             sudo systemctl status training-tg-bot --no-pager
