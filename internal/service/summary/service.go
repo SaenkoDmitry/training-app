@@ -134,30 +134,30 @@ func (s *serviceImpl) BuildExerciseProgress(
 					continue
 				}
 
-				countOfReps += set.Reps
-				sumWeight += set.Weight * float32(set.Reps)
-				if progress[date].MaxWeight < set.Weight ||
-					progress[date].MaxWeight == set.Weight && progress[date].MaxReps < set.Reps {
-					progress[date].MaxWeight = set.Weight
-					progress[date].MaxReps = set.Reps
+				countOfReps += set.GetRealReps()
+				sumWeight += set.GetRealWeight() * float32(set.GetRealReps())
+				if progress[date].MaxWeight < set.GetRealWeight() ||
+					progress[date].MaxWeight == set.GetRealWeight() && progress[date].MaxReps < set.GetRealReps() {
+					progress[date].MaxWeight = set.GetRealWeight()
+					progress[date].MaxReps = set.GetRealReps()
 				}
 
-				progress[date].SumMinutes += set.Minutes
+				progress[date].SumMinutes += set.GetRealMinutes()
 				if progress[date].MinMinutes == 0 {
-					progress[date].MinMinutes = set.Minutes
-					progress[date].MaxMinutes = set.Minutes
+					progress[date].MinMinutes = set.GetRealMinutes()
+					progress[date].MaxMinutes = set.GetRealMinutes()
 				} else {
-					progress[date].MinMinutes = min(progress[date].MinMinutes, set.Minutes)
-					progress[date].MaxMinutes = max(progress[date].MaxMinutes, set.Minutes)
+					progress[date].MinMinutes = min(progress[date].MinMinutes, set.GetRealMinutes())
+					progress[date].MaxMinutes = max(progress[date].MaxMinutes, set.GetRealMinutes())
 				}
 
-				progress[date].SumMeters += set.Meters
+				progress[date].SumMeters += set.GetRealMeters()
 				if progress[date].MinMeters == 0 {
-					progress[date].MinMeters = set.Meters
-					progress[date].MaxMeters = set.Meters
+					progress[date].MinMeters = set.GetRealMeters()
+					progress[date].MaxMeters = set.GetRealMeters()
 				} else {
-					progress[date].MinMeters = min(progress[date].MinMeters, set.Meters)
-					progress[date].MaxMeters = max(progress[date].MaxMeters, set.Meters)
+					progress[date].MinMeters = min(progress[date].MinMeters, set.GetRealMeters())
+					progress[date].MaxMeters = max(progress[date].MaxMeters, set.GetRealMeters())
 				}
 			}
 			progress[date].AvgWeight = sumWeight / float32(countOfReps)
