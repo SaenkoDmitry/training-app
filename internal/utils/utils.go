@@ -140,11 +140,11 @@ func FormatDate(dateTime time.Time) string {
 }
 
 func FormatCentimeters(millimeters int) string {
-	return fmt.Sprintf("%.1f", float64(millimeters)/float64(10))
+	return strconv.FormatFloat(float64(millimeters)/float64(10), 'f', -1, 64)
 }
 
 func FormatKilograms(grams int) string {
-	return fmt.Sprintf("%.1f", float64(grams)/float64(1000))
+	return strconv.FormatFloat(float64(grams)/float64(1000), 'f', -1, 64)
 }
 
 func getRussianWeekDay(weekday time.Weekday) string {

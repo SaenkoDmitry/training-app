@@ -95,8 +95,15 @@ func (h *Handler) RouteCallback(chatID int64, data string) {
 	switch {
 	case strings.HasPrefix(data, "change_add_new_measurement"):
 		h.userStatesMachine.SetValue(chatID, "awaiting_new_measurement")
-		h.commonPresenter.SendSimpleHtmlMessage(chatID, messages.EnterNewMeasurement+
-			fmt.Sprintf("\n\n<a href=\"https://disk.yandex.ru/i/qjF4sVQibIJV-g\">измерения.png</a>"))
+		exampleMsg := "<b>Например,</b>\n<i>Плечи: 115.1\nГрудь: 101\nРуки: 34.5\nТалия: 88\nЯгодицы: 96\nБедра: 52\nИкры: 36.5\nВес: 76.51</i>\n\n"
+		measurementsURL := fmt.Sprintf("<a href=\"https://disk.yandex.ru/i/qjF4sVQibIJV-g\">image</a>")
+		h.commonPresenter.SendSimpleHtmlMessage(chatID,
+			fmt.Sprintf("%s\n\n %s",
+				messages.EnterNewMeasurement,
+				measurementsURL,
+			),
+		)
+		h.commonPresenter.SendSimpleHtmlMessage(chatID, exampleMsg)
 
 	case strings.HasPrefix(data, "change_reps_ex_"):
 		exerciseID, _ := strconv.ParseInt(strings.TrimPrefix(data, "change_reps_ex_"), 10, 64)
@@ -153,6 +160,28 @@ func (h *Handler) RouteCallback(chatID int64, data string) {
 	}
 }
 
+const (
+	shoulderPrefix = "Плечи:"
+	chestPrefix    = "Грудь:"
+	handsPrefix    = "Руки:"
+	waistPrefix    = "Талия:"
+	buttocksPrefix = "Ягодицы:"
+	hipsPrefix     = "Бедра:"
+	calvesPrefix   = "Икры:"
+	weightPrefix   = "Вес:"
+)
+
+var measurementPrefixes = []string{
+	shoulderPrefix,
+	chestPrefix,
+	handsPrefix,
+	waistPrefix,
+	buttocksPrefix,
+	hipsPrefix,
+	calvesPrefix,
+	weightPrefix,
+}
+
 func (h *Handler) RouteMessage(chatID int64, text string) {
 	state, exists := h.userStatesMachine.GetValue(chatID)
 	if !exists {
@@ -166,49 +195,48 @@ func (h *Handler) RouteMessage(chatID int64, text string) {
 			h.commonPresenter.SendSimpleHtmlMessage(chatID, messages.InternalErrorCannotFindUser)
 			return
 		}
-		parts := strings.Split(text, ",")
-		if len(parts) != 8 {
+		parts := strings.Split(text, "\n")
+		if len(parts) < 8 {
 			h.commonPresenter.SendSimpleHtmlMessage(chatID, messages.InternalFormatOfMeasurements)
 			return
 		}
-		result := make([]float64, 0, 8)
-		for _, part := range parts {
-			part = strings.TrimLeft(part, " ")
-			part = strings.TrimRight(part, " ")
-			temp, _ := strconv.ParseFloat(part, 64) // nolint
-			result = append(result, temp)
-		}
-		createdMeasurement, _ := h.createMeasurementUC.Execute(&models.Measurement{
+
+		newMeasurement := &models.Measurement{
 			UserID:    user.ID,
 			CreatedAt: time.Now(),
-			Shoulders: int(result[0] * 10),
-			Chest:     int(result[1] * 10),
-			Hands:     int(result[2] * 10),
-			Waist:     int(result[3] * 10),
-			Buttocks:  int(result[4] * 10),
-			Hips:      int(result[5] * 10),
-			Calves:    int(result[6] * 10),
-			Weight:    int(result[7] * 1000),
-		})
-		h.commonPresenter.SendSimpleHtmlMessage(chatID, fmt.Sprintf("<b>📅 Дата: %s</b>\n\n"+
-			"• <u>Плечи</u>: %s см\n\n"+
-			"• <u>Грудь</u>: %s см\n\n"+
-			"• <u>Руки</u>: %s см\n\n"+
-			"• <u>Талия</u>: %s см\n\n"+
-			"• <u>Ягодицы</u>: %s см\n\n"+
-			"• <u>Бедра</u>: %s см\n\n"+
-			"• <u>Икры</u>: %s см\n\n"+
-			"• <u>Вес</u>: %s кг",
-			createdMeasurement.CreatedAt,
-			createdMeasurement.Shoulders,
-			createdMeasurement.Chest,
-			createdMeasurement.Hands,
-			createdMeasurement.Waist,
-			createdMeasurement.Buttocks,
-			createdMeasurement.Hips,
-			createdMeasurement.Calves,
-			createdMeasurement.Weight,
-		))
+		}
+
+		for _, part := range parts {
+			for _, prefix := range measurementPrefixes {
+				if !strings.HasPrefix(part, prefix) {
+					continue
+				}
+
+				part = strings.TrimPrefix(part, prefix)
+				part = strings.TrimSpace(part)
+				temp, _ := strconv.ParseFloat(part, 64) // nolint
+				switch prefix {
+				case shoulderPrefix:
+					newMeasurement.Shoulders = int(temp * 10)
+				case chestPrefix:
+					newMeasurement.Chest = int(temp * 10)
+				case handsPrefix:
+					newMeasurement.Hands = int(temp * 10)
+				case waistPrefix:
+					newMeasurement.Waist = int(temp * 10)
+				case buttocksPrefix:
+					newMeasurement.Buttocks = int(temp * 10)
+				case hipsPrefix:
+					newMeasurement.Hips = int(temp * 10)
+				case calvesPrefix:
+					newMeasurement.Calves = int(temp * 10)
+				case weightPrefix:
+					newMeasurement.Weight = int(temp * 1000)
+				}
+			}
+		}
+		createdMeasurement, _ := h.createMeasurementUC.Execute(newMeasurement)
+		h.presenter.showCreated(chatID, createdMeasurement)
 
 	case strings.HasPrefix(state, "awaiting_reps_"):
 		exerciseID, _ := strconv.ParseInt(strings.TrimPrefix(state, "awaiting_reps_"), 10, 64)
