@@ -10,7 +10,7 @@ CREATE TABLE measurements
     hands      INT,
     waist      INT,
     buttocks   INT,
-    hip        INT,
+    hips       INT,
     calves     INT,
     weight     INT
 );
