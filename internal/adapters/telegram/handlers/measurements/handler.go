@@ -44,3 +44,10 @@ func (h *Handler) showWithLimitAndOffset(chatID int64, limit, offset int) {
 	}
 	h.presenter.showAllLimitOffset(chatID, res)
 }
+
+func (h *Handler) RouteMessage(chatID int64, text string) {
+	switch {
+	case strings.EqualFold(text, "measurements_menu"):
+		h.showMenu(chatID)
+	}
+}

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	MeasurementSheet = messages.MeasurementsOfBody
+	MeasurementSheet = messages.Measurements
 )
 
 func (s *serviceImpl) ExportMeasurementsToFile(measurements []*dto.Measurement) (*excelize.File, error) {

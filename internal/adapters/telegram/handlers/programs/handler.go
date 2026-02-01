@@ -42,6 +42,13 @@ func NewHandler(
 	}
 }
 
+func (h *Handler) RouteMessage(chatID int64, text string) {
+	switch {
+	case strings.HasPrefix(text, "program_management"):
+		h.programManagement(chatID)
+	}
+}
+
 func (h *Handler) RouteCallback(chatID int64, data string) {
 	switch {
 	case strings.HasPrefix(data, "program_create"):

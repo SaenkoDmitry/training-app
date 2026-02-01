@@ -183,7 +183,7 @@ func (p *Presenter) ShowMy(chatID int64, res *dto.ShowMyWorkoutsResult) {
 	offset, limit, count := res.Pagination.Offset, res.Pagination.Limit, res.Pagination.Total
 
 	var rows [][]tgbotapi.InlineKeyboardButton
-	text := fmt.Sprintf("<b>%s</b> (%d-%d из %d):\n\n", messages.YourWorkouts, offset+1, min(offset+limit, count), count)
+	text := fmt.Sprintf("<b>%s</b> (%d-%d из %d):\n\n", messages.MyWorkouts, offset+1, min(offset+limit, count), count)
 	for i, workout := range res.Items {
 		status := "🟡"
 		if workout.Completed {
@@ -196,7 +196,7 @@ func (p *Presenter) ShowMy(chatID int64, res *dto.ShowMyWorkoutsResult) {
 		}
 		date := utils.FormatDateTimeWithDayOfWeek(workout.StartedAt)
 
-		text += fmt.Sprintf("%d. <u>%s</u> %s\n   📅 %s\n\n",
+		text += fmt.Sprintf("%d. <u>%s</u> %s\n   📆️ %s\n\n",
 			i+1+offset, workout.Name, status, date)
 
 		// buttons
@@ -339,7 +339,7 @@ func (p *Presenter) ShowByUserID(chatID int64, res *dto.ShowWorkoutByUserID) {
 
 		dayType := workout.WorkoutDayType
 
-		text += fmt.Sprintf("%d. <b>%s</b> %s\n   📅 %s\n\n",
+		text += fmt.Sprintf("%d. <b>%s</b> %s\n   📆️ %s\n\n",
 			i+1, dayType.Name, status, date)
 	}
 

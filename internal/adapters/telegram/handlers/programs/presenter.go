@@ -22,7 +22,7 @@ func (p *Presenter) ShowProgramManageDialog(chatID int64, result *dto.GetAllProg
 	programs := result.Programs
 
 	text := &bytes.Buffer{}
-	text.WriteString(fmt.Sprintf("<b>%s:</b>\n\n", messages.ProgramManagement))
+	text.WriteString(fmt.Sprintf("<b>%s:</b>\n\n", messages.MyPrograms))
 
 	var rows [][]tgbotapi.InlineKeyboardButton
 	for i, program := range programs {

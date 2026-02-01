@@ -23,7 +23,7 @@ func (p Presenter) showMenu(chatID int64) {
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("➕ Добавить новое", "change_add_new_measurement"),
-			tgbotapi.NewInlineKeyboardButtonData("📁 Показать свежие", "measurements_show_top_4_0"),
+			tgbotapi.NewInlineKeyboardButtonData("🆕 Последние", "measurements_show_top_4_0"),
 		),
 		//tgbotapi.NewInlineKeyboardRow(
 		//	tgbotapi.NewInlineKeyboardButtonData("🗑 Удалить последнее добавленное", "measurements_delete_last"),
@@ -49,10 +49,11 @@ func (p Presenter) showAllLimitOffset(chatID int64, measurementObjs []dto.Measur
 
 	var from, to string
 	if len(measurementObjs) > 0 {
-		from = measurementObjs[0].CreatedAt
-		to = measurementObjs[len(measurementObjs)-1].CreatedAt
+		from = measurementObjs[len(measurementObjs)-1].CreatedAt
+		to = measurementObjs[0].CreatedAt
 	}
-	for _, m := range measurementObjs {
+	for i := len(measurementObjs) - 1; i >= 0; i-- {
+		m := measurementObjs[i]
 		shoulders = append(shoulders, m.Shoulders)
 		chests = append(chests, m.Chest)
 		hands = append(hands, m.Hands)
@@ -63,7 +64,8 @@ func (p Presenter) showAllLimitOffset(chatID int64, measurementObjs []dto.Measur
 		weights = append(weights, m.Weight)
 	}
 	msg := tgbotapi.NewMessage(chatID, fmt.Sprintf(
-		"<b>%s за период %s – %s</b>\n\n"+
+		"<b>%s за период \n"+
+			"📆 %s – %s</b>\n\n"+
 			"• <u>Плечи (см)</u>: %s\n\n"+
 			"• <u>Грудь (см)</u>: %s\n\n"+
 			"• <u>Руки (см)</u>: %s\n\n"+

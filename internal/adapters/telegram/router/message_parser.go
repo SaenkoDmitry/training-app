@@ -31,6 +31,12 @@ func (r *Router) routeMessage(message *tgbotapi.Message) {
 	case text == messages.Settings || text == "/settings":
 		r.settings(chatID)
 
+	case text == messages.MyPrograms || text == "program_management":
+		r.programsHandler.RouteMessage(chatID, "program_management")
+
+	case text == messages.Measurements || text == "measurements_menu":
+		r.measurementsHandler.RouteMessage(chatID, "measurements_menu")
+
 	case text == messages.HowToUse || text == "/about":
 		r.about(chatID)
 
@@ -56,7 +62,12 @@ func (r *Router) sendMainMenu(chatID int64, from *tgbotapi.User) {
 		tgbotapi.NewKeyboardButton(messages.Stats),
 	))
 	rows = append(rows, tgbotapi.NewKeyboardButtonRow(
-		tgbotapi.NewKeyboardButton(messages.Settings),
+		tgbotapi.NewKeyboardButton(messages.MyPrograms),
+		tgbotapi.NewKeyboardButton(messages.Measurements),
+	))
+	rows = append(rows, tgbotapi.NewKeyboardButtonRow(
+		//tgbotapi.NewKeyboardButton(messages.Settings),
+		tgbotapi.NewKeyboardButton(messages.Exercises),
 		tgbotapi.NewKeyboardButton(messages.HowToUse),
 	))
 
@@ -78,8 +89,8 @@ func (r *Router) sendMainMenu(chatID int64, from *tgbotapi.User) {
 func (r *Router) settings(chatID int64) {
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData(messages.ProgramManagement, "program_management"),
-		tgbotapi.NewInlineKeyboardButtonData(messages.MeasurementsOfBody, "measurements_menu"),
+		tgbotapi.NewInlineKeyboardButtonData(messages.MyPrograms, "program_management"),
+		tgbotapi.NewInlineKeyboardButtonData(messages.Measurements, "measurements_menu"),
 	))
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData(messages.Exercises, "exercise_show_all_groups"),

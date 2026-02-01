@@ -45,7 +45,7 @@ func (p *Presenter) ShowPeriodStats(chatID int64, res *dto.PeriodStats) {
 }
 
 func (p *Presenter) ShowStatsMenu(chatID int64) {
-	text := "📊 *Статистика тренировок*\n\n Выберите период:"
+	text := "📊 *Статистика тренировок*\n"
 
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
