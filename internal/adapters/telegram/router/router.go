@@ -7,6 +7,7 @@ import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/daytypes"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/exercises"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/exports"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/measurements"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/programs"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/sets"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/stats"
@@ -19,18 +20,19 @@ import (
 type Router struct {
 	bot *tgbotapi.BotAPI
 
-	workoutsHandler  *workouts.Handler
-	timersHandler    *timers.Handler
-	statsHandler     *stats.Handler
-	setsHandler      *sets.Handler
-	programsHandler  *programs.Handler
-	exportsHandler   *exports.Handler
-	exercisesHandler *exercises.Handler
-	changesHandler   *changes.Handler
-	dayTypesHandler  *daytypes.Handler
-	adminsHandler    *admins.Handler
-	createUserUC     *userusecases.CreateUseCase
-	getUserUC        *userusecases.GetUseCase
+	workoutsHandler     *workouts.Handler
+	timersHandler       *timers.Handler
+	statsHandler        *stats.Handler
+	setsHandler         *sets.Handler
+	programsHandler     *programs.Handler
+	exportsHandler      *exports.Handler
+	measurementsHandler *measurements.Handler
+	exercisesHandler    *exercises.Handler
+	changesHandler      *changes.Handler
+	dayTypesHandler     *daytypes.Handler
+	adminsHandler       *admins.Handler
+	createUserUC        *userusecases.CreateUseCase
+	getUserUC           *userusecases.GetUseCase
 }
 
 func New(
@@ -47,21 +49,23 @@ func New(
 	exercisesHandler *exercises.Handler,
 	changesHandler *changes.Handler,
 	dayTypesHandler *daytypes.Handler,
+	measurementsHandler *measurements.Handler,
 ) *Router {
 	return &Router{
-		bot:              bot,
-		createUserUC:     createUserUC,
-		getUserUC:        getUserUC,
-		adminsHandler:    adminsHandler,
-		workoutsHandler:  workoutsHandler,
-		timersHandler:    timersHandler,
-		statsHandler:     statsHandler,
-		setsHandler:      setsHandler,
-		programsHandler:  programsHandler,
-		exportsHandler:   exportsHandler,
-		exercisesHandler: exercisesHandler,
-		changesHandler:   changesHandler,
-		dayTypesHandler:  dayTypesHandler,
+		bot:                 bot,
+		createUserUC:        createUserUC,
+		getUserUC:           getUserUC,
+		adminsHandler:       adminsHandler,
+		workoutsHandler:     workoutsHandler,
+		timersHandler:       timersHandler,
+		statsHandler:        statsHandler,
+		setsHandler:         setsHandler,
+		programsHandler:     programsHandler,
+		exportsHandler:      exportsHandler,
+		exercisesHandler:    exercisesHandler,
+		changesHandler:      changesHandler,
+		dayTypesHandler:     dayTypesHandler,
+		measurementsHandler: measurementsHandler,
 	}
 }
 

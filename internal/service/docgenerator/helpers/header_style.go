@@ -1,4 +1,4 @@
-package docgenerator
+package helpers
 
 import "github.com/xuri/excelize/v2"
 

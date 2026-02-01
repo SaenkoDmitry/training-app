@@ -38,7 +38,7 @@ func (w *WorkoutDay) String() string {
 	var text strings.Builder
 
 	text.WriteString(fmt.Sprintf("<b>День:</b> <u>%s</u> \n", w.WorkoutDayType.Name))
-	text.WriteString(fmt.Sprintf("<b>Начата:</b> 📅 %s\n", utils.FormatDateTime(w.StartedAt)))
+	text.WriteString(fmt.Sprintf("<b>Начата:</b> 📅 %s\n", utils.FormatDateTimeWithDayOfWeek(w.StartedAt)))
 	text.WriteString(fmt.Sprintf("<b>Статус:</b> %s\n", w.Status()))
 	if w.Completed {
 		text.WriteString(fmt.Sprintf("<b>Длительность:</b> %s\n", utils.BetweenTimes(w.StartedAt, w.EndedAt)))

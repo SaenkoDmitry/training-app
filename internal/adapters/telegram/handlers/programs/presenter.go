@@ -22,7 +22,7 @@ func (p *Presenter) ShowProgramManageDialog(chatID int64, result *dto.GetAllProg
 	programs := result.Programs
 
 	text := &bytes.Buffer{}
-	text.WriteString("<b>📱️ Ваши программы:</b>\n\n")
+	text.WriteString(fmt.Sprintf("<b>%s:</b>\n\n", messages.ProgramManagement))
 
 	var rows [][]tgbotapi.InlineKeyboardButton
 	for i, program := range programs {
@@ -31,9 +31,9 @@ func (p *Presenter) ShowProgramManageDialog(chatID int64, result *dto.GetAllProg
 		}
 
 		if program.ID == *user.ActiveProgramID {
-			text.WriteString(fmt.Sprintf("• 🟢 <b>%s</b> \n  📅 %s\n\n", program.Name, program.CreatedAt.Format("02.01.2006 15:04")))
+			text.WriteString(fmt.Sprintf("•  👉 <b>%s</b> \n  📅 %s\n\n", program.Name, program.CreatedAt.Format("02.01.2006 15:04")))
 		} else {
-			text.WriteString(fmt.Sprintf("• 📌 <b>%s</b> \n 📅 %s\n\n", program.Name, program.CreatedAt.Format("02.01.2006 15:04")))
+			text.WriteString(fmt.Sprintf("•    <b>%s</b> \n 📅 %s\n\n", program.Name, program.CreatedAt.Format("02.01.2006 15:04")))
 		}
 
 		rows[len(rows)-1] = append(rows[len(rows)-1],

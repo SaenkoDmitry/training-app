@@ -2,6 +2,7 @@ package telegram
 
 import (
 	"fmt"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/measurements"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
@@ -84,12 +85,15 @@ func New(token string, useCases *usecase.Container) (*App, error) {
 	dayTypesHandler := daytypes.NewHandler(bot, useCases.GetDayTypeUC, useCases.GetAllGroupsUC, useCases.DeleteDayTypeUC,
 		useCases.GetProgramUC, programsHandler)
 
-	exportsHandler := exports.NewHandler(bot, useCases.ExportToExcelUC)
+	exportsHandler := exports.NewHandler(bot, useCases.ExportWorkoutsToExcelUC, useCases.ExportMeasurementsToExcelUC)
 
 	changesHandler := changes.NewHandler(bot,
-		useCases.ShowCurrentExerciseSessionUC, useCases.UpdateNextSetUC, useCases.FindAllProgramsByUserUC, useCases.RenameProgramUC,
-		useCases.GetAllGroupsUC, useCases.DayTypesCreateUC, useCases.UpdateDateTypeUC, useCases.GetDayTypeUC,
-		useCases.ExerciseTypeListUC, useCases.GetProgramUC, dayTypesHandler)
+		useCases.GetUserUC, useCases.ShowCurrentExerciseSessionUC, useCases.UpdateNextSetUC,
+		useCases.FindAllProgramsByUserUC, useCases.RenameProgramUC, useCases.GetAllGroupsUC, useCases.DayTypesCreateUC,
+		useCases.UpdateDateTypeUC, useCases.GetDayTypeUC, useCases.ExerciseTypeListUC, useCases.GetProgramUC, dayTypesHandler,
+		useCases.CreateMeasurementUC)
+
+	measurementsHandler := measurements.NewHandler(bot, useCases.FindAllMeasurementsUC)
 
 	r := router.New(
 		bot,
@@ -105,6 +109,7 @@ func New(token string, useCases *usecase.Container) (*App, error) {
 		exercisesHandler,
 		changesHandler,
 		dayTypesHandler,
+		measurementsHandler,
 	)
 
 	return &App{

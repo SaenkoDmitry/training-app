@@ -126,12 +126,25 @@ func EqualArrays(arr1, arr2 []string) bool {
 	return reflect.DeepEqual(m1, m2)
 }
 
-func FormatDateTime(dateTime time.Time) string {
+func FormatDateTimeWithDayOfWeek(dateTime time.Time) string {
 	dateTimeInMSK := dateTime.Add(3 * time.Hour)
 	d := dateTimeInMSK.Format("02.01.2006")
 	weekDay := getRussianWeekDay(dateTimeInMSK.Weekday())
 	t := dateTimeInMSK.Format("15:04")
 	return fmt.Sprintf("%s (%s) в %s", d, weekDay, t)
+}
+
+func FormatDate(dateTime time.Time) string {
+	dateTimeInMSK := dateTime.Add(3 * time.Hour)
+	return dateTimeInMSK.Format("02.01.2006")
+}
+
+func FormatCentimeters(millimeters int) string {
+	return fmt.Sprintf("%.1f", float64(millimeters)/float64(10))
+}
+
+func FormatKilograms(grams int) string {
+	return fmt.Sprintf("%.1f", float64(grams)/float64(1000))
 }
 
 func getRussianWeekDay(weekday time.Weekday) string {

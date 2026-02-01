@@ -159,7 +159,7 @@ func (p *Presenter) CompleteAllExercises(chatID, workoutID int64) {
 	keyboard := tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardRow(
 			tgbotapi.NewInlineKeyboardButtonData("🏁 Завершить",
-				fmt.Sprintf("workout_confirm_finish_%d", workoutID)),
+				fmt.Sprintf("workout_finish_%d", workoutID)),
 			tgbotapi.NewInlineKeyboardButtonData("➕ Еще упражнение",
 				fmt.Sprintf("exercise_add_for_current_workout_%d", workoutID)),
 		),

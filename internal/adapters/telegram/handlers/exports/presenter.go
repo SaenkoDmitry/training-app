@@ -15,8 +15,8 @@ func NewPresenter(bot *tgbotapi.BotAPI) *Presenter {
 	return &Presenter{bot: bot}
 }
 
-func (p *Presenter) WriteDoc(chatID int64, buffer *bytes.Buffer) {
-	doc := tgbotapi.FileBytes{Name: "workouts.xlsx", Bytes: buffer.Bytes()}
+func (p *Presenter) WriteDoc(chatID int64, buffer *bytes.Buffer, fileName string) {
+	doc := tgbotapi.FileBytes{Name: fileName, Bytes: buffer.Bytes()}
 	msg := tgbotapi.NewDocument(chatID, doc)
 	p.bot.Send(msg)
 }

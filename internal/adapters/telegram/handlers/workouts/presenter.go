@@ -194,7 +194,7 @@ func (p *Presenter) ShowMy(chatID int64, res *dto.ShowMyWorkoutsResult) {
 				)
 			}
 		}
-		date := utils.FormatDateTime(workout.StartedAt)
+		date := utils.FormatDateTimeWithDayOfWeek(workout.StartedAt)
 
 		text += fmt.Sprintf("%d. <u>%s</u> %s\n   📅 %s\n\n",
 			i+1+offset, workout.Name, status, date)

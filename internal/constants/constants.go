@@ -11,3 +11,10 @@ const (
 	HtmlParseMode     = "Html"
 	MarkdownParseMode = "Markdown"
 )
+
+const (
+	RedColor     = "#FF746C"
+	GreenColor   = "#6FC276"
+	BlueColor    = "#6488EA"
+	SkyBlueColor = "#2271B3"
+)

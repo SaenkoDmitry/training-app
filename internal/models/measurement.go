@@ -7,14 +7,14 @@ type Measurement struct {
 	UserID    int64
 	CreatedAt time.Time
 
-	shoulders int
-	chest     int
-	hands     int
-	waist     int
-	buttocks  int
-	hip       int
+	Shoulders int
+	Chest     int
+	Hands     int
+	Waist     int
+	Buttocks  int
+	Hips      int
 	Calves    int
-	weight    int
+	Weight    int
 }
 
 func (*Measurement) TableName() string {

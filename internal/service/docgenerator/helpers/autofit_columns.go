@@ -1,4 +1,4 @@
-package docgenerator
+package helpers
 
 import (
 	"unicode/utf8"

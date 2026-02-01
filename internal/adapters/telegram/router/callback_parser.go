@@ -43,6 +43,9 @@ func (r *Router) routeCallback(callbackQuery *tgbotapi.CallbackQuery) {
 	case strings.HasPrefix(data, "export_"):
 		r.exportsHandler.RouteCallback(chatID, data)
 
+	case strings.HasPrefix(data, "measurements_"):
+		r.measurementsHandler.RouteCallback(chatID, data)
+
 	case strings.HasPrefix(data, "day_type_"):
 		r.dayTypesHandler.RouteCallback(chatID, data)
 	}

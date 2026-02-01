@@ -11,7 +11,7 @@ import (
 	summarysvc "github.com/SaenkoDmitry/training-tg-bot/internal/service/summary"
 )
 
-type ExportToExcelUseCase struct {
+type ExportWorkoutsToExcelUseCase struct {
 	usersRepo              users.Repo
 	exerciseGroupTypesRepo exercisegrouptypes.Repo
 	workoutsRepo           workouts.Repo
@@ -20,15 +20,15 @@ type ExportToExcelUseCase struct {
 	docGeneratorService    docgenerator.Service
 }
 
-func NewExportToExcelUseCase(
+func NewExportWorkoutsToExcelUseCase(
 	usersRepo users.Repo,
 	exerciseGroupTypesRepo exercisegrouptypes.Repo,
 	workoutsRepo workouts.Repo,
 	exercisesRepo exercises.Repo,
 	summaryService summarysvc.Service,
 	docGeneratorService docgenerator.Service,
-) *ExportToExcelUseCase {
-	return &ExportToExcelUseCase{
+) *ExportWorkoutsToExcelUseCase {
+	return &ExportWorkoutsToExcelUseCase{
 		usersRepo:              usersRepo,
 		exerciseGroupTypesRepo: exerciseGroupTypesRepo,
 		workoutsRepo:           workoutsRepo,
@@ -38,11 +38,11 @@ func NewExportToExcelUseCase(
 	}
 }
 
-func (uc *ExportToExcelUseCase) Name() string {
+func (uc *ExportWorkoutsToExcelUseCase) Name() string {
 	return "Экспорт в Excel"
 }
 
-func (uc *ExportToExcelUseCase) Execute(chatID int64) (*bytes.Buffer, error) {
+func (uc *ExportWorkoutsToExcelUseCase) Execute(chatID int64) (*bytes.Buffer, error) {
 	groupCodes, err := uc.exerciseGroupTypesRepo.GetAll()
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (uc *ExportToExcelUseCase) Execute(chatID int64) (*bytes.Buffer, error) {
 	weekExerciseTypeSummary := uc.summaryService.BuildByWeekAndExType(workoutObjs, groupCodesMap)
 	exerciseProgressByDates := uc.summaryService.BuildExerciseProgressByDates(workoutObjs)
 
-	file, err := uc.docGeneratorService.ExportToFile(workoutObjs, totalSummary, byDateSummary, exerciseProgressByDates, groupCodesMap, weekExerciseTypeSummary)
+	file, err := uc.docGeneratorService.ExportWorkoutsToFile(workoutObjs, totalSummary, byDateSummary, exerciseProgressByDates, groupCodesMap, weekExerciseTypeSummary)
 	if err != nil {
 		return nil, err
 	}

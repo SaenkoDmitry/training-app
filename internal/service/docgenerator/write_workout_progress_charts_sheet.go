@@ -2,6 +2,7 @@ package docgenerator
 
 import (
 	"fmt"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/service/docgenerator/helpers"
 	"math"
 	"strconv"
 	"strings"
@@ -14,7 +15,7 @@ import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/service/summary"
 )
 
-func (s *serviceImpl) writeAllProgressCharts(
+func (s *serviceImpl) writeWorkoutProgressChartsSheet(
 	f *excelize.File,
 	exerciseProgressByDates []*summary.ExerciseProgressByDates,
 	redHeaderStyle int,
@@ -94,27 +95,27 @@ func (s *serviceImpl) writeProgressChart(
 		Type: excelize.Line,
 		Series: []excelize.ChartSeries{
 			{
-				Name:       fmt.Sprintf("%s!$B$%d", sheet, firstRow),
-				Categories: fmt.Sprintf("%s!$A$%d:$A$%d", sheet, firstRow+1, lastRow),
-				Values:     fmt.Sprintf("%s!$B$%d:$B$%d", sheet, firstRow+1, lastRow),
+				Name:       helpers.FormatCell(sheet, "B", firstRow),
+				Categories: helpers.FormatDataRange(sheet, "A", "A", firstRow, lastRow),
+				Values:     helpers.FormatDataRange(sheet, "B", "B", firstRow, lastRow),
 				Marker: excelize.ChartMarker{
 					Symbol: "circle",
 					Size:   6,
 				},
 			},
 			{
-				Name:       fmt.Sprintf("%s!$C$%d", sheet, firstRow),
-				Categories: fmt.Sprintf("%s!$A$%d:$A$%d", sheet, firstRow+1, lastRow),
-				Values:     fmt.Sprintf("%s!$C$%d:$C$%d", sheet, firstRow+1, lastRow),
+				Name:       helpers.FormatCell(sheet, "C", firstRow),
+				Categories: helpers.FormatDataRange(sheet, "A", "A", firstRow, lastRow),
+				Values:     helpers.FormatDataRange(sheet, "C", "C", firstRow, lastRow),
 				Marker: excelize.ChartMarker{
 					Symbol: "circle",
 					Size:   6,
 				},
 			},
 			{
-				Name:       fmt.Sprintf("%s!$D$%d", sheet, firstRow),
-				Categories: fmt.Sprintf("%s!$A$%d:$A$%d", sheet, firstRow+1, lastRow),
-				Values:     fmt.Sprintf("%s!$D$%d:$D$%d", sheet, firstRow+1, lastRow),
+				Name:       helpers.FormatCell(sheet, "D", firstRow),
+				Categories: helpers.FormatDataRange(sheet, "A", "A", firstRow, lastRow),
+				Values:     helpers.FormatDataRange(sheet, "D", "D", firstRow, lastRow),
 				Marker: excelize.ChartMarker{
 					Symbol: "circle",
 					Size:   6,

@@ -8,10 +8,13 @@ import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/exercises/presenter"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/adapters/telegram/handlers/programs"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/groups"
+	measurementsusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/measurements"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/session"
+	userusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/users"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/constants"
 	"strconv"
 	"strings"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
@@ -36,6 +39,7 @@ type Handler struct {
 
 	userStatesMachine *userstatemachine.UserStatesMachine
 
+	getUserUC            *userusecases.GetUseCase
 	showCurrentSessionUC *session.ShowCurrentExerciseSessionUseCase
 	changeNextSetUC      *setusecases.UpdateNextUseCase
 	manageProgramUC      *programusecases.FindAllByUserUseCase
@@ -46,10 +50,12 @@ type Handler struct {
 	getProgramUC         *programusecases.GetUseCase
 	dayTypesUpdateUC     *daytypeusecases.UpdateUseCase
 	dayTypeGetUC         *daytypeusecases.GetUseCase
+	createMeasurementUC  *measurementsusecases.CreateUseCase
 }
 
 func NewHandler(
 	bot *tgbotapi.BotAPI,
+	getUserUC *userusecases.GetUseCase,
 	showCurrentSessionUC *session.ShowCurrentExerciseSessionUseCase,
 	changeNextSetUC *setusecases.UpdateNextUseCase,
 	manageProgramUC *programusecases.FindAllByUserUseCase,
@@ -61,6 +67,7 @@ func NewHandler(
 	exerciseTypeListUC *exercisecases.ExerciseTypeListUseCase,
 	editProgramUC *programusecases.GetUseCase,
 	dayTypesHandler *daytypes.Handler,
+	createMeasurementUC *measurementsusecases.CreateUseCase,
 ) *Handler {
 	return &Handler{
 		presenter:            NewPresenter(bot),
@@ -68,6 +75,7 @@ func NewHandler(
 		exercisePresenter:    presenter.NewPresenter(bot),
 		programPresenter:     programs.NewPresenter(bot),
 		userStatesMachine:    userstatemachine.New(),
+		getUserUC:            getUserUC,
 		showCurrentSessionUC: showCurrentSessionUC,
 		changeNextSetUC:      changeNextSetUC,
 		manageProgramUC:      manageProgramUC,
@@ -78,12 +86,18 @@ func NewHandler(
 		dayTypeGetUC:         dayTypeGetUC,
 		exerciseTypeListUC:   exerciseTypeListUC,
 		getProgramUC:         editProgramUC,
+		createMeasurementUC:  createMeasurementUC,
 		dayTypesHandler:      dayTypesHandler,
 	}
 }
 
 func (h *Handler) RouteCallback(chatID int64, data string) {
 	switch {
+	case strings.HasPrefix(data, "change_add_new_measurement"):
+		h.userStatesMachine.SetValue(chatID, "awaiting_new_measurement")
+		h.commonPresenter.SendSimpleHtmlMessage(chatID, messages.EnterNewMeasurement+
+			fmt.Sprintf("\n\n<a href=\"https://disk.yandex.ru/i/qjF4sVQibIJV-g\">измерения.png</a>"))
+
 	case strings.HasPrefix(data, "change_reps_ex_"):
 		exerciseID, _ := strconv.ParseInt(strings.TrimPrefix(data, "change_reps_ex_"), 10, 64)
 		h.userStatesMachine.SetValue(chatID, fmt.Sprintf("awaiting_reps_%d", exerciseID))
@@ -146,6 +160,56 @@ func (h *Handler) RouteMessage(chatID int64, text string) {
 	}
 
 	switch {
+	case strings.HasPrefix(state, "awaiting_new_measurement"):
+		user, err := h.getUserUC.Execute(chatID)
+		if err != nil {
+			h.commonPresenter.SendSimpleHtmlMessage(chatID, messages.InternalErrorCannotFindUser)
+			return
+		}
+		parts := strings.Split(text, ",")
+		if len(parts) != 8 {
+			h.commonPresenter.SendSimpleHtmlMessage(chatID, messages.InternalFormatOfMeasurements)
+			return
+		}
+		result := make([]float64, 0, 8)
+		for _, part := range parts {
+			part = strings.TrimLeft(part, " ")
+			part = strings.TrimRight(part, " ")
+			temp, _ := strconv.ParseFloat(part, 64) // nolint
+			result = append(result, temp)
+		}
+		createdMeasurement, _ := h.createMeasurementUC.Execute(&models.Measurement{
+			UserID:    user.ID,
+			CreatedAt: time.Now(),
+			Shoulders: int(result[0] * 10),
+			Chest:     int(result[1] * 10),
+			Hands:     int(result[2] * 10),
+			Waist:     int(result[3] * 10),
+			Buttocks:  int(result[4] * 10),
+			Hips:      int(result[5] * 10),
+			Calves:    int(result[6] * 10),
+			Weight:    int(result[7] * 1000),
+		})
+		h.commonPresenter.SendSimpleHtmlMessage(chatID, fmt.Sprintf("<b>📅 Дата: %s</b>\n\n"+
+			"• <u>Плечи</u>: %s см\n\n"+
+			"• <u>Грудь</u>: %s см\n\n"+
+			"• <u>Руки</u>: %s см\n\n"+
+			"• <u>Талия</u>: %s см\n\n"+
+			"• <u>Ягодицы</u>: %s см\n\n"+
+			"• <u>Бедра</u>: %s см\n\n"+
+			"• <u>Икры</u>: %s см\n\n"+
+			"• <u>Вес</u>: %s кг",
+			createdMeasurement.CreatedAt,
+			createdMeasurement.Shoulders,
+			createdMeasurement.Chest,
+			createdMeasurement.Hands,
+			createdMeasurement.Waist,
+			createdMeasurement.Buttocks,
+			createdMeasurement.Hips,
+			createdMeasurement.Calves,
+			createdMeasurement.Weight,
+		))
+
 	case strings.HasPrefix(state, "awaiting_reps_"):
 		exerciseID, _ := strconv.ParseInt(strings.TrimPrefix(state, "awaiting_reps_"), 10, 64)
 		newReps, err := strconv.ParseInt(text, 10, 64)

@@ -79,12 +79,10 @@ func (r *Router) settings(chatID int64) {
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData(messages.ProgramManagement, "program_management"),
+		tgbotapi.NewInlineKeyboardButtonData(messages.MeasurementsOfBody, "measurements_menu"),
 	))
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData(messages.Exercises, "exercise_show_all_groups"),
-	))
-	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData(messages.Export, "export_to_excel"),
 	))
 	msg := tgbotapi.NewMessage(chatID, "<b>Выберите действие:</b>")
 	msg.ParseMode = constants.HtmlParseMode

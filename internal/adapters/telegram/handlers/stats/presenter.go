@@ -53,6 +53,9 @@ func (p *Presenter) ShowStatsMenu(chatID int64) {
 			tgbotapi.NewInlineKeyboardButtonData(messages.StatsMonth, "stats_month"),
 			tgbotapi.NewInlineKeyboardButtonData(messages.StatsOverall, "stats_all"),
 		),
+		tgbotapi.NewInlineKeyboardRow(
+			tgbotapi.NewInlineKeyboardButtonData(messages.Export, "export_workouts_to_excel"),
+		),
 	)
 
 	msg := tgbotapi.NewMessage(chatID, text)

@@ -7,29 +7,46 @@ import (
 )
 
 type Handler struct {
-	presenter       *Presenter
-	exportToExcelUC *exportusecases.ExportToExcelUseCase
+	presenter                   *Presenter
+	exportWorkoutsToExcelUC     *exportusecases.ExportWorkoutsToExcelUseCase
+	exportMeasurementsToExcelUC *exportusecases.ExportMeasurementsToExcelUseCase
 }
 
-func NewHandler(bot *tgbotapi.BotAPI, exportToExcelUC *exportusecases.ExportToExcelUseCase) *Handler {
+func NewHandler(
+	bot *tgbotapi.BotAPI,
+	exportWorkoutsToExcelUC *exportusecases.ExportWorkoutsToExcelUseCase,
+	exportMeasurementsToExcelUC *exportusecases.ExportMeasurementsToExcelUseCase,
+) *Handler {
 	return &Handler{
-		presenter:       NewPresenter(bot),
-		exportToExcelUC: exportToExcelUC,
+		presenter:                   NewPresenter(bot),
+		exportWorkoutsToExcelUC:     exportWorkoutsToExcelUC,
+		exportMeasurementsToExcelUC: exportMeasurementsToExcelUC,
 	}
 }
 
 func (h *Handler) RouteCallback(chatID int64, data string) {
 	switch {
-	case strings.HasPrefix(data, "export_to_excel"):
-		h.exportToExcel(chatID)
+	case strings.HasPrefix(data, "export_workouts_to_excel"):
+		h.exportWorkoutsToExcel(chatID)
+	case strings.HasPrefix(data, "export_measurements_to_excel"):
+		h.exportMeasurementsToExcel(chatID)
 	}
 }
 
-func (h *Handler) exportToExcel(chatID int64) {
-	buffer, err := h.exportToExcelUC.Execute(chatID)
+func (h *Handler) exportWorkoutsToExcel(chatID int64) {
+	buffer, err := h.exportWorkoutsToExcelUC.Execute(chatID)
 	if err != nil {
-		h.presenter.CannotDoAction(chatID, h.exportToExcelUC.Name())
+		h.presenter.CannotDoAction(chatID, h.exportWorkoutsToExcelUC.Name())
 		return
 	}
-	h.presenter.WriteDoc(chatID, buffer)
+	h.presenter.WriteDoc(chatID, buffer, "workouts.xlsx")
+}
+
+func (h *Handler) exportMeasurementsToExcel(chatID int64) {
+	buffer, err := h.exportMeasurementsToExcelUC.Execute(chatID)
+	if err != nil {
+		h.presenter.CannotDoAction(chatID, h.exportMeasurementsToExcelUC.Name())
+		return
+	}
+	h.presenter.WriteDoc(chatID, buffer, "measurements.xlsx")
 }

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/measurements"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/service/timer"
 	"gorm.io/gorm"
 
@@ -8,6 +9,7 @@ import (
 	exerciseusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/exercises"
 	exportusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/exports"
 	groupusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/groups"
+	measurementsusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/measurements"
 	programusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/programs"
 	sessionusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/session"
 	setusecases "github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase/sets"
@@ -56,7 +58,8 @@ type Container struct {
 	StartTimerUC *timerusecases.StartUseCase
 
 	// exports
-	ExportToExcelUC *exportusecases.ExportToExcelUseCase
+	ExportWorkoutsToExcelUC     *exportusecases.ExportWorkoutsToExcelUseCase
+	ExportMeasurementsToExcelUC *exportusecases.ExportMeasurementsToExcelUseCase
 
 	// stats
 	PeriodStatsUC *statsusecases.GetPeriodStatsUseCase
@@ -93,6 +96,10 @@ type Container struct {
 	GetUserUC       *userusecases.GetUseCase
 	FindUserUC      *userusecases.FindUseCase
 	DeleteDayTypeUC *daytypeusecases.DeleteUseCase
+
+	// measurements
+	CreateMeasurementUC   *measurementsusecases.CreateUseCase
+	FindAllMeasurementsUC *measurementsusecases.FindAllByUserUseCase
 }
 
 func NewContainer(db *gorm.DB) *Container {
@@ -105,6 +112,7 @@ func NewContainer(db *gorm.DB) *Container {
 	sessionsRepo := sessions.NewRepo(db)
 	exerciseTypesRepo := exercisetypes.NewRepo(db)
 	exerciseGroupTypesRepo := exercisegrouptypes.NewRepo(db)
+	measurementsRepo := measurements.NewRepo(db)
 
 	timerStore := timer.NewStore()
 	summaryService := summary.NewService()
@@ -137,8 +145,9 @@ func NewContainer(db *gorm.DB) *Container {
 		StartTimerUC: timerusecases.NewStartUseCase(timerStore, exercisesRepo),
 
 		// exports
-		ExportToExcelUC: exportusecases.NewExportToExcelUseCase(usersRepo, exerciseGroupTypesRepo, workoutsRepo,
+		ExportWorkoutsToExcelUC: exportusecases.NewExportWorkoutsToExcelUseCase(usersRepo, exerciseGroupTypesRepo, workoutsRepo,
 			exercisesRepo, summaryService, docGeneratorService),
+		ExportMeasurementsToExcelUC: exportusecases.NewExportMeasurementsToExcelUseCase(usersRepo, measurementsRepo, docGeneratorService),
 
 		// stats
 		PeriodStatsUC: statsusecases.NewGetPeriodStatsUseCase(usersRepo, workoutsRepo),
@@ -176,5 +185,9 @@ func NewContainer(db *gorm.DB) *Container {
 		CreateUserUC: userusecases.NewCreateUseCase(usersRepo, programsRepo),
 		FindUserUC:   userusecases.NewFindUseCase(usersRepo, programsRepo),
 		GetUserUC:    userusecases.NewGetUseCase(usersRepo),
+
+		// measurements
+		CreateMeasurementUC:   measurementsusecases.NewCreateUseCase(measurementsRepo),
+		FindAllMeasurementsUC: measurementsusecases.NewFindAllByUserUseCase(measurementsRepo, usersRepo),
 	}
 }
