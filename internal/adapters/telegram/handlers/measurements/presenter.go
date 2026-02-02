@@ -40,11 +40,14 @@ func (p Presenter) showMenu(chatID int64) {
 func (p Presenter) showAllLimitOffset(chatID int64, measurementObjs []dto.Measurement) {
 	shoulders := make([]string, 0, len(measurementObjs))
 	chests := make([]string, 0, len(measurementObjs))
-	hands := make([]string, 0, len(measurementObjs))
+	handLeft := make([]string, 0, len(measurementObjs))
+	handRight := make([]string, 0, len(measurementObjs))
 	waists := make([]string, 0, len(measurementObjs))
 	buttocks := make([]string, 0, len(measurementObjs))
-	hips := make([]string, 0, len(measurementObjs))
-	calves := make([]string, 0, len(measurementObjs))
+	hipLeft := make([]string, 0, len(measurementObjs))
+	hipRight := make([]string, 0, len(measurementObjs))
+	calfLeft := make([]string, 0, len(measurementObjs))
+	calfRight := make([]string, 0, len(measurementObjs))
 	weights := make([]string, 0, len(measurementObjs))
 
 	var from, to string
@@ -56,11 +59,14 @@ func (p Presenter) showAllLimitOffset(chatID int64, measurementObjs []dto.Measur
 		m := measurementObjs[i]
 		shoulders = append(shoulders, m.Shoulders)
 		chests = append(chests, m.Chest)
-		hands = append(hands, m.Hands)
+		handLeft = append(handLeft, m.HandLeft)
+		handRight = append(handRight, m.HandRight)
 		waists = append(waists, m.Waist)
 		buttocks = append(buttocks, m.Buttocks)
-		hips = append(hips, m.Hips)
-		calves = append(calves, m.Calves)
+		hipLeft = append(hipLeft, m.HipLeft)
+		hipRight = append(hipRight, m.HipRight)
+		calfLeft = append(calfLeft, m.CalfLeft)
+		calfRight = append(calfRight, m.CalfRight)
 		weights = append(weights, m.Weight)
 	}
 	msg := tgbotapi.NewMessage(chatID, fmt.Sprintf(
@@ -68,21 +74,27 @@ func (p Presenter) showAllLimitOffset(chatID int64, measurementObjs []dto.Measur
 			"📆 %s – %s</b>\n\n"+
 			"• <u>Плечи (см)</u>: %s\n\n"+
 			"• <u>Грудь (см)</u>: %s\n\n"+
-			"• <u>Руки (см)</u>: %s\n\n"+
+			"• <u>Рука левая (см)</u>: %s\n\n"+
+			"• <u>Рука правая (см)</u>: %s\n\n"+
 			"• <u>Талия (см)</u>: %s\n\n"+
 			"• <u>Ягодицы (см)</u>: %s\n\n"+
-			"• <u>Бедра (см)</u>: %s\n\n"+
-			"• <u>Икры (см)</u>: %s\n\n"+
+			"• <u>Бедро левое (см)</u>: %s\n\n"+
+			"• <u>Бедро правое (см)</u>: %s\n\n"+
+			"• <u>Икра левая (см)</u>: %s\n\n"+
+			"• <u>Икра правая (см)</u>: %s\n\n"+
 			"• <u>Вес (кг)</u>: %s",
 		messages.Measurements,
 		from, to,
 		strings.Join(shoulders, delimiter),
 		strings.Join(chests, delimiter),
-		strings.Join(hands, delimiter),
+		strings.Join(handLeft, delimiter),
+		strings.Join(handRight, delimiter),
 		strings.Join(waists, delimiter),
 		strings.Join(buttocks, delimiter),
-		strings.Join(hips, delimiter),
-		strings.Join(calves, delimiter),
+		strings.Join(hipLeft, delimiter),
+		strings.Join(hipRight, delimiter),
+		strings.Join(calfLeft, delimiter),
+		strings.Join(calfRight, delimiter),
 		strings.Join(weights, delimiter),
 	))
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)

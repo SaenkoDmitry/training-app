@@ -9,11 +9,14 @@ type Measurement struct {
 
 	Shoulders int
 	Chest     int
-	Hands     int
+	HandLeft  int
+	HandRight int
 	Waist     int
 	Buttocks  int
-	Hips      int
-	Calves    int
+	HipLeft   int
+	HipRight  int
+	CalfLeft  int
+	CalfRight int
 	Weight    int
 }
 

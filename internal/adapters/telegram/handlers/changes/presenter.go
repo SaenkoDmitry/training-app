@@ -20,20 +20,26 @@ func (p Presenter) showCreated(chatID int64, createdMeasurement *dto.Measurement
 	msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("<b>📅 Дата: %s</b>\n\n"+
 		"• <u>Плечи</u>: %s см\n\n"+
 		"• <u>Грудь</u>: %s см\n\n"+
-		"• <u>Руки</u>: %s см\n\n"+
+		"• <u>Рука левая</u>: %s см\n\n"+
+		"• <u>Рука правая</u>: %s см\n\n"+
 		"• <u>Талия</u>: %s см\n\n"+
 		"• <u>Ягодицы</u>: %s см\n\n"+
-		"• <u>Бедра</u>: %s см\n\n"+
-		"• <u>Икры</u>: %s см\n\n"+
+		"• <u>Бедро левое</u>: %s см\n\n"+
+		"• <u>Бедро правое</u>: %s см\n\n"+
+		"• <u>Икра левая</u>: %s см\n\n"+
+		"• <u>Икра правая</u>: %s см\n\n"+
 		"• <u>Вес</u>: %s кг",
 		createdMeasurement.CreatedAt,
 		createdMeasurement.Shoulders,
 		createdMeasurement.Chest,
-		createdMeasurement.Hands,
+		createdMeasurement.HandLeft,
+		createdMeasurement.HandRight,
 		createdMeasurement.Waist,
 		createdMeasurement.Buttocks,
-		createdMeasurement.Hips,
-		createdMeasurement.Calves,
+		createdMeasurement.HipLeft,
+		createdMeasurement.HipRight,
+		createdMeasurement.CalfLeft,
+		createdMeasurement.CalfRight,
 		createdMeasurement.Weight,
 	))
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)

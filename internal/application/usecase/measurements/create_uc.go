@@ -31,11 +31,14 @@ func (uc *CreateUseCase) Execute(measurement *models.Measurement) (*dto.Measurem
 		CreatedAt: utils.FormatDate(measurement.CreatedAt),
 		Shoulders: utils.FormatCentimeters(measurement.Shoulders),
 		Chest:     utils.FormatCentimeters(measurement.Chest),
-		Hands:     utils.FormatCentimeters(measurement.Hands),
+		HandLeft:  utils.FormatCentimeters(measurement.HandLeft),
+		HandRight: utils.FormatCentimeters(measurement.HandRight),
 		Waist:     utils.FormatCentimeters(measurement.Waist),
 		Buttocks:  utils.FormatCentimeters(measurement.Buttocks),
-		Hips:      utils.FormatCentimeters(measurement.Hips),
-		Calves:    utils.FormatCentimeters(measurement.Calves),
+		HipLeft:   utils.FormatCentimeters(measurement.HipLeft),
+		HipRight:  utils.FormatCentimeters(measurement.HipRight),
+		CalfLeft:  utils.FormatCentimeters(measurement.CalfLeft),
+		CalfRight: utils.FormatCentimeters(measurement.CalfRight),
 		Weight:    utils.FormatKilograms(measurement.Weight),
 	}, nil
 }

@@ -43,11 +43,14 @@ func (uc *FindAllByUserUseCase) Execute(chatID int64, limit, offset int) ([]dto.
 			CreatedAt: utils.FormatDate(m.CreatedAt),
 			Shoulders: utils.FormatCentimeters(m.Shoulders),
 			Chest:     utils.FormatCentimeters(m.Chest),
-			Hands:     utils.FormatCentimeters(m.Hands),
+			HandLeft:  utils.FormatCentimeters(m.HandLeft),
+			HandRight: utils.FormatCentimeters(m.HandRight),
 			Waist:     utils.FormatCentimeters(m.Waist),
 			Buttocks:  utils.FormatCentimeters(m.Buttocks),
-			Hips:      utils.FormatCentimeters(m.Hips),
-			Calves:    utils.FormatCentimeters(m.Calves),
+			HipLeft:   utils.FormatCentimeters(m.HipLeft),
+			HipRight:  utils.FormatCentimeters(m.HipRight),
+			CalfLeft:  utils.FormatCentimeters(m.CalfLeft),
+			CalfRight: utils.FormatCentimeters(m.CalfRight),
 			Weight:    utils.FormatKilograms(m.Weight),
 		})
 	}

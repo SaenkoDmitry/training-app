@@ -95,7 +95,7 @@ func (h *Handler) RouteCallback(chatID int64, data string) {
 	switch {
 	case strings.HasPrefix(data, "change_add_new_measurement"):
 		h.userStatesMachine.SetValue(chatID, "awaiting_new_measurement")
-		exampleMsg := "<b>Например,</b>\n<i>Плечи: 115.1\nГрудь: 101\nРуки: 34.5\nТалия: 88\nЯгодицы: 96\nБедра: 52\nИкры: 36.5\nВес: 76.51</i>\n\n"
+		exampleMsg := "<b>Например,</b>\n<i>Плечи: 115.1\nГрудь: 101\nРука левая: 34.5\nРука правая: 34.5\nТалия: 88\nЯгодицы: 96\nБедро левое: 52\nБедро правое: 52\nИкра левая: 36.5\nИкра правая: 36.5\nВес: 76.51</i>\n\n"
 		measurementsURL := fmt.Sprintf("<a href=\"https://disk.yandex.ru/i/qjF4sVQibIJV-g\">image</a>")
 		h.commonPresenter.SendSimpleHtmlMessage(chatID,
 			fmt.Sprintf("%s\n\n %s",
@@ -161,24 +161,30 @@ func (h *Handler) RouteCallback(chatID int64, data string) {
 }
 
 const (
-	shoulderPrefix = "Плечи:"
-	chestPrefix    = "Грудь:"
-	handsPrefix    = "Руки:"
-	waistPrefix    = "Талия:"
-	buttocksPrefix = "Ягодицы:"
-	hipsPrefix     = "Бедра:"
-	calvesPrefix   = "Икры:"
-	weightPrefix   = "Вес:"
+	shoulderPrefix  = "Плечи:"
+	chestPrefix     = "Грудь:"
+	handLeftPrefix  = "Рука левая:"
+	handRightPrefix = "Рука правая:"
+	waistPrefix     = "Талия:"
+	buttocksPrefix  = "Ягодицы:"
+	hipLeftPrefix   = "Бедро левое:"
+	hipRightPrefix  = "Бедро правое:"
+	calfLeftPrefix  = "Икра левая:"
+	calfRightPrefix = "Икра правая:"
+	weightPrefix    = "Вес:"
 )
 
 var measurementPrefixes = []string{
 	shoulderPrefix,
 	chestPrefix,
-	handsPrefix,
+	handLeftPrefix,
+	handRightPrefix,
 	waistPrefix,
 	buttocksPrefix,
-	hipsPrefix,
-	calvesPrefix,
+	hipLeftPrefix,
+	hipRightPrefix,
+	calfLeftPrefix,
+	calfRightPrefix,
 	weightPrefix,
 }
 
@@ -220,16 +226,22 @@ func (h *Handler) RouteMessage(chatID int64, text string) {
 					newMeasurement.Shoulders = int(temp * 10)
 				case chestPrefix:
 					newMeasurement.Chest = int(temp * 10)
-				case handsPrefix:
-					newMeasurement.Hands = int(temp * 10)
+				case handLeftPrefix:
+					newMeasurement.HandLeft = int(temp * 10)
+				case handRightPrefix:
+					newMeasurement.HandRight = int(temp * 10)
 				case waistPrefix:
 					newMeasurement.Waist = int(temp * 10)
 				case buttocksPrefix:
 					newMeasurement.Buttocks = int(temp * 10)
-				case hipsPrefix:
-					newMeasurement.Hips = int(temp * 10)
-				case calvesPrefix:
-					newMeasurement.Calves = int(temp * 10)
+				case hipLeftPrefix:
+					newMeasurement.HipLeft = int(temp * 10)
+				case hipRightPrefix:
+					newMeasurement.HipRight = int(temp * 10)
+				case calfLeftPrefix:
+					newMeasurement.CalfLeft = int(temp * 10)
+				case calfRightPrefix:
+					newMeasurement.CalfRight = int(temp * 10)
 				case weightPrefix:
 					newMeasurement.Weight = int(temp * 1000)
 				}

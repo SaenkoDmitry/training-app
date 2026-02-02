@@ -5,10 +5,13 @@ type Measurement struct {
 
 	Shoulders string
 	Chest     string
-	Hands     string
+	HandLeft  string
+	HandRight string
 	Waist     string
 	Buttocks  string
-	Hips      string
-	Calves    string
+	HipLeft   string
+	HipRight  string
+	CalfLeft  string
+	CalfRight string
 	Weight    string
 }

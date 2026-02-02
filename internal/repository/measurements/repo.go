@@ -1,15 +1,12 @@
 package measurements
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 
 	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
 )
 
 type Repo interface {
-	Create(userID int64, shoulders, chest, hands, waist, buttocks, hips, calves, weight int) (*models.Measurement, error)
 	Save(measurement *models.Measurement) error
 	Get(measurementID int64) (models.Measurement, error)
 	Delete(measurement *models.Measurement) error
@@ -25,25 +22,6 @@ func NewRepo(db *gorm.DB) Repo {
 	return &repoImpl{
 		db: db,
 	}
-}
-
-func (u *repoImpl) Create(userID int64, shoulders, chest, hands, waist, buttocks, hips, calves, weight int) (*models.Measurement, error) {
-	newMeasurement := &models.Measurement{
-		UserID:    userID,
-		Shoulders: shoulders,
-		Chest:     chest,
-		Hands:     hands,
-		Waist:     waist,
-		Buttocks:  buttocks,
-		Hips:      hips,
-		Calves:    calves,
-		Weight:    weight,
-		CreatedAt: time.Now(),
-	}
-	err := u.db.Transaction(func(tx *gorm.DB) error {
-		return tx.Create(&newMeasurement).Error
-	})
-	return newMeasurement, err
 }
 
 func (u *repoImpl) Delete(measurement *models.Measurement) error {
