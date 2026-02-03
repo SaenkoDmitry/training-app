@@ -74,7 +74,7 @@ func (p Presenter) showLimitOffset(chatID int64, limit, offset int, result *dto.
 		weights = append(weights, m.Weight)
 	}
 	msg := tgbotapi.NewMessage(chatID, fmt.Sprintf(
-		"<b>%s за период (всего %d) \n"+
+		"<b>%s (%d-%d из %d) \n\n"+
 			"📆 %s – %s</b>\n\n"+
 			"• <u>Плечи (см)</u>: %s\n\n"+
 			"• <u>Грудь (см)</u>: %s\n\n"+
@@ -87,7 +87,7 @@ func (p Presenter) showLimitOffset(chatID int64, limit, offset int, result *dto.
 			"• <u>Икра левая (см)</u>: %s\n\n"+
 			"• <u>Икра правая (см)</u>: %s\n\n"+
 			"• <u>Вес (кг)</u>: %s",
-		messages.Measurements, count, from, to,
+		messages.Measurements, offset, min(offset+limit, count), count, from, to,
 		strings.Join(shoulders, delimiter),
 		strings.Join(chests, delimiter),
 		strings.Join(handLeft, delimiter),
