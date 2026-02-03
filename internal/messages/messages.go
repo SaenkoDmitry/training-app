@@ -150,3 +150,7 @@ const (
 const (
 	FirstCreateUser = "Сначала создайте пользователя в боте, через команду /start"
 )
+
+const (
+	MeasurementImage = "<a href=\"https://disk.yandex.ru/i/6lUhXPu8_FnKnw\">image</a>"
+)

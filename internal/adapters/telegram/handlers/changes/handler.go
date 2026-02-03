@@ -96,7 +96,7 @@ func (h *Handler) RouteCallback(chatID int64, data string) {
 	case strings.HasPrefix(data, "change_add_new_measurement"):
 		h.userStatesMachine.SetValue(chatID, "awaiting_new_measurement")
 		exampleMsg := "<b>Например,</b>\n<i>Плечи: 115.1\nГрудь: 101\nРука левая: 34.5\nРука правая: 34.5\nТалия: 88\nЯгодицы: 96\nБедро левое: 52\nБедро правое: 52\nИкра левая: 36.5\nИкра правая: 36.5\nВес: 76.51</i>\n\n"
-		measurementsURL := fmt.Sprintf("<a href=\"https://disk.yandex.ru/i/qjF4sVQibIJV-g\">image</a>")
+		measurementsURL := fmt.Sprintf(messages.MeasurementImage)
 		h.commonPresenter.SendSimpleHtmlMessage(chatID,
 			fmt.Sprintf("%s\n\n %s",
 				messages.EnterNewMeasurement,
