@@ -87,7 +87,7 @@ func (p Presenter) showLimitOffset(chatID int64, limit, offset int, result *dto.
 			"• <u>Икра левая (см)</u>: %s\n\n"+
 			"• <u>Икра правая (см)</u>: %s\n\n"+
 			"• <u>Вес (кг)</u>: %s",
-		messages.Measurements, offset, min(offset+limit, count), count, from, to,
+		messages.Measurements, count-len(measurementObjs)-offset+1, count-offset, count, from, to,
 		strings.Join(shoulders, delimiter),
 		strings.Join(chests, delimiter),
 		strings.Join(handLeft, delimiter),
