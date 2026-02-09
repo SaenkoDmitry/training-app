@@ -26,6 +26,12 @@ jobs:
         run: npm ci && npm run build
         working-directory: ui
 
+      - name: Copy frontend dist for Go embed
+        run: |
+          rm -rf ../internal/web/dist
+          cp -r dist ../internal/web/dist
+        working-directory: ui
+
       # -----------------
       # BACKEND
       # -----------------
