@@ -22,7 +22,6 @@ func MeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-
 	//if claims["photo_url"] != "" {
 	//resImg, err := http.Get(fmt.Sprintf("https://api.telegram.org/bot%s/getUserProfilePhotos?user_id=%s&limit=1", botToken, claims["id"]))
 	//}
