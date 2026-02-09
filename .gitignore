@@ -44,4 +44,4 @@ Thumbs.db
 old_version/
 
 ui/node_modules
-ui/dist
+internal/web/dist

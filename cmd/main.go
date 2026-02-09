@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -21,6 +20,7 @@ import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/api"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/usecase"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/middlewares"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/web"
 )
 
 func main() {
@@ -148,25 +148,8 @@ func initServer(container *usecase.Container) {
 	})
 
 	// UI (React build)
-	r.Handle("/*", serveSPA("./dist"))
+	r.Handle("/*", web.SPAHandler())
 
 	log.Println("Server started on :8080")
 	http.ListenAndServe(":8080", r)
-}
-
-func serveSPA(staticDir string) http.HandlerFunc {
-	fs := http.FileServer(http.Dir(staticDir))
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		path := filepath.Join(staticDir, r.URL.Path)
-
-		// если файл существует — отдать его (js/css/png/...)
-		if _, err := os.Stat(path); err == nil {
-			fs.ServeHTTP(w, r)
-			return
-		}
-
-		// иначе всегда index.html (SPA fallback)
-		http.ServeFile(w, r, filepath.Join(staticDir, "index.html"))
-	}
 }
