@@ -1,5 +1,6 @@
 import {useParams} from 'react-router-dom';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import SafeTextRenderer from "../components/SafeTextRenderer.tsx";
 
 const WorkoutPage = () => {
     const {id} = useParams<{ id: string }>();
@@ -28,15 +29,16 @@ const WorkoutPage = () => {
     if (error) return <p style={{color: 'red'}}>{error}</p>;
     if (!data) return <p>Данные тренировки не найдены</p>;
 
-    const {Progress, Stats} = data;
-    const {Workout, ProgressPercent, RemainingMin, SessionStarted, CompletedExercises, TotalExercises} = Progress;
+    const {progress, Stats} = data;
+    const {workout, ProgressPercent, RemainingMin, SessionStarted, CompletedExercises, TotalExercises} = progress;
 
     return (
         <div style={{maxWidth: '700px', margin: '0 auto', padding: '1rem'}}>
-            <h2>{Workout.WorkoutDayType?.Name || `Тренировка ${Workout.ID}`}</h2>
+            <h2>{workout.day_type_name || `Тренировка ${workout.id}`}</h2>
             <p>
-                Статус: {Workout.Completed ? 'Завершена' : SessionStarted ? 'В процессе' : 'Не начата'}
+                Статус: {workout.status}
             </p>
+            <p>{workout.started_at}</p>
             {RemainingMin !== undefined && RemainingMin > 0 && <p>Оставшееся время: {RemainingMin} мин</p>}
 
             {/* Прогресс тренировки */}
@@ -57,9 +59,9 @@ const WorkoutPage = () => {
             {/* Упражнения */}
             <h3>Упражнения ({CompletedExercises}/{TotalExercises})</h3>
             <ul style={{listStyle: "none", padding: 0}}>
-                {Workout.Exercises.map((ex: any) => (
+                {workout.exercises?.map((ex: FormattedExercise) => (
                     <li
-                        key={ex.ID}
+                        key={ex.id}
                         style={{
                             border: "1px solid #ddd",
                             borderRadius: "8px",
@@ -67,19 +69,18 @@ const WorkoutPage = () => {
                             marginBottom: "0.5rem",
                         }}
                     >
-                        <strong>{ex.ExerciseType.Name}</strong>
+                        <strong>{ex.name}</strong>
                         <ul style={{paddingLeft: "1rem"}}>
-                            {ex.Sets.map((set: any) => (
-                                <li key={set.ID} style={{marginBottom: "0.5rem"}}>
-                                    Подход {set.Index + 1}: {set.Reps} повторений{" "}
-                                    {set.Weight > 0 ? `с весом ${set.Weight} кг` : ""} —{" "}
-                                    {set.Completed ? "✅" : "❌"}
-                                </li>
-                            ))}
+                            {ex.sets?.map((set: any) => {
+                                    return <li key={set.ID} style={{marginBottom: "0.5rem"}}>
+                                        <SafeTextRenderer html={set.formatted_string}/>
+                                    </li>
+                                }
+                            )}
                             <div
                                 style={{background: "#eee", height: "8px", borderRadius: "4px", overflow: "hidden", marginTop: "2px"}}>
                                 <div style={{
-                                    width: `${ex.Sets.filter((set: any) => set.Completed).length / ex.Sets.length * 100}%`,
+                                    width: `${ex.sets?.filter((set: FormattedSet) => set.completed).length / ex.sets?.length * 100}%`,
                                     height: "100%",
                                     background: "#4caf50",
                                     transition: "width 0.3s",

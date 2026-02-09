@@ -18,7 +18,7 @@ export default function WorkoutCard({ w, idx }: WorkoutCardProps) {
             <h2 style={{ margin: 0 }}>{w.name}</h2>
 
             <p style={{ margin: '6px 0', opacity: 0.7 }}>
-                📅 {w.started_at}
+                {w.started_at}
             </p>
 
             <p

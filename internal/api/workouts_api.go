@@ -66,6 +66,6 @@ func (s *serviceImpl) ReadWorkout(w http.ResponseWriter, r *http.Request) {
 }
 
 type ReadWorkoutDTO struct {
-	Progress *dto.WorkoutProgress
+	Progress *dto.WorkoutProgress `json:"progress"`
 	Stats    *dto.WorkoutStatistic
 }

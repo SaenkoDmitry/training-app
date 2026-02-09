@@ -6,8 +6,6 @@ import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/constants"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/messages"
-	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
-	"github.com/SaenkoDmitry/training-tg-bot/internal/utils"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
@@ -39,7 +37,7 @@ func (p *Presenter) ShowSelectDayTypeDialog(chatID int64, dayTypeID int64, res *
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ShowConfirmDelete(chatID int64, res *models.WorkoutDayType) {
+func (p *Presenter) ShowConfirmDelete(chatID int64, res *dto.WorkoutDayTypeDTO) {
 	text := fmt.Sprintf("🗑️ <b>Удаление тренировочного дня из программы</b>\n\n"+
 		"Вы уверены, что хотите удалить день:\n"+
 		"<b>%s</b>?\n\n"+
@@ -59,20 +57,18 @@ func (p *Presenter) ShowConfirmDelete(chatID int64, res *models.WorkoutDayType) 
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ViewDayType(chatID int64, res *models.WorkoutDayType, programsResult *dto.GetProgram) {
+func (p *Presenter) ViewDayType(chatID int64, dayResult *dto.WorkoutDayTypeDTO, programsResult *dto.GetProgramDTO) {
 	program := programsResult.Program
-	exerciseTypesMap := programsResult.ExerciseTypesMap
-	daytypeID := res.ID
 
 	text := &bytes.Buffer{}
-	text.WriteString(fmt.Sprintf("<b>День:</b> %s\n\n", res.Name))
-	text.WriteString(fmt.Sprintf("%s \n\n", formatPreset(res.Preset, exerciseTypesMap)))
+	text.WriteString(fmt.Sprintf("<b>День:</b> %s\n\n", dayResult.Name))
+	text.WriteString(fmt.Sprintf("%s \n\n", dayResult.Preset))
 
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
 
-		tgbotapi.NewInlineKeyboardButtonData("✏️️ Добавить упражнение", fmt.Sprintf("day_type_edit_%d", daytypeID)),
-		tgbotapi.NewInlineKeyboardButtonData("🗑 Удалить", fmt.Sprintf("day_type_confirm_delete_%d", daytypeID)),
+		tgbotapi.NewInlineKeyboardButtonData("✏️️ Добавить упражнение", fmt.Sprintf("day_type_edit_%d", dayResult.ID)),
+		tgbotapi.NewInlineKeyboardButtonData("🗑 Удалить", fmt.Sprintf("day_type_confirm_delete_%d", dayResult.ID)),
 	))
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData(messages.BackTo, fmt.Sprintf("program_view_all_days_%d", program.ID)),
@@ -83,29 +79,4 @@ func (p *Presenter) ViewDayType(chatID int64, res *models.WorkoutDayType, progra
 	msg.ParseMode = constants.HtmlParseMode
 	msg.ReplyMarkup = keyboard
 	p.bot.Send(msg)
-}
-
-func formatPreset(preset string, exerciseTypesMap map[int64]models.ExerciseType) string {
-	exercises := utils.SplitPreset(preset)
-	buffer := &bytes.Buffer{}
-	for i, ex := range exercises {
-		exerciseType, ok := exerciseTypesMap[ex.ID]
-		if !ok {
-			continue
-		}
-		buffer.WriteString(fmt.Sprintf("• <b>%d.</b> <u>%s</u>\n", i+1, exerciseType.Name))
-		buffer.WriteString(fmt.Sprintf("    • "))
-		for i, set := range ex.Sets {
-			if i > 0 {
-				buffer.WriteString(", ")
-			}
-			if set.Minutes > 0 {
-				buffer.WriteString(fmt.Sprintf("%d мин", set.Minutes))
-			} else {
-				buffer.WriteString(fmt.Sprintf("%d * %.0f кг", set.Reps, set.Weight))
-			}
-		}
-		buffer.WriteString("\n\n")
-	}
-	return buffer.String()
 }

@@ -12,6 +12,16 @@ type Service interface {
 	CreateMeasurement(w http.ResponseWriter, r *http.Request)
 	GetExerciseGroups(w http.ResponseWriter, _ *http.Request)
 	GetExerciseTypesByGroup(w http.ResponseWriter, r *http.Request)
+	GetUserPrograms(w http.ResponseWriter, r *http.Request)
+	CreateProgram(w http.ResponseWriter, r *http.Request)
+	ChooseProgram(w http.ResponseWriter, r *http.Request)
+	DeleteProgram(w http.ResponseWriter, r *http.Request)
+	RenameProgram(w http.ResponseWriter, r *http.Request)
+	GetProgram(w http.ResponseWriter, r *http.Request)
+	CreateProgramDay(w http.ResponseWriter, r *http.Request)
+	DeleteProgramDay(w http.ResponseWriter, r *http.Request)
+	UpdateProgramDay(w http.ResponseWriter, r *http.Request)
+	GetProgramDay(w http.ResponseWriter, r *http.Request)
 }
 
 type serviceImpl struct {

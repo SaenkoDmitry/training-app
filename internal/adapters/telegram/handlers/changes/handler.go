@@ -391,23 +391,12 @@ func (h *Handler) RouteMessage(chatID int64, text string) {
 			return
 		}
 
-		dayType, err := h.dayTypeGetUC.Execute(dayTypeID)
-		if err != nil {
-			h.commonPresenter.HandleInternalError(err, chatID, h.dayTypeGetUC.Name())
-			return
-		}
-		if dayType.Preset != "" {
-			dayType.Preset += ";"
-		}
-
-		dayType.Preset += fmt.Sprintf("%d:[%s]", exerciseTypeID, preset)
-
-		if updateErr := h.dayTypesUpdateUC.Execute(dayType); updateErr != nil {
+		if updateErr := h.dayTypesUpdateUC.Execute(dayTypeID, exerciseTypeID, preset); updateErr != nil {
 			h.commonPresenter.HandleInternalError(err, chatID, h.dayTypesUpdateUC.Name())
 			return
 		}
 		h.userStatesMachine.Clear(chatID)
-		h.dayTypesHandler.ViewDayType(chatID, dayType.ID)
+		h.dayTypesHandler.ViewDayType(chatID, dayTypeID)
 	}
 }
 

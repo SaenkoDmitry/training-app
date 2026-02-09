@@ -23,3 +23,13 @@ func GetOffsetLimit(r *http.Request, defaultLimit, maxLimit int) (int, int) {
 	}
 	return offset, limit
 }
+
+func ParseInt64Param(name string, w http.ResponseWriter, r *http.Request) (int64, error) {
+	entityIDStr := r.PathValue(name)
+	entityID, err := strconv.ParseInt(entityIDStr, 10, 64)
+	if err != nil {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return 0, err
+	}
+	return entityID, nil
+}

@@ -93,7 +93,7 @@ func (h *Handler) programManagement(chatID int64) {
 }
 
 func (h *Handler) createProgram(chatID int64) {
-	if err := h.createProgramUC.Execute(chatID); err != nil {
+	if err := h.createProgramUC.Execute(chatID, ""); err != nil {
 		h.commonPresenter.HandleInternalError(err, chatID, h.createProgramUC.Name())
 		return
 	}

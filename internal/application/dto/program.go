@@ -1,6 +1,8 @@
 package dto
 
-import "github.com/SaenkoDmitry/training-tg-bot/internal/models"
+import (
+	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
+)
 
 type DeleteProgramResult struct {
 	User *models.User
@@ -12,7 +14,23 @@ type ActivateProgramResult struct {
 
 type GetAllPrograms struct {
 	User     *models.User
-	Programs []models.WorkoutProgram
+	Programs []*ProgramDTO `json:"programs"`
+}
+
+type ProgramDTO struct {
+	ID        int64                `json:"id"`
+	UserID    int64                `json:"user_id"`
+	Name      string               `json:"name"`
+	CreatedAt string               `json:"created_at"`
+	DayTypes  []*WorkoutDayTypeDTO `json:"day_types"`
+}
+
+type WorkoutDayTypeDTO struct {
+	ID               int64  `json:"id"`
+	WorkoutProgramID int64  `json:"program_id"`
+	Name             string `json:"name"`
+	Preset           string `json:"preset"`
+	CreatedAt        string `json:"created_at"`
 }
 
 type CreateProgramResult struct {
@@ -23,9 +41,8 @@ type ListGroups struct {
 	Groups []models.ExerciseGroupType
 }
 
-type GetProgram struct {
-	Program          models.WorkoutProgram
-	ExerciseTypesMap map[int64]models.ExerciseType
+type GetProgramDTO struct {
+	Program models.WorkoutProgram
 }
 
 type ConfirmDeleteProgram struct {

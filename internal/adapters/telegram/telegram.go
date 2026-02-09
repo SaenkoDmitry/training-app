@@ -90,7 +90,7 @@ func New(token string, useCases *usecase.Container) (*App, error) {
 	changesHandler := changes.NewHandler(bot,
 		useCases.GetUserUC, useCases.ShowCurrentExerciseSessionUC, useCases.UpdateNextSetUC,
 		useCases.FindAllProgramsByUserUC, useCases.RenameProgramUC, useCases.GetAllGroupsUC, useCases.DayTypesCreateUC,
-		useCases.UpdateDateTypeUC, useCases.GetDayTypeUC, useCases.ExerciseTypeListUC, useCases.GetProgramUC, dayTypesHandler,
+		useCases.UpdateDayTypeUC, useCases.GetDayTypeUC, useCases.ExerciseTypeListUC, useCases.GetProgramUC, dayTypesHandler,
 		useCases.CreateMeasurementUC)
 
 	measurementsHandler := measurements.NewHandler(bot, useCases.FindAllMeasurementsUC, useCases.GetMeasurementByIDUC,

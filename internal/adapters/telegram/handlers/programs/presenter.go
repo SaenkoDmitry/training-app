@@ -31,9 +31,9 @@ func (p *Presenter) ShowProgramManageDialog(chatID int64, result *dto.GetAllProg
 		}
 
 		if program.ID == *user.ActiveProgramID {
-			text.WriteString(fmt.Sprintf("•  👉 <b>%s</b> \n  📅 %s\n\n", program.Name, program.CreatedAt.Format("02.01.2006 15:04")))
+			text.WriteString(fmt.Sprintf("•  👉 <b>%s</b> \n  %s\n\n", program.Name, program.CreatedAt))
 		} else {
-			text.WriteString(fmt.Sprintf("•    <b>%s</b> \n 📅 %s\n\n", program.Name, program.CreatedAt.Format("02.01.2006 15:04")))
+			text.WriteString(fmt.Sprintf("•    <b>%s</b> \n %s\n\n", program.Name, program.CreatedAt))
 		}
 
 		rows[len(rows)-1] = append(rows[len(rows)-1],
@@ -72,7 +72,7 @@ func (p *Presenter) ShowSelectDayTypeDialog(chatID int64, dayTypeID int64, res *
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ViewAllDays(chatID int64, res *dto.GetProgram) {
+func (p *Presenter) ViewAllDays(chatID int64, res *dto.GetProgramDTO) {
 	program := res.Program
 
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
@@ -102,7 +102,7 @@ func (p *Presenter) ViewAllDays(chatID int64, res *dto.GetProgram) {
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ViewProgram(chatID int64, res *dto.GetProgram) {
+func (p *Presenter) ViewProgram(chatID int64, res *dto.GetProgramDTO) {
 	program := res.Program
 
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
@@ -136,7 +136,7 @@ func (p *Presenter) ViewProgram(chatID int64, res *dto.GetProgram) {
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ConfirmDeleteDialog(chatID int64, res *dto.GetProgram) {
+func (p *Presenter) ConfirmDeleteDialog(chatID int64, res *dto.GetProgramDTO) {
 	program := res.Program
 	text := fmt.Sprintf("🗑️ *Удаление программы*\n\n"+
 		"Вы уверены, что хотите удалить программу:\n"+

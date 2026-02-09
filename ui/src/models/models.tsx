@@ -36,7 +36,12 @@ interface Set {
     FactReps: number;
     Weight: number;
     FactWeight: number;
+    Minutes: number;
+    FactMinutes: number;
+    Meters: number;
+    FactMeters: number;
     Completed: boolean;
+    CompletedAt: string;
     Index: number;
 }
 
@@ -47,19 +52,13 @@ interface Exercise {
     Index: number;
 }
 
-interface Workout {
-    ID: number;
-    Exercises: Exercise[];
-    StartedAt: string;
-    EndedAt: string | null;
-    Completed: boolean;
-    WorkoutDayType: {
-        Name: string;
-    };
+interface ReadWorkoutDTO {
+    progress: WorkoutProgress;
+    Stats: WorkoutStatistic;
 }
 
 interface WorkoutProgress {
-    Workout: Workout;
+    workout: FormattedWorkout;
     TotalExercises: number;
     CompletedExercises: number;
     TotalSets: number;
@@ -80,9 +79,38 @@ interface WorkoutStatistic {
     ExerciseTimeMap: Record<number, number>;
 }
 
-interface ReadWorkoutDTO {
-    Progress: WorkoutProgress;
-    Stats: WorkoutStatistic;
+interface FormattedWorkout {
+    id: number
+    user_id: number
+    status: string
+    started_at: string
+    duration: string
+    ended_at: string
+    day_type_name: string
+    completed: boolean
+    exercises: FormattedExercise[]
+}
+
+interface FormattedExercise {
+    id: number
+    name: string
+    url: string
+    group_name: string
+    rest_in_seconds: number
+    accent: string
+    units: string
+    description: string
+    index: number
+    sets: FormattedSet[]
+    sum_weight: number
+}
+
+interface FormattedSet {
+    id: number
+    formatted_string: string
+    completed: boolean
+    completed_at: string
+    index: number
 }
 
 interface Measurement {
@@ -121,3 +149,23 @@ type Group = {
     code: string;
     name: string;
 };
+
+export interface GetAllPrograms {
+    programs: ProgramDTO[];
+}
+
+export interface WorkoutDayTypeDTO {
+    id: number;
+    program_id: number;   // оставил snake_case, чтобы совпадало с API
+    name: string;
+    preset: string;
+    created_at: string;   // ISO string
+}
+
+export interface ProgramDTO {
+    id: number;
+    user_id: number;
+    name: string;
+    created_at: string;
+    day_types: WorkoutDayTypeDTO[];
+}

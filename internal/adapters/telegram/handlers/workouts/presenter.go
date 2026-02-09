@@ -26,7 +26,30 @@ func (p *Presenter) ShowWorkoutProgress(chatID int64, progress *dto.WorkoutProgr
 
 	var text strings.Builder
 
-	text.WriteString(progress.Workout.String())
+	w := progress.Workout
+	text.WriteString(fmt.Sprintf("<b>День:</b> <u>%s</u> \n", progress.Workout.DayTypeName))
+	text.WriteString(fmt.Sprintf("<b>Начата:</b> %s\n", w.StartedAt))
+	text.WriteString(fmt.Sprintf("<b>Статус:</b> %s\n", w.Status))
+	if w.Completed {
+		text.WriteString(fmt.Sprintf("<b>Длительность:</b> %s\n", w.Duration))
+	}
+	text.WriteString("\n")
+
+	if len(w.Exercises) > 0 {
+		text.WriteString("<b>УПРАЖНЕНИЯ:</b>\n")
+	}
+
+	for i, ex := range w.Exercises {
+		text.WriteString(fmt.Sprintf("<b>%d. %s</b>\n", i+1, ex.Name))
+
+		for _, set := range ex.Sets {
+			text.WriteString(set.FormattedString)
+		}
+		if ex.SumWeight > 0 {
+			text.WriteString(fmt.Sprintf("<u>Общий вес</u>: %.0f кг\n", ex.SumWeight))
+		}
+		text.WriteString("\n")
+	}
 
 	text.WriteString("\n📈 <b>ПРОГРЕСС:</b>\n")
 	text.WriteString(fmt.Sprintf(

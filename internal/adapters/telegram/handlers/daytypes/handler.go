@@ -107,15 +107,15 @@ func (h *Handler) confirmDeleteDayType(chatID int64, dayTypeID int64) {
 }
 
 func (h *Handler) ViewDayType(chatID int64, dayTypeID int64) {
-	res, err := h.getDayUC.Execute(dayTypeID)
+	dayResult, err := h.getDayUC.Execute(dayTypeID)
 	if err != nil {
 		h.commonPresenter.HandleInternalError(err, chatID, h.getDayUC.Name())
 		return
 	}
-	programsResult, err := h.getProgramUC.Execute(res.WorkoutProgramID)
+	programsResult, err := h.getProgramUC.Execute(dayResult.WorkoutProgramID)
 	if err != nil {
 		h.commonPresenter.HandleInternalError(err, chatID, h.getDayUC.Name())
 		return
 	}
-	h.presenter.ViewDayType(chatID, res, programsResult)
+	h.presenter.ViewDayType(chatID, dayResult, programsResult)
 }

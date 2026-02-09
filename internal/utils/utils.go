@@ -24,6 +24,9 @@ func FormatDuration(duration time.Duration) string {
 }
 
 func BetweenTimes(startedAt time.Time, endedAt *time.Time) string {
+	if endedAt == nil {
+		return ""
+	}
 	duration := endedAt.Sub(startedAt)
 	return FormatDuration(duration)
 }

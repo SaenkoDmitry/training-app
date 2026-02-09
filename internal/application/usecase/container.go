@@ -81,7 +81,7 @@ type Container struct {
 
 	// dayTypes
 	DayTypesCreateUC *daytypeusecases.CreateUseCase
-	UpdateDateTypeUC *daytypeusecases.UpdateUseCase
+	UpdateDayTypeUC  *daytypeusecases.UpdateUseCase
 	GetDayTypeUC     *daytypeusecases.GetUseCase
 
 	// groups
@@ -128,7 +128,7 @@ func NewContainer(db *gorm.DB) *Container {
 		CreateWorkoutUC:        workoutusecases.NewCreateUseCase(workoutsRepo, exercisesRepo, usersRepo, dayTypesRepo),
 		StartWorkoutUC:         workoutusecases.NewStartUseCase(workoutsRepo, sessionsRepo),
 		FindMyWorkoutsUC:       workoutusecases.NewFindMyUseCase(workoutsRepo, usersRepo),
-		ShowWorkoutProgressUC:  workoutusecases.NewShowProgressUseCase(workoutsRepo, sessionsRepo),
+		ShowWorkoutProgressUC:  workoutusecases.NewShowProgressUseCase(workoutsRepo, sessionsRepo, exerciseGroupTypesRepo),
 		ConfirmFinishWorkoutUC: workoutusecases.NewConfirmFinishUseCase(workoutsRepo, dayTypesRepo),
 		FinishWorkoutUC:        workoutusecases.NewFinishUseCase(workoutsRepo, sessionsRepo),
 		FindWorkoutsByUserUC:   workoutusecases.NewFindByUserUseCase(workoutsRepo, usersRepo),
@@ -175,8 +175,8 @@ func NewContainer(db *gorm.DB) *Container {
 
 		// dayTypes
 		DayTypesCreateUC: daytypeusecases.NewCreateUseCase(dayTypesRepo),
-		UpdateDateTypeUC: daytypeusecases.NewUpdateUseCase(dayTypesRepo),
-		GetDayTypeUC:     daytypeusecases.NewGetUseCase(dayTypesRepo),
+		UpdateDayTypeUC:  daytypeusecases.NewUpdateUseCase(dayTypesRepo),
+		GetDayTypeUC:     daytypeusecases.NewGetUseCase(dayTypesRepo, exerciseTypesRepo),
 		DeleteDayTypeUC:  daytypeusecases.NewDeleteUseCase(dayTypesRepo),
 
 		// sessions
