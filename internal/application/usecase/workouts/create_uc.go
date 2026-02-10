@@ -60,11 +60,11 @@ func (uc *CreateUseCase) Execute(chatID, dayTypeID int64) (*dto.CreateWorkout, e
 
 func (uc *CreateUseCase) buildExercises(workoutID int64, dayTypeID int64, user *models.User) ([]models.Exercise, error) {
 	activeProgramID := *user.ActiveProgramID
-	previousWorkout, err := uc.workoutsRepo.FindPreviousByType(user.ID, dayTypeID, activeProgramID)
-	if err != nil {
-		return uc.createExercisesFromPresets(workoutID, dayTypeID, activeProgramID)
-	}
-	return uc.createExercisesFromLastWorkout(workoutID, previousWorkout.ID, activeProgramID)
+	//previousWorkout, err := uc.workoutsRepo.FindPreviousByType(user.ID, dayTypeID, activeProgramID)
+	//if err != nil {
+	return uc.createExercisesFromPresets(workoutID, dayTypeID, activeProgramID)
+	//}
+	//return uc.createExercisesFromLastWorkout(workoutID, previousWorkout.ID, activeProgramID)
 }
 
 func (uc *CreateUseCase) createExercisesFromPresets(workoutDayID, dayTypeID, activeProgramID int64) ([]models.Exercise, error) {
