@@ -98,7 +98,7 @@ func (s *serviceImpl) UpdateProgramDay(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = s.container.UpdateDayTypeUC.Execute(dayTypeID, input.ExerciseTypeID, formatSets(input.Sets))
+	err = s.container.AddExPresetUC.Execute(dayTypeID, input.ExerciseTypeID, formatSets(input.Sets))
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
@@ -164,7 +164,7 @@ func (s *serviceImpl) DeleteProgramDay(w http.ResponseWriter, r *http.Request) {
 
 	err = s.container.DeleteDayTypeUC.Execute(dayTypeID)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

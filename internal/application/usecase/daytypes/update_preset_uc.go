@@ -1,32 +1,31 @@
 package daytypes
 
 import (
-	"fmt"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/daytypes"
 )
 
-type UpdateUseCase struct {
+type UpdatePresetUseCase struct {
 	dayTypesRepo daytypes.Repo
 }
 
-func NewUpdateUseCase(
+func NewUpdatePresetUseCase(
 	dayTypesRepo daytypes.Repo,
-) *UpdateUseCase {
-	return &UpdateUseCase{
+) *UpdatePresetUseCase {
+	return &UpdatePresetUseCase{
 		dayTypesRepo: dayTypesRepo,
 	}
 }
 
-func (uc *UpdateUseCase) Name() string {
-	return "Обновить день"
+func (uc *UpdatePresetUseCase) Name() string {
+	return "Обновить пресет для дня"
 }
 
-func (uc *UpdateUseCase) Execute(dayTypeID, exerciseTypeID int64, preset string) error {
+func (uc *UpdatePresetUseCase) Execute(dayTypeID int64, preset string) error {
 	d, err := uc.dayTypesRepo.Get(dayTypeID)
 	if err != nil {
 		return err
 	}
-	d.Preset += fmt.Sprintf(";%d:[%s]", exerciseTypeID, preset)
+	d.Preset = preset
 	err = uc.dayTypesRepo.Save(&d)
 	if err != nil {
 		return err

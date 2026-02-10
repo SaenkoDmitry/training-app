@@ -24,7 +24,7 @@ func (s *serviceImpl) GetUserPrograms(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(result)
+	json.NewEncoder(w).Encode(result.Programs)
 }
 
 func (s *serviceImpl) CreateProgram(w http.ResponseWriter, r *http.Request) {
@@ -154,7 +154,7 @@ func (s *serviceImpl) GetProgram(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	program, err := s.container.GetProgramUC.Execute(programID)
+	program, err := s.container.GetProgramUC.Execute(programID, claims.ChatID)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
@@ -172,14 +172,14 @@ func (s *serviceImpl) validateAccessToProgram(w http.ResponseWriter, chatID int6
 		return err
 	}
 
-	program, err := s.container.GetProgramUC.Execute(programID)
+	program, err := s.container.GetProgramUC.Execute(programID, chatID)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return err
 	}
 
 	// check access
-	if program.Program.UserID != user.ID {
+	if program.UserID != user.ID {
 		http.Error(w, "access denied", http.StatusForbidden)
 		return errors.New("no access")
 	}

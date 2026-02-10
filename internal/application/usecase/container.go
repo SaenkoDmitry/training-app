@@ -81,7 +81,8 @@ type Container struct {
 
 	// dayTypes
 	DayTypesCreateUC *daytypeusecases.CreateUseCase
-	UpdateDayTypeUC  *daytypeusecases.UpdateUseCase
+	AddExPresetUC    *daytypeusecases.AddExPresetUseCase
+	UpdatePresetUC   *daytypeusecases.UpdatePresetUseCase
 	GetDayTypeUC     *daytypeusecases.GetUseCase
 
 	// groups
@@ -136,7 +137,7 @@ func NewContainer(db *gorm.DB) *Container {
 
 		// exercises
 		ExerciseTypeListUC:      exerciseusecases.NewExerciseTypeListUseCase(exerciseTypesRepo),
-		FindTypesByGroupUC:      exerciseusecases.NewFindTypesByGroupUseCase(exerciseTypesRepo),
+		FindTypesByGroupUC:      exerciseusecases.NewFindTypesByGroupUseCase(exerciseTypesRepo, exerciseGroupTypesRepo),
 		ConfirmDeleteExerciseUC: exerciseusecases.NewConfirmDeleteUseCase(exerciseTypesRepo, exercisesRepo),
 		DeleteExerciseUC:        exerciseusecases.NewDeleteUseCase(exercisesRepo),
 		GetExerciseUC:           exerciseusecases.NewGetUseCase(exercisesRepo, exerciseTypesRepo),
@@ -164,7 +165,7 @@ func NewContainer(db *gorm.DB) *Container {
 		DeleteProgramUC:         programusecases.NewDeleteUseCase(programsRepo, usersRepo),
 		CreateProgramUC:         programusecases.NewCreateUseCase(programsRepo, usersRepo),
 		ActivateProgramUC:       programusecases.NewActivateUseCase(usersRepo),
-		GetProgramUC:            programusecases.NewGetUseCase(programsRepo, exerciseTypesRepo),
+		GetProgramUC:            programusecases.NewGetUseCase(programsRepo, exerciseTypesRepo, usersRepo),
 		FindAllProgramsByUserUC: programusecases.NewFindAllByUserUseCase(programsRepo, usersRepo),
 		RenameProgramUC:         programusecases.NewRenameUseCase(programsRepo),
 		GetByUserProgramUC:      programusecases.NewGetByUserUseCase(programsRepo, usersRepo),
@@ -175,7 +176,8 @@ func NewContainer(db *gorm.DB) *Container {
 
 		// dayTypes
 		DayTypesCreateUC: daytypeusecases.NewCreateUseCase(dayTypesRepo),
-		UpdateDayTypeUC:  daytypeusecases.NewUpdateUseCase(dayTypesRepo),
+		AddExPresetUC:    daytypeusecases.NewAddExPresetUseCase(dayTypesRepo),
+		UpdatePresetUC:   daytypeusecases.NewUpdatePresetUseCase(dayTypesRepo),
 		GetDayTypeUC:     daytypeusecases.NewGetUseCase(dayTypesRepo, exerciseTypesRepo),
 		DeleteDayTypeUC:  daytypeusecases.NewDeleteUseCase(dayTypesRepo),
 

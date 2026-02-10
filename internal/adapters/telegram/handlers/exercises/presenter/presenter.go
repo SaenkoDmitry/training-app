@@ -5,7 +5,6 @@ import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/constants"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/messages"
-	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/utils"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"strings"
@@ -108,7 +107,7 @@ func (p *Presenter) ShowNotFoundExercise(chatID int64) {
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ShowSelectExerciseForProgramDayDialog(chatID, dayTypeID int64, group *dto.Group, exerciseTypes []models.ExerciseType) {
+func (p *Presenter) ShowSelectExerciseForProgramDayDialog(chatID, dayTypeID int64, group *dto.Group, exerciseTypes []dto.ExerciseTypeDTO) {
 	text := fmt.Sprintf("<b>Тип:</b> %s \n\n %s", group.Name, messages.SelectExercise)
 
 	rows := make([][]tgbotapi.InlineKeyboardButton, 0)
@@ -198,7 +197,7 @@ func (p *Presenter) ShowHint(chatID int64, res *dto.GetExercise, workoutID int64
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) AddExerciseDialog(chatID, workoutID int64, groups []models.ExerciseGroupType) {
+func (p *Presenter) AddExerciseDialog(chatID, workoutID int64, groups []dto.Group) {
 	text := messages.SelectGroupOfMuscle
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	for i, group := range groups {
@@ -216,7 +215,7 @@ func (p *Presenter) AddExerciseDialog(chatID, workoutID int64, groups []models.E
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ShowSelectExerciseForCurrentWorkoutDialog(chatID, workoutID int64, group *dto.Group, exerciseTypes []models.ExerciseType) {
+func (p *Presenter) ShowSelectExerciseForCurrentWorkoutDialog(chatID, workoutID int64, group *dto.Group, exerciseTypes []dto.ExerciseTypeDTO) {
 	text := fmt.Sprintf("<b>Тип:</b> %s \n\n %s", group.Name, messages.SelectExercise)
 
 	rows := make([][]tgbotapi.InlineKeyboardButton, 0)
@@ -237,7 +236,7 @@ func (p *Presenter) ShowSelectExerciseForCurrentWorkoutDialog(chatID, workoutID 
 	fmt.Println("err:", err)
 }
 
-func (p *Presenter) ShowAllGroups(chatID int64, groups []models.ExerciseGroupType) {
+func (p *Presenter) ShowAllGroups(chatID int64, groups []dto.Group) {
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	for i, group := range groups {
 		if i%3 == 0 {
@@ -258,7 +257,7 @@ func (p *Presenter) ShowAllGroups(chatID int64, groups []models.ExerciseGroupTyp
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ShowAllExercises(chatID int64, exerciseTypes []models.ExerciseType, groupName string) {
+func (p *Presenter) ShowAllExercises(chatID int64, exerciseTypes []dto.ExerciseTypeDTO, groupName string) {
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	for _, ex := range exerciseTypes {
 		buttons = append(buttons,

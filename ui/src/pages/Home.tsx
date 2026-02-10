@@ -86,6 +86,22 @@ const Home: React.FC = () => {
         <div className="container">
             <h1>Мои тренировки</h1>
 
+            {user && (
+                <button
+                    style={{
+                        background: '#4caf50',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: 8,
+                        padding: '0.5rem 1rem',
+                        cursor: 'pointer',
+                    }}
+                    onClick={() => alert('Начало новой тренировки!')}
+                >
+                    Начать тренировку
+                </button>
+            )}
+
             <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
                 {workouts.map((w, idx) => (
                     <div

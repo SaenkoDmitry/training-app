@@ -140,7 +140,7 @@ func (h *Handler) deleteProgram(chatID int64, programID int64) {
 }
 
 func (h *Handler) ViewProgram(chatID int64, programID int64) {
-	res, err := h.getProgramUC.Execute(programID)
+	res, err := h.getProgramUC.Execute(programID, chatID)
 	if err != nil {
 		h.commonPresenter.HandleInternalError(err, chatID, h.getProgramUC.Name())
 		return
@@ -149,7 +149,7 @@ func (h *Handler) ViewProgram(chatID int64, programID int64) {
 }
 
 func (h *Handler) confirmDeleteProgram(chatID int64, programID int64) {
-	res, err := h.getProgramUC.Execute(programID)
+	res, err := h.getProgramUC.Execute(programID, chatID)
 	if err != nil {
 		h.commonPresenter.HandleInternalError(err, chatID, h.getProgramUC.Name())
 		return
@@ -158,7 +158,7 @@ func (h *Handler) confirmDeleteProgram(chatID int64, programID int64) {
 }
 
 func (h *Handler) viewAllDays(chatID int64, programID int64) {
-	res, err := h.getProgramUC.Execute(programID)
+	res, err := h.getProgramUC.Execute(programID, chatID)
 	if err != nil {
 		h.commonPresenter.HandleInternalError(err, chatID, h.getProgramUC.Name())
 		return

@@ -2,6 +2,7 @@ package groups
 
 import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/models"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/exercisegrouptypes"
 )
 
@@ -25,6 +26,17 @@ func (uc *GetAllUseCase) Execute() (*dto.ExerciseGroupTypeList, error) {
 		return nil, err
 	}
 	return &dto.ExerciseGroupTypeList{
-		Groups: groups,
+		Groups: mapGroupDTO(groups),
 	}, nil
+}
+
+func mapGroupDTO(groups []models.ExerciseGroupType) []dto.Group {
+	result := make([]dto.Group, 0, len(groups))
+	for _, g := range groups {
+		result = append(result, dto.Group{
+			Code: g.Code,
+			Name: g.Name,
+		})
+	}
+	return result
 }

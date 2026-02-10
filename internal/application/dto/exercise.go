@@ -15,7 +15,18 @@ type ExerciseTypeList struct {
 }
 
 type FindTypesByGroup struct {
-	ExerciseTypes []models.ExerciseType `json:"exercise_types"`
+	ExerciseTypes []ExerciseTypeDTO `json:"exercise_types"`
+}
+
+type ExerciseTypeDTO struct {
+	ID            int64  `json:"id"`
+	Name          string `json:"name"`
+	Url           string `json:"url"`
+	GroupName     string `json:"group_name"`
+	RestInSeconds int    `json:"rest_in_seconds"`
+	Accent        string `json:"accent"`
+	Units         string `json:"units"`
+	Description   string `json:"description"`
 }
 
 type ConfirmDeleteExercise struct {

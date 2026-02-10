@@ -47,3 +47,12 @@ Uses Postgres database. Auto-migrates on startup via github.com/pressly/goose/v3
 
 ## DATABASE_URL for local startup
 postgresql://postgres:postgres@localhost/training-bot
+
+## how to local login to telegram?
+
+1. configure tunnel
+```
+ssh -R 80:localhost:5173 localhost.run
+```
+
+2. edit domain in telegram for bot and paste host to it

@@ -5,7 +5,7 @@ import TelegramLoginWidget from "../pages/TelegramLoginWidget.tsx";
 
 const tabs = [
     {name: 'Мои тренировки', path: '/'},
-    {name: 'Статистика', path: '/stats'},
+    // {name: 'Статистика', path: '/stats'},
     {name: 'Мои программы', path: '/programs'},
     {name: 'Замеры', path: '/measurements'},
     {name: 'Библиотека упражнений', path: '/library'},
@@ -89,23 +89,6 @@ const MainLayout: React.FC<{children: React.ReactNode}> = ({children}) => {
                                 Выйти
                             </button>
                         </>
-                    )}
-
-                    {/* Start workout button (только на странице тренировок) */}
-                    {user && location.pathname === '/' && (
-                        <button
-                            style={{
-                                background: '#4caf50',
-                                color: '#fff',
-                                border: 'none',
-                                borderRadius: 8,
-                                padding: '0.5rem 1rem',
-                                cursor: 'pointer',
-                            }}
-                            onClick={() => alert('Начало новой тренировки!')}
-                        >
-                            Начать тренировку
-                        </button>
                     )}
 
                     {/* Burger */}

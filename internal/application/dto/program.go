@@ -23,6 +23,7 @@ type ProgramDTO struct {
 	Name      string               `json:"name"`
 	CreatedAt string               `json:"created_at"`
 	DayTypes  []*WorkoutDayTypeDTO `json:"day_types"`
+	IsActive  bool                 `json:"is_active"`
 }
 
 type WorkoutDayTypeDTO struct {
@@ -42,7 +43,7 @@ type ListGroups struct {
 }
 
 type GetProgramDTO struct {
-	Program models.WorkoutProgram
+	Program ProgramDTO
 }
 
 type ConfirmDeleteProgram struct {

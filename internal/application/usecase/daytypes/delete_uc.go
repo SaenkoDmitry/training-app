@@ -23,7 +23,7 @@ func (uc *DeleteUseCase) Name() string {
 }
 
 var (
-	CannotDeleteAlreadyUsedDay = errors.New("cannot delete day already used")
+	CannotDeleteAlreadyUsedDay = errors.New("Не могу удалить день, который уже есть в истории тренировок")
 )
 
 func (uc *DeleteUseCase) Execute(dayTypeID int64) error {

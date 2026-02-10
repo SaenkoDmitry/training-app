@@ -147,6 +147,13 @@ func initServer(container *usecase.Container) {
 		r.Get("/{group}", s.GetExerciseTypesByGroup)
 	})
 
+	r.Route("/api/presets", func(r chi.Router) {
+		r.Use(middlewares.Auth)
+
+		r.Post("/parse", s.ParsePreset)
+		r.Post("/save", s.SavePreset)
+	})
+
 	r.Route("/api/programs", func(r chi.Router) {
 		r.Use(middlewares.Auth)
 
@@ -156,9 +163,9 @@ func initServer(container *usecase.Container) {
 		r.Post("/{program_id}/choose", s.ChooseProgram)
 		r.Delete("/{program_id}", s.DeleteProgram)
 		r.Get("/{program_id}", s.GetProgram)
-		r.Post("/{program_id}/edit-name", s.RenameProgram)
+		r.Post("/{program_id}/rename/{program_new_name}", s.RenameProgram)
 
-		r.Post("/{program_id}/days", s.CreateProgramDay)
+		r.Post("/{program_id}/days/{day_new_name}", s.CreateProgramDay)
 		r.Delete("/{program_id}/days/{day_type_id}", s.DeleteProgramDay)
 		r.Post("/{program_id}/days/{day_type_id}", s.UpdateProgramDay)
 		r.Get("/{program_id}/days/{day_type_id}", s.GetProgramDay)

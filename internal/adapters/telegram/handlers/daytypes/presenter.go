@@ -57,18 +57,17 @@ func (p *Presenter) ShowConfirmDelete(chatID int64, res *dto.WorkoutDayTypeDTO) 
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ViewDayType(chatID int64, dayResult *dto.WorkoutDayTypeDTO, programsResult *dto.GetProgramDTO) {
-	program := programsResult.Program
+func (p *Presenter) ViewDayType(chatID int64, day *dto.WorkoutDayTypeDTO, program *dto.ProgramDTO) {
 
 	text := &bytes.Buffer{}
-	text.WriteString(fmt.Sprintf("<b>День:</b> %s\n\n", dayResult.Name))
-	text.WriteString(fmt.Sprintf("%s \n\n", dayResult.Preset))
+	text.WriteString(fmt.Sprintf("<b>День:</b> %s\n\n", day.Name))
+	text.WriteString(fmt.Sprintf("%s \n\n", day.Preset))
 
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
 
-		tgbotapi.NewInlineKeyboardButtonData("✏️️ Добавить упражнение", fmt.Sprintf("day_type_edit_%d", dayResult.ID)),
-		tgbotapi.NewInlineKeyboardButtonData("🗑 Удалить", fmt.Sprintf("day_type_confirm_delete_%d", dayResult.ID)),
+		tgbotapi.NewInlineKeyboardButtonData("✏️️ Добавить упражнение", fmt.Sprintf("day_type_edit_%d", day.ID)),
+		tgbotapi.NewInlineKeyboardButtonData("🗑 Удалить", fmt.Sprintf("day_type_confirm_delete_%d", day.ID)),
 	))
 	buttons = append(buttons, tgbotapi.NewInlineKeyboardRow(
 		tgbotapi.NewInlineKeyboardButtonData(messages.BackTo, fmt.Sprintf("program_view_all_days_%d", program.ID)),

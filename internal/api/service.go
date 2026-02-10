@@ -22,6 +22,8 @@ type Service interface {
 	DeleteProgramDay(w http.ResponseWriter, r *http.Request)
 	UpdateProgramDay(w http.ResponseWriter, r *http.Request)
 	GetProgramDay(w http.ResponseWriter, r *http.Request)
+	ParsePreset(w http.ResponseWriter, r *http.Request)
+	SavePreset(w http.ResponseWriter, r *http.Request)
 }
 
 type serviceImpl struct {

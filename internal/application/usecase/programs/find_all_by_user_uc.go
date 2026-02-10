@@ -49,30 +49,43 @@ func (uc *FindAllByUserUseCase) Execute(chatID int64) (*dto.GetAllPrograms, erro
 	}
 	return &dto.GetAllPrograms{
 		User:     user,
-		Programs: mapToProgramDTO(programObjs),
+		Programs: mapToProgramDTO(programObjs, user),
 	}, nil
 }
 
-func mapToProgramDTO(objs []models.WorkoutProgram) []*dto.ProgramDTO {
+func mapToProgramDTO(objs []models.WorkoutProgram, user *models.User) []*dto.ProgramDTO {
 	result := make([]*dto.ProgramDTO, 0, len(objs))
 	for _, obj := range objs {
-		dayTypes := make([]*dto.WorkoutDayTypeDTO, 0, len(obj.DayTypes))
-		for _, d := range obj.DayTypes {
-			dayTypes = append(dayTypes, &dto.WorkoutDayTypeDTO{
-				ID:               d.ID,
-				WorkoutProgramID: d.WorkoutProgramID,
-				Name:             d.Name,
-				Preset:           d.Preset,
-				CreatedAt:        "📅 " + d.CreatedAt.Add(time.Hour*3).Format("02.01.2006 15:04"),
-			})
-		}
-		result = append(result, &dto.ProgramDTO{
-			ID:        obj.ID,
-			UserID:    obj.UserID,
-			Name:      obj.Name,
-			CreatedAt: obj.CreatedAt.Add(time.Hour * 3).Format("02.01.2006 15:04"),
-			DayTypes:  dayTypes,
-		})
+		result = append(result, mapProgramDTO(obj, user))
 	}
 	return result
+}
+
+func mapDayTypeDTO(obj models.WorkoutDayType) *dto.WorkoutDayTypeDTO {
+	return &dto.WorkoutDayTypeDTO{
+		ID:               obj.ID,
+		WorkoutProgramID: obj.WorkoutProgramID,
+		Name:             obj.Name,
+		Preset:           obj.Preset,
+		CreatedAt:        "📅 " + obj.CreatedAt.Add(time.Hour*3).Format("02.01.2006 15:04"),
+	}
+}
+
+func mapProgramDTO(obj models.WorkoutProgram, user *models.User) *dto.ProgramDTO {
+	dayTypes := make([]*dto.WorkoutDayTypeDTO, 0, len(obj.DayTypes))
+	for _, d := range obj.DayTypes {
+		dayTypes = append(dayTypes, mapDayTypeDTO(d))
+	}
+	isActive := false
+	if user.ActiveProgramID != nil {
+		isActive = *user.ActiveProgramID == obj.ID
+	}
+	return &dto.ProgramDTO{
+		ID:        obj.ID,
+		UserID:    obj.UserID,
+		Name:      obj.Name,
+		CreatedAt: obj.CreatedAt.Add(time.Hour * 3).Format("02.01.2006 15:04"),
+		DayTypes:  dayTypes,
+		IsActive:  isActive,
+	}
 }

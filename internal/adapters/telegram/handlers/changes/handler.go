@@ -48,9 +48,10 @@ type Handler struct {
 	dayTypesCreateUC     *daytypeusecases.CreateUseCase
 	exerciseTypeListUC   *exercisecases.ExerciseTypeListUseCase
 	getProgramUC         *programusecases.GetUseCase
-	dayTypesUpdateUC     *daytypeusecases.UpdateUseCase
 	dayTypeGetUC         *daytypeusecases.GetUseCase
 	createMeasurementUC  *measurementsusecases.CreateUseCase
+	addExPresetUC        *daytypeusecases.AddExPresetUseCase
+	updatePresetUC       *daytypeusecases.UpdatePresetUseCase
 }
 
 func NewHandler(
@@ -62,7 +63,8 @@ func NewHandler(
 	renameProgramUC *programusecases.RenameUseCase,
 	getAllGroupsUC *groups.GetAllUseCase,
 	dayTypesCreateUC *daytypeusecases.CreateUseCase,
-	dayTypesUpdateUC *daytypeusecases.UpdateUseCase,
+	addExPresetUC *daytypeusecases.AddExPresetUseCase,
+	updatePresetUC *daytypeusecases.UpdatePresetUseCase,
 	dayTypeGetUC *daytypeusecases.GetUseCase,
 	exerciseTypeListUC *exercisecases.ExerciseTypeListUseCase,
 	editProgramUC *programusecases.GetUseCase,
@@ -82,7 +84,8 @@ func NewHandler(
 		renameProgramUC:      renameProgramUC,
 		getAllGroupsUC:       getAllGroupsUC,
 		dayTypesCreateUC:     dayTypesCreateUC,
-		dayTypesUpdateUC:     dayTypesUpdateUC,
+		addExPresetUC:        addExPresetUC,
+		updatePresetUC:       updatePresetUC,
 		dayTypeGetUC:         dayTypeGetUC,
 		exerciseTypeListUC:   exerciseTypeListUC,
 		getProgramUC:         editProgramUC,
@@ -391,8 +394,8 @@ func (h *Handler) RouteMessage(chatID int64, text string) {
 			return
 		}
 
-		if updateErr := h.dayTypesUpdateUC.Execute(dayTypeID, exerciseTypeID, preset); updateErr != nil {
-			h.commonPresenter.HandleInternalError(err, chatID, h.dayTypesUpdateUC.Name())
+		if updateErr := h.addExPresetUC.Execute(dayTypeID, exerciseTypeID, preset); updateErr != nil {
+			h.commonPresenter.HandleInternalError(err, chatID, h.addExPresetUC.Name())
 			return
 		}
 		h.userStatesMachine.Clear(chatID)

@@ -20,14 +20,14 @@ interface User {
 }
 
 interface ExerciseType {
-    ID: number;
-    Name: string;
-    Url: string;
-    ExerciseGroupTypeCode: string;
-    RestInSeconds: number;
-    Accent: string;
-    Units: string;
-    Description: string;
+    id: number;
+    name: string;
+    url: string;
+    exercise_group_type_code: string;
+    rest_in_seconds: number;
+    accent: string;
+    units: string;
+    description: string;
 }
 
 interface Set {
@@ -169,3 +169,20 @@ interface ProgramDTO {
     created_at: string;
     day_types: WorkoutDayTypeDTO[];
 }
+
+type SetDTO = {
+    reps: number;
+    weight: number;
+    minutes: number;
+    meters: number;
+};
+
+type ExerciseDTO = {
+    id: number;
+    name: string;
+    sets: SetDTO[];
+};
+
+type PresetListDTO = {
+    exercises: ExerciseDTO[];
+};

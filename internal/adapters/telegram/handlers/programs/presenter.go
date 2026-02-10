@@ -72,9 +72,7 @@ func (p *Presenter) ShowSelectDayTypeDialog(chatID int64, dayTypeID int64, res *
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ViewAllDays(chatID int64, res *dto.GetProgramDTO) {
-	program := res.Program
-
+func (p *Presenter) ViewAllDays(chatID int64, program *dto.ProgramDTO) {
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	text := &bytes.Buffer{}
 
@@ -102,9 +100,7 @@ func (p *Presenter) ViewAllDays(chatID int64, res *dto.GetProgramDTO) {
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ViewProgram(chatID int64, res *dto.GetProgramDTO) {
-	program := res.Program
-
+func (p *Presenter) ViewProgram(chatID int64, program *dto.ProgramDTO) {
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	text := &bytes.Buffer{}
 
@@ -136,8 +132,7 @@ func (p *Presenter) ViewProgram(chatID int64, res *dto.GetProgramDTO) {
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ConfirmDeleteDialog(chatID int64, res *dto.GetProgramDTO) {
-	program := res.Program
+func (p *Presenter) ConfirmDeleteDialog(chatID int64, program *dto.ProgramDTO) {
 	text := fmt.Sprintf("🗑️ *Удаление программы*\n\n"+
 		"Вы уверены, что хотите удалить программу:\n"+
 		"*%s*?\n\n"+

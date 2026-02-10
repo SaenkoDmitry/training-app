@@ -76,12 +76,12 @@ const LibraryPage: React.FC = () => {
 
             <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
                 {exercises.map((ex, index) => {
-                    const isOpen = openedId === ex.ID;
+                    const isOpen = openedId === ex.id;
                     const softBg = index % 2 === 0 ? '#fff' : '#f9f9f9'; // мягкое чередование
 
                     return (
                         <div
-                            key={ex.ID}
+                            key={ex.id}
                             style={{
                                 border: '1px solid #eee',
                                 borderRadius: 12,
@@ -91,7 +91,7 @@ const LibraryPage: React.FC = () => {
                                 backgroundColor: isOpen ? '#e0f8e1' : softBg,
                                 cursor: 'pointer',
                             }}
-                            onClick={() => setOpenedId(prev => (prev === ex.ID ? null : ex.ID))}
+                            onClick={() => setOpenedId(prev => (prev === ex.id ? null : ex.id))}
                             onMouseEnter={e => {
                                 if (!isOpen) e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
                                 if (!isOpen) e.currentTarget.style.backgroundColor = '#f6f6f6';
@@ -102,7 +102,7 @@ const LibraryPage: React.FC = () => {
                             }}
                         >
                             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                <strong>{ex.Name}</strong>
+                                <strong>{ex.name}</strong>
                                 {/* стрелка */}
                                 <span
                                     style={{
@@ -124,19 +124,19 @@ const LibraryPage: React.FC = () => {
                                     marginTop: isOpen ? 10 : 0,
                                 }}
                             >
-                                {ex.Description && (
+                                {ex.description && (
                                     <p>
-                                        <SafeTextRenderer html={ex.Description}/>
+                                        <SafeTextRenderer html={ex.description}/>
                                     </p>
                                 )}
 
                                 <p>
-                                    <b>Отдых: </b>{ex.RestInSeconds}s · <b>Ед.:</b> {ex.Units}
+                                    <b>Отдых: </b>{ex.rest_in_seconds}s · <b>Ед.:</b> {ex.units}
                                 </p>
 
-                                {ex.Url && (
+                                {ex.url && (
                                     <a
-                                        href={ex.Url}
+                                        href={ex.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         style={{

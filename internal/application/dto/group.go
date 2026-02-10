@@ -1,12 +1,10 @@
 package dto
 
-import "github.com/SaenkoDmitry/training-tg-bot/internal/models"
-
 type Group struct {
-	Code string
-	Name string
+	Code string `json:"code"`
+	Name string `json:"name"`
 }
 
 type ExerciseGroupTypeList struct {
-	Groups []models.ExerciseGroupType `json:"groups"`
+	Groups []Group `json:"groups"`
 }
