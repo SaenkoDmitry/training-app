@@ -150,11 +150,11 @@ type Group = {
     name: string;
 };
 
-export interface GetAllPrograms {
+interface GetAllPrograms {
     programs: ProgramDTO[];
 }
 
-export interface WorkoutDayTypeDTO {
+interface WorkoutDayTypeDTO {
     id: number;
     program_id: number;   // оставил snake_case, чтобы совпадало с API
     name: string;
@@ -162,7 +162,7 @@ export interface WorkoutDayTypeDTO {
     created_at: string;   // ISO string
 }
 
-export interface ProgramDTO {
+interface ProgramDTO {
     id: number;
     user_id: number;
     name: string;
