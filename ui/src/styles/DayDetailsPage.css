@@ -78,8 +78,7 @@
 .selector {
     display: flex;
     gap: 8px;
-    align-items: stretch;
-    width: 100%;
+    align-items: center;
 }
 
 /* 🔥 ключевой фикс переполнения */
@@ -89,6 +88,9 @@
 
 /* селекты гибкие */
 .selector select {
+    appearance: none;
+    -webkit-appearance: none;
+    height: var(--tap-size);
     flex: 1 1 0;
     width: 0;
     overflow: hidden;
