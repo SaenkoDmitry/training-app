@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useAuth} from '../context/AuthContext';
 import SafeTextRenderer from "../components/SafeTextRenderer.tsx";
 import {getExerciseGroups, getExerciseTypesByGroup} from "../api/exercises.ts";
+import Button from "../components/Button.tsx";
 
 const LibraryPage: React.FC = () => {
     const {user} = useAuth();
@@ -51,22 +52,13 @@ const LibraryPage: React.FC = () => {
                 }}
             >
                 {groups.map(g => (
-                    <button
+                    <Button
+                        variant={selectedGroup === g.code ? "primary" : "ghost"}
                         key={g.code}
                         onClick={() => setSelectedGroup(g.code)}
-                        style={{
-                            padding: '8px 10px',
-                            borderRadius: 12,
-                            border: '1px solid #ddd',
-                            background: selectedGroup === g.code ? '#4caf50' : '#fff',
-                            color: selectedGroup === g.code ? '#fff' : '#333',
-                            cursor: 'pointer',
-                            fontSize: 14,
-                            fontWeight: 500
-                        }}
                     >
                         {g.name}
-                    </button>
+                    </Button>
                 ))}
             </div>
 
@@ -87,7 +79,7 @@ const LibraryPage: React.FC = () => {
                                 padding: 12,
                                 transition: 'all 0.2s ease',
                                 boxShadow: isOpen ? '0 6px 12px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.05)',
-                                backgroundColor: isOpen ? '#e0f8e1' : softBg,
+                                backgroundColor: isOpen ? 'var(--color-primary-soft)' : softBg,
                                 cursor: 'pointer',
                             }}
                             onClick={() => setOpenedId(prev => (prev === ex.id ? null : ex.id))}

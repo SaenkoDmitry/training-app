@@ -184,7 +184,7 @@ export default function DayDetailsPage() {
                     ))}
                 </select>
 
-                <button onClick={addExercise}>➕️ Добавить</button>
+                <Button variant={"primary"} onClick={addExercise}>➕️ Добавить</Button>
             </div>
 
             {exercises.map((ex, ei) => (
@@ -269,9 +269,9 @@ export default function DayDetailsPage() {
                             </div>
                         ))}
 
-                        <button className="add-set" onClick={() => addSet(ei, ex.sets)}>
+                        <Button onClick={() => addSet(ei, ex.sets)}>
                             + сет
-                        </button>
+                        </Button>
                     </div>
                 </div>
             ))}

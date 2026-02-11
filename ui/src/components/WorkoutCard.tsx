@@ -9,7 +9,6 @@ export default function WorkoutCard({ w, idx }: WorkoutCardProps) {
             style={{
                 padding: 16,
                 borderRadius: 16,
-                background: '#fff',
                 boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 transition: '0.2s',
             }}
@@ -27,7 +26,7 @@ export default function WorkoutCard({ w, idx }: WorkoutCardProps) {
                     fontWeight: 600,
                     color:
                         w.status === 'finished'
-                            ? '#2e7d32'
+                            ? 'var(--color-primary-hover)'
                             : w.status === 'in_progress'
                                 ? '#f9a825'
                                 : '#999',

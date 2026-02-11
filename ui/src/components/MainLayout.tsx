@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 import TelegramLoginWidget from "../pages/TelegramLoginWidget.tsx";
+import Button from "./Button.tsx";
 
 const tabs = [
     {name: 'Мои тренировки', path: '/'},
@@ -29,7 +30,6 @@ const MainLayout: React.FC<{children: React.ReactNode}> = ({children}) => {
                     alignItems: 'center',
                     padding: '0.5rem 1rem',
                     borderBottom: '1px solid #ddd',
-                    background: '#fafafa',
                     position: 'sticky',
                     top: 0,
                     zIndex: 10,
@@ -64,8 +64,8 @@ const MainLayout: React.FC<{children: React.ReactNode}> = ({children}) => {
                             style={{
                                 padding: '0.5rem 1rem',
                                 borderBottom:
-                                    location.pathname === tab.path ? '3px solid #4caf50' : 'none',
-                                color: location.pathname === tab.path ? '#4caf50' : '#333',
+                                    location.pathname === tab.path ? '3px solid var(--color-primary-hover)' : 'none',
+                                color: location.pathname === tab.path ? 'var(--color-primary-hover)' : '#333',
                                 fontWeight: location.pathname === tab.path ? 'bold' : 'normal',
                                 textDecoration: 'none',
                                 whiteSpace: 'nowrap',
@@ -88,18 +88,12 @@ const MainLayout: React.FC<{children: React.ReactNode}> = ({children}) => {
                     {user && (
                         <>
                             <span>Привет, {user.first_name} 👋</span>
-                            <button
+                            <Button
+                                variant={"danger"}
                                 onClick={logout}
-                                style={{
-                                    background: '#eee',
-                                    border: '1px solid #ccc',
-                                    borderRadius: 6,
-                                    padding: '0.4rem 0.8rem',
-                                    cursor: 'pointer',
-                                }}
                             >
                                 Выйти
-                            </button>
+                            </Button>
                         </>
                     )}
                 </div>
