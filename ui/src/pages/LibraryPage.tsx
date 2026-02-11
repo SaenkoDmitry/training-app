@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useAuth} from '../context/AuthContext';
 import SafeTextRenderer from "../components/SafeTextRenderer.tsx";
+import {getExerciseGroups, getExerciseTypesByGroup} from "../api/exercises.ts";
 
 const LibraryPage: React.FC = () => {
     const {user} = useAuth();
@@ -15,12 +16,10 @@ const LibraryPage: React.FC = () => {
     useEffect(() => {
         if (!user) return;
 
-        fetch('/api/exercise-groups', {credentials: 'include'})
-            .then(res => res.json())
-            .then(data => {
-                setGroups(data.groups);
-                if (data.groups.length) setSelectedGroup(data.groups[0].code);
-            });
+        getExerciseGroups().then((groups: Group[]) => {
+            setGroups(groups);
+            if (groups.length > 0) setSelectedGroup(groups[0].code);
+        });
     }, [user]);
 
     // -------- load exercises --------
@@ -29,10 +28,10 @@ const LibraryPage: React.FC = () => {
 
         setLoading(true);
 
-        fetch(`/api/exercise-groups/${selectedGroup}`, {credentials: 'include'})
-            .then(res => res.json())
-            .then(data => setExercises(data.exercise_types))
-            .finally(() => setLoading(false));
+        getExerciseTypesByGroup(selectedGroup).then((exerciseTypes: ExerciseType[]) => {
+            setExercises(exerciseTypes);
+            setLoading(false);
+        })
     }, [selectedGroup]);
 
     if (!user) return <h3>Войдите через Telegram 👆</h3>;
