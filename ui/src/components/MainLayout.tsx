@@ -1,156 +1,160 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 import TelegramLoginWidget from "../pages/TelegramLoginWidget.tsx";
 import Button from "./Button.tsx";
 
+import {
+    Dumbbell,
+    FolderKanban,
+    Ruler,
+    BookOpen,
+    User
+} from "lucide-react";
+
 const tabs = [
-    {name: 'Мои тренировки', path: '/'},
-    // {name: 'Статистика', path: '/stats'},
-    {name: 'Программы', path: '/programs'},
-    {name: 'Замеры', path: '/measurements'},
-    {name: 'Библиотека упражнений', path: '/library'},
+    {name: 'Тренировки', path: '/', icon: Dumbbell},
+    {name: 'Программы', path: '/programs', icon: FolderKanban},
+    {name: 'Замеры', path: '/measurements', icon: Ruler},
+    {name: 'Библиотека', path: '/library', icon: BookOpen},
+    {name: 'Профиль', path: '/profile', icon: User},
 ];
 
-const MainLayout: React.FC<{children: React.ReactNode}> = ({children}) => {
+const MainLayout: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const location = useLocation();
-    const [menuOpen, setMenuOpen] = useState(false);
-    const {user, logout, widgetRef, loading} = useAuth();
+    const {user, logout, loading} = useAuth();
 
     const isMobile = window.innerWidth <= 768;
 
+    const tapFeedback = () => {
+        if (navigator.vibrate) navigator.vibrate(10);
+    };
+
     return (
-        <div style={{minHeight: '100vh', fontFamily: 'Arial, sans-serif'}}>
-
-            {/* ---------------- NAVBAR ---------------- */}
-            <nav
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '0.5rem 1rem',
-                    borderBottom: '1px solid #ddd',
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 10,
-                    gap: 12,
-                    background: 'var(--color-primary)',
-                    color: 'white',
-                }}
-            >
-                {/* ---------- Left side ---------- */}
-                <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                    {/* Burger */}
-                    {isMobile && (
-                        <div onClick={() => setMenuOpen(!menuOpen)} style={{cursor: 'pointer'}}>
-                            <div style={{width: 25, height: 3, background: 'white', margin: '4px 0'}}/>
-                            <div style={{width: 25, height: 3, background: 'white', margin: '4px 0'}}/>
-                            <div style={{width: 25, height: 3, background: 'white', margin: '4px 0'}}/>
-                        </div>
-                    )}
-                </div>
-
-                {/* ---------- Tabs (desktop) ---------- */}
-                <div
+        <div
+            style={{
+                minHeight: '100dvh',
+                fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
+                background: '#f6f7f9',
+            }}
+        >
+            {/* ---------------- DESKTOP NAVBAR ONLY ---------------- */}
+            {!isMobile && (
+                <nav
                     style={{
                         display: 'flex',
-                        gap: '0.5rem',
-                        flex: 1,
-                        overflowX: 'auto',
-                    }}
-                >
-                    {tabs.map((tab) => (
-                        <Link
-                            key={tab.path}
-                            to={tab.path}
-                            style={{
-                                padding: '0.5rem 1rem',
-                                borderBottom:
-                                    location.pathname === tab.path ? '3px solid var(--color-danger)' : 'none',
-                                color: location.pathname === tab.path ? 'white' : 'white',
-                                fontWeight: location.pathname === tab.path ? 'bold' : 'normal',
-                                textDecoration: 'none',
-                                whiteSpace: 'nowrap',
-                                flexShrink: 0,
-                                display: !isMobile ? 'block' : 'none',
-                            }}
-                        >
-                            {tab.name}
-                        </Link>
-                    ))}
-                </div>
-
-                {/* ---------- Right side ---------- */}
-                <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-
-                    {/* Telegram login */}
-                    {!loading && <TelegramLoginWidget />}
-
-                    {/* User info */}
-                    {user && (
-                        <>
-                            <b>{user.first_name} 👋</b>
-                            <Button
-                                variant={"danger"}
-                                onClick={logout}
-                            >
-                                Выйти
-                            </Button>
-                        </>
-                    )}
-                </div>
-            </nav>
-
-            {/* ---------------- MOBILE MENU ---------------- */}
-            {menuOpen && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        inset: 0,
-                        background: 'rgba(0,0,0,0.7)',
-                        display: 'flex',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 20,
+                        padding: '0.6rem 1rem',
+                        borderBottom: '1px solid #eee',
+                        position: 'sticky',
+                        top: 0,
+                        zIndex: 10,
+                        background: 'var(--color-primary)',
+                        color: 'white',
                     }}
-                    onClick={() => setMenuOpen(false)}
                 >
-                    <div
-                        style={{
-                            background: '#fff',
-                            padding: '2rem',
-                            borderRadius: 8,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '1rem',
-                            minWidth: 200,
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {tabs.map((tab) => (
+                    <div style={{display: 'flex', gap: 12}}>
+                        {tabs.slice(0, 4).map((tab) => (
                             <Link
                                 key={tab.path}
                                 to={tab.path}
-                                onClick={() => setMenuOpen(false)}
                                 style={{
-                                    textAlign: 'center',
+                                    padding: '0.5rem 1rem',
                                     textDecoration: 'none',
-                                    color: '#333',
+                                    color: 'white',
                                     fontWeight:
-                                        location.pathname === tab.path ? 'bold' : 'normal',
+                                        location.pathname === tab.path ? 700 : 400,
                                 }}
                             >
                                 {tab.name}
                             </Link>
                         ))}
                     </div>
-                </div>
+
+                    <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                        {!loading && <TelegramLoginWidget />}
+
+                        {user && (
+                            <>
+                                <b>{user.first_name} 👋</b>
+                                <Button variant={"danger"} onClick={logout}>
+                                    Выйти
+                                </Button>
+                            </>
+                        )}
+                    </div>
+                </nav>
             )}
 
             {/* ---------------- CONTENT ---------------- */}
-            <div style={{padding: '1rem'}}>
+            <div
+                style={{
+                    padding: '1rem',
+                    paddingBottom: isMobile ? 110 : 16,
+                }}
+            >
                 {children}
             </div>
+
+            {/* ---------------- FLOATING PILL ---------------- */}
+            {isMobile && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        left: 12,
+                        right: 12,
+                        bottom: 'calc(env(safe-area-inset-bottom) + 10px)',
+                        height: 70,
+                        background: '#fff',
+                        borderRadius: 24,
+                        display: 'flex',
+                        padding: 6,
+                        gap: 4,
+                        boxShadow:
+                            '0 8px 30px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.06)',
+                        zIndex: 20,
+                    }}
+                >
+                    {tabs.map((tab) => {
+                        const active = location.pathname === tab.path;
+                        const Icon = tab.icon;
+
+                        return (
+                            <Link
+                                key={tab.path}
+                                to={tab.path}
+                                onClick={tapFeedback}
+                                style={{
+                                    flex: 1,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderRadius: 18,
+                                    textDecoration: 'none',
+                                    transition: 'all .15s ease',
+                                    background: active
+                                        ? 'var(--color-primary)'
+                                        : 'transparent',
+                                    color: active ? '#fff' : '#666',
+                                }}
+                            >
+                                <Icon size={20}/>
+                                <span
+                                    style={{
+                                        marginTop: 4,
+                                        fontSize: 11,
+                                        fontWeight: 600,
+                                    }}
+                                >
+                                    {tab.name}
+                                </span>
+                            </Link>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 };

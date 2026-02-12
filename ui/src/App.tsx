@@ -11,6 +11,7 @@ import MainLayout from './components/MainLayout';
 import React from "react";
 
 import { AuthProvider } from './context/AuthContext';
+import ProfilePage from "./pages/ProfilePage.tsx";
 
 const App = () => (
     <AuthProvider>
@@ -18,6 +19,7 @@ const App = () => (
             <Route path="/" element={<MainLayout><Home/></MainLayout>} />
             <Route path="/workout/:id" element={<MainLayout><WorkoutPage/></MainLayout>} />
             <Route path="/stats" element={<MainLayout><StatsPage/></MainLayout>} />
+            <Route path="/profile" element={<MainLayout><ProfilePage/></MainLayout>} />
             <Route path="/programs" element={<MainLayout><ProgramsPage/></MainLayout>} />
             <Route path="/programs/:id" element={<MainLayout><ProgramDetailsPage/></MainLayout>} />
             <Route path="/programs/:programId/days/:dayId" element={<MainLayout><DayDetailsPage/></MainLayout>} />
