@@ -80,81 +80,75 @@ const Home: React.FC = () => {
         return () => observer.disconnect();
     }, [offset, pagination, fetchWorkouts]);
 
-    // ---------------- UI ----------------
+    // -------- login --------
+    useEffect(() => {
+        if (!authLoading && !user) {
+            navigate('/profile');
+        }
+    }, [authLoading, user]);
 
-    if (authLoading) return <p>Загрузка...</p>;
+    return user && <div className="page stack">
+        <h1>Мои тренировки</h1>
 
-    if (!user)
-        return (
-            <div style={{textAlign: 'center', marginTop: 40}}>
-                <h3>Войдите через Telegram 👆</h3>
-            </div>
-        );
+        {user && (
+            <Button
+                variant="active"
+                onClick={() => alert('Начало новой тренировки!')}
+            >
+                ▶️ Начать новую тренировку
+            </Button>
+        )}
 
-    return (
-        <div className="page stack">
-            <h1>Мои тренировки</h1>
-
-            {user && (
-                <Button
-                    variant="active"
-                    onClick={() => alert('Начало новой тренировки!')}
+        <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
+            {workouts.map((w, idx) => (
+                <div
+                    key={w.id}
+                    onClick={() => navigate(`/workout/${w.id}`)}
+                    className="workout-item"
                 >
-                    ▶️ Начать новую тренировку
-                </Button>
-            )}
+                    <WorkoutCard w={w} idx={idx + 1}/>
 
-            <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
-                {workouts.map((w, idx) => (
-                    <div
-                        key={w.id}
-                        onClick={() => navigate(`/workout/${w.id}`)}
-                        className="workout-item"
-                    >
-                        <WorkoutCard w={w} idx={idx + 1} />
-
-                        <div className="workout-actions">
-                            {!w.completed && (
-                                <Button
-                                    variant="active"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        // handleStart(w.id);
-                                    }}
-                                >
-                                    ▶️
-                                </Button>
-                            )}
-
+                    <div className="workout-actions">
+                        {!w.completed && (
                             <Button
-                                variant="danger"
+                                variant="active"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDelete(w.id);
+                                    // handleStart(w.id);
                                 }}
                             >
-                                🗑️
+                                ▶️
                             </Button>
-                        </div>
+                        )}
+
+                        <Button
+                            variant="danger"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(w.id);
+                            }}
+                        >
+                            🗑️
+                        </Button>
                     </div>
-                ))}
-            </div>
-
-            <div ref={loaderRef} style={{padding: 20}}>
-                {loading && 'Загрузка...'}
-            </div>
-
-            {pagination && (
-                <p>
-                    {Math.min(
-                        pagination.limit + pagination.offset,
-                        pagination.total
-                    )}{' '}
-                    из {pagination.total}
-                </p>
-            )}
+                </div>
+            ))}
         </div>
-    );
+
+        <div ref={loaderRef} style={{padding: 20}}>
+            {loading && 'Загрузка...'}
+        </div>
+
+        {pagination && (
+            <p>
+                {Math.min(
+                    pagination.limit + pagination.offset,
+                    pagination.total
+                )}{' '}
+                из {pagination.total}
+            </p>
+        )}
+    </div>;
 };
 
 export default Home;

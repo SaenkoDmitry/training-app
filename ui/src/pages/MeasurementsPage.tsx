@@ -1,11 +1,15 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import '../styles/MeasurementsPage.css';
 import Button from "../components/Button.tsx";
-import { deleteMeasurement as apiDeleteMeasurement } from "../api/measurements.ts";
+import {deleteMeasurement as apiDeleteMeasurement} from "../api/measurements.ts";
+import {useAuth} from "../context/AuthContext.tsx";
+import {useNavigate} from "react-router-dom";
 
 const PAGE_SIZE = 15;
 
 const MeasurementsPage: React.FC = () => {
+    const {user, loading: authLoading} = useAuth();
+    const navigate = useNavigate();
     const [measurements, setMeasurements] = useState<Measurement[]>([]);
     const [count, setCount] = useState(0);
     const [offset, setOffset] = useState(0);
@@ -81,14 +85,14 @@ const MeasurementsPage: React.FC = () => {
 
     /* ===================== Добавление измерения ===================== */
     const handleInputChange = (field: keyof ToCreateMeasurement, value: string) => {
-        setNewMeasurement(prev => ({ ...prev, [field]: Number(value) }));
+        setNewMeasurement(prev => ({...prev, [field]: Number(value)}));
     };
 
     const handleSaveNewMeasurement = async () => {
         try {
             const res = await fetch('/api/measurements', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(newMeasurement),
             });
             if (!res.ok) throw new Error("Ошибка при сохранении измерения");
@@ -124,175 +128,180 @@ const MeasurementsPage: React.FC = () => {
         }
     };
 
-    /* ===================== Рендер ===================== */
-    return (
-        <div className="measurements-page">
-            <h1>Замеры</h1>
+    // -------- login --------
+    useEffect(() => {
+        if (!authLoading && !user) {
+            navigate('/profile');
+        }
+    }, [authLoading, user]);
 
-            {!adding && (
-                <Button variant="active" onClick={() => setAdding(true)}>
-                    ➕ Добавить новое измерение
-                </Button>
-            )}
+    return user && <div className="measurements-page">
+        <h1>Замеры</h1>
 
-            {/* ======== TABLE (DESKTOP) ======== */}
-            <div className="desktop-only table-wrapper">
-                <table className="measurements-table">
-                    <thead>
-                    <tr>
-                        <th>№</th>
-                        <th>Дата</th>
-                        <th>Плечи</th>
-                        <th>Грудь</th>
-                        <th>Л. рука</th>
-                        <th>П. рука</th>
-                        <th>Талия</th>
-                        <th>Ягодицы</th>
-                        <th>Л. бедро</th>
-                        <th>П. бедро</th>
-                        <th>Л. икра</th>
-                        <th>П. икра</th>
-                        <th>Вес</th>
-                        <th>Действия</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {adding && (
-                        <tr className="new-measurement-row">
-                            <td>-</td>
-                            <td>-</td>
-                            {fields.map(field => (
-                                <td key={field.key}>
-                                    <input
-                                        type="number"
-                                        value={newMeasurement[field.key] ?? ''}
-                                        onChange={e => handleInputChange(field.key, e.target.value)}
-                                    />
-                                </td>
-                            ))}
-                            <td style={{ minWidth: "140px" }}>
-                                <Button variant="active" onClick={handleSaveNewMeasurement}>💾</Button>
-                                <Button style={{ marginLeft: "10px" }} onClick={handleCancelNewMeasurement}>❌</Button>
-                            </td>
-                        </tr>
-                    )}
+        {!adding && (
+            <Button variant="active" onClick={() => setAdding(true)}>
+                ➕ Добавить новое измерение
+            </Button>
+        )}
 
-                    {measurements.map((m, idx) => (
-                        <tr key={m.id} ref={idx === measurements.length - 1 ? lastRowRef : null}>
-                            <td>{idx + 1}</td>
-                            <td>{m.created_at}</td>
-                            <td>{m.shoulders}</td>
-                            <td>{m.chest}</td>
-                            <td>{m.hand_left}</td>
-                            <td>{m.hand_right}</td>
-                            <td>{m.waist}</td>
-                            <td>{m.buttocks}</td>
-                            <td>{m.hip_left}</td>
-                            <td>{m.hip_right}</td>
-                            <td>{m.calf_left}</td>
-                            <td>{m.calf_right}</td>
-                            <td className="weight">{m.weight}</td>
-                            <td>
-                                <Button
-                                    style={{ width: "44px", padding: "0 8px", borderRadius: "16px" }}
-                                    variant="danger"
-                                    onClick={() => handleDeleteMeasurement(m.id)}
-                                    disabled={!m.id} // <-- блокируем, если id = 0 или undefined
-                                >🗑</Button>
-                            </td>
-                        </tr>
-                    ))}
-
-                    {loading && (
-                        <tr>
-                            <td colSpan={14}>Загрузка...</td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* ======== CARDS (MOBILE) ======== */}
-            <div className="mobile-only cards-wrapper">
+        {/* ======== TABLE (DESKTOP) ======== */}
+        <div className="desktop-only table-wrapper">
+            <table className="measurements-table">
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Дата</th>
+                    <th>Плечи</th>
+                    <th>Грудь</th>
+                    <th>Л. рука</th>
+                    <th>П. рука</th>
+                    <th>Талия</th>
+                    <th>Ягодицы</th>
+                    <th>Л. бедро</th>
+                    <th>П. бедро</th>
+                    <th>Л. икра</th>
+                    <th>П. икра</th>
+                    <th>Вес</th>
+                    <th>Действия</th>
+                </tr>
+                </thead>
+                <tbody>
                 {adding && (
-                    <div className="card-form">
+                    <tr className="new-measurement-row">
+                        <td>-</td>
+                        <td>-</td>
                         {fields.map(field => (
-                            <div key={field.key} className="card-form-field">
-                                <b>{field.label}</b>
+                            <td key={field.key}>
                                 <input
-                                    style={{ maxHeight: "40px" }}
                                     type="number"
                                     value={newMeasurement[field.key] ?? ''}
                                     onChange={e => handleInputChange(field.key, e.target.value)}
                                 />
-                            </div>
+                            </td>
                         ))}
-                        <div className="card-form-buttons">
-                            <Button variant="active" onClick={handleSaveNewMeasurement}>Сохранить</Button>
-                            <Button variant="ghost" onClick={handleCancelNewMeasurement}>Отмена</Button>
-                        </div>
-                    </div>
+                        <td style={{minWidth: "140px"}}>
+                            <Button variant="active" onClick={handleSaveNewMeasurement}>💾</Button>
+                            <Button style={{marginLeft: "10px"}} onClick={handleCancelNewMeasurement}>❌</Button>
+                        </td>
+                    </tr>
                 )}
 
                 {measurements.map((m, idx) => (
-                    <div
-                        key={m.id}
-                        ref={idx === measurements.length - 1 ? lastCardRef : null}
-                        className="measurement-card"
-                    >
-                        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <span>📅 {m.created_at}</span>
-                                <span style={{ marginLeft: '10px' }}>⚖ {m.weight} кг</span>
-                            </div>
+                    <tr key={m.id} ref={idx === measurements.length - 1 ? lastRowRef : null}>
+                        <td>{idx + 1}</td>
+                        <td>{m.created_at}</td>
+                        <td>{m.shoulders}</td>
+                        <td>{m.chest}</td>
+                        <td>{m.hand_left}</td>
+                        <td>{m.hand_right}</td>
+                        <td>{m.waist}</td>
+                        <td>{m.buttocks}</td>
+                        <td>{m.hip_left}</td>
+                        <td>{m.hip_right}</td>
+                        <td>{m.calf_left}</td>
+                        <td>{m.calf_right}</td>
+                        <td className="weight">{m.weight}</td>
+                        <td>
                             <Button
-                                style={{ width: '44px', height: '44px' }}
+                                style={{width: "44px", padding: "0 8px", borderRadius: "16px"}}
                                 variant="danger"
                                 onClick={() => handleDeleteMeasurement(m.id)}
-                                disabled={!m.id}
-                            >
-                                🗑
-                            </Button>
-                        </div>
-
-                        <div className="card-body two-columns">
-                            <div className="card-column">
-                                <div className="card-row"><span>Плечи:</span><span>{m.shoulders}</span></div>
-                                <div className="card-row"><span>Грудь:</span><span>{m.chest}</span></div>
-                                <div className="card-row"><span>Л. рука:</span><span>{m.hand_left}</span></div>
-                                <div className="card-row"><span>П. рука:</span><span>{m.hand_right}</span></div>
-                                <div className="card-row"><span>Талия:</span><span>{m.waist}</span></div>
-                            </div>
-                            <div className="card-column">
-                                <div className="card-row"><span>Ягодицы:</span><span>{m.buttocks}</span></div>
-                                <div className="card-row"><span>Л. бедро:</span><span>{m.hip_left}</span></div>
-                                <div className="card-row"><span>П. бедро:</span><span>{m.hip_right}</span></div>
-                                <div className="card-row"><span>Л. икра:</span><span>{m.calf_left}</span></div>
-                                <div className="card-row"><span>П. икра:</span><span>{m.calf_right}</span></div>
-                            </div>
-                        </div>
-                    </div>
+                                disabled={!m.id} // <-- блокируем, если id = 0 или undefined
+                            >🗑</Button>
+                        </td>
+                    </tr>
                 ))}
 
-            </div>
-
-            {toast && <div className="toast">{toast}</div>}
+                {loading && (
+                    <tr>
+                        <td colSpan={14}>Загрузка...</td>
+                    </tr>
+                )}
+                </tbody>
+            </table>
         </div>
-    );
+
+        {/* ======== CARDS (MOBILE) ======== */}
+        <div className="mobile-only cards-wrapper">
+            {adding && (
+                <div className="card-form">
+                    {fields.map(field => (
+                        <div key={field.key} className="card-form-field">
+                            <b>{field.label}</b>
+                            <input
+                                style={{maxHeight: "40px"}}
+                                type="number"
+                                value={newMeasurement[field.key] ?? ''}
+                                onChange={e => handleInputChange(field.key, e.target.value)}
+                            />
+                        </div>
+                    ))}
+                    <div className="card-form-buttons">
+                        <Button variant="active" onClick={handleSaveNewMeasurement}>Сохранить</Button>
+                        <Button variant="ghost" onClick={handleCancelNewMeasurement}>Отмена</Button>
+                    </div>
+                </div>
+            )}
+
+            {measurements.map((m, idx) => (
+                <div
+                    key={m.id}
+                    ref={idx === measurements.length - 1 ? lastCardRef : null}
+                    className="measurement-card"
+                >
+                    <div className="card-header"
+                         style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <div>
+                            <span>📅 {m.created_at}</span>
+                            <span style={{marginLeft: '10px'}}>⚖ {m.weight} кг</span>
+                        </div>
+                        <Button
+                            style={{width: '44px', height: '44px'}}
+                            variant="danger"
+                            onClick={() => handleDeleteMeasurement(m.id)}
+                            disabled={!m.id}
+                        >
+                            🗑
+                        </Button>
+                    </div>
+
+                    <div className="card-body two-columns">
+                        <div className="card-column">
+                            <div className="card-row"><span>Плечи:</span><span>{m.shoulders}</span></div>
+                            <div className="card-row"><span>Грудь:</span><span>{m.chest}</span></div>
+                            <div className="card-row"><span>Л. рука:</span><span>{m.hand_left}</span></div>
+                            <div className="card-row"><span>П. рука:</span><span>{m.hand_right}</span></div>
+                            <div className="card-row"><span>Талия:</span><span>{m.waist}</span></div>
+                        </div>
+                        <div className="card-column">
+                            <div className="card-row"><span>Ягодицы:</span><span>{m.buttocks}</span></div>
+                            <div className="card-row"><span>Л. бедро:</span><span>{m.hip_left}</span></div>
+                            <div className="card-row"><span>П. бедро:</span><span>{m.hip_right}</span></div>
+                            <div className="card-row"><span>Л. икра:</span><span>{m.calf_left}</span></div>
+                            <div className="card-row"><span>П. икра:</span><span>{m.calf_right}</span></div>
+                        </div>
+                    </div>
+                </div>
+            ))}
+
+        </div>
+
+        {toast && <div className="toast">{toast}</div>}
+    </div>;
 };
 
 const fields: { key: keyof ToCreateMeasurement; label: string }[] = [
-    { key: 'shoulders', label: 'Плечи' },
-    { key: 'chest', label: 'Грудь' },
-    { key: 'hand_left', label: 'Л. рука' },
-    { key: 'hand_right', label: 'П. рука' },
-    { key: 'waist', label: 'Талия' },
-    { key: 'buttocks', label: 'Ягодицы' },
-    { key: 'hip_left', label: 'Л. бедро' },
-    { key: 'hip_right', label: 'П. бедро' },
-    { key: 'calf_left', label: 'Л. икра' },
-    { key: 'calf_right', label: 'П. икра' },
-    { key: 'weight', label: 'Вес' },
+    {key: 'shoulders', label: 'Плечи'},
+    {key: 'chest', label: 'Грудь'},
+    {key: 'hand_left', label: 'Л. рука'},
+    {key: 'hand_right', label: 'П. рука'},
+    {key: 'waist', label: 'Талия'},
+    {key: 'buttocks', label: 'Ягодицы'},
+    {key: 'hip_left', label: 'Л. бедро'},
+    {key: 'hip_right', label: 'П. бедро'},
+    {key: 'calf_left', label: 'Л. икра'},
+    {key: 'calf_right', label: 'П. икра'},
+    {key: 'weight', label: 'Вес'},
 ];
 
 export default MeasurementsPage;

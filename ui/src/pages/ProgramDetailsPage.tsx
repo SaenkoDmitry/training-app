@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { createDay, deleteDay, getProgram } from "../api/days";
+import {useEffect, useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
+import {createDay, deleteDay, getProgram} from "../api/days";
 import Button from "../components/Button";
 import DayCard from "../components/DayCard";
 import "../styles/ProgramBase.css";
+import {useAuth} from "../context/AuthContext.tsx";
 
 export type WorkoutDayTypeDTO = {
     id: number;
@@ -22,7 +23,9 @@ export type ProgramDTO = {
 };
 
 export default function ProgramDetailsPage() {
-    const { id } = useParams();
+    const {user, loading: authLoading} = useAuth();
+    const navigate = useNavigate();
+    const {id} = useParams();
     const [program, setProgram] = useState<ProgramDTO | null>(null);
     const [toast, setToast] = useState<string | null>(null);
 
@@ -68,28 +71,33 @@ export default function ProgramDetailsPage() {
         setTimeout(() => setToast(null), 3000);
     };
 
-    return (
-        <div className="page stack">
-            <h2 className="title">{program.name}</h2>
+    // -------- login --------
+    useEffect(() => {
+        if (!authLoading && !user) {
+            navigate('/profile');
+        }
+    }, [authLoading, user]);
 
-            <Button variant="active" onClick={addDay}>
-                + Добавить день
-            </Button>
+    return user && <div className="page stack">
+        <h2 className="title">{program.name}</h2>
 
-            {program.day_types && program.day_types.length > 0 ? (
-                program.day_types.map((day) => (
-                    <DayCard
-                        key={day.id}
-                        day={day}
-                        programId={program.id}
-                        onDelete={removeDay}
-                    />
-                ))
-            ) : (
-                <div>Дней пока нет</div>
-            )}
+        <Button variant="active" onClick={addDay}>
+            + Добавить день
+        </Button>
 
-            {toast && <div className="toast">{toast}</div>}
-        </div>
-    );
+        {program.day_types && program.day_types.length > 0 ? (
+            program.day_types.map((day) => (
+                <DayCard
+                    key={day.id}
+                    day={day}
+                    programId={program.id}
+                    onDelete={removeDay}
+                />
+            ))
+        ) : (
+            <div>Дней пока нет</div>
+        )}
+
+        {toast && <div className="toast">{toast}</div>}
+    </div>;
 }

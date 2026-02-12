@@ -42,7 +42,7 @@ export default defineConfig({
         allowedHosts: [
             'localhost',
             '127.0.0.1',
-            '98db0e14ab2dda.lhr.life', // ваш туннельный host, чтобы работал telegram widget
+            '7fd9106822e35e.lhr.life', // ваш туннельный host, чтобы работал telegram widget
         ],
         proxy: {
             '/api': 'http://localhost:8080',

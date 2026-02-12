@@ -1,7 +1,6 @@
 import React from 'react';
 import {Link, useLocation} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
-import TelegramLoginWidget from "../pages/TelegramLoginWidget.tsx";
 import Button from "./Button.tsx";
 
 import {
@@ -73,7 +72,6 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({children}) => {
                     </div>
 
                     <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                        {!loading && <TelegramLoginWidget />}
 
                         {user && (
                             <>

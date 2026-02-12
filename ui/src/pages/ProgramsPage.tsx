@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     getPrograms,
     createProgram,
@@ -8,12 +8,14 @@ import {
 } from "../api/programs";
 import ProgramCard from "../components/ProgramCard";
 import Button from "../components/Button";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import "../styles/ProgramBase.css";
+import {useAuth} from "../context/AuthContext.tsx";
 
 export default function ProgramsPage() {
-    const [programs, setPrograms] = useState<any[]>([]);
+    const {user, loading: authLoading} = useAuth();
     const navigate = useNavigate();
+    const [programs, setPrograms] = useState<any[]>([]);
     const [toast, setToast] = useState<string | null>(null);
 
     const load = async () => {
@@ -87,27 +89,32 @@ export default function ProgramsPage() {
         setTimeout(() => setToast(null), 3000);
     };
 
-    return (
-        <div className="page stack">
-            <h1>Программы</h1>
+    // -------- login --------
+    useEffect(() => {
+        if (!authLoading && !user) {
+            navigate('/profile');
+        }
+    }, [authLoading, user]);
 
-            <Button variant="active" onClick={handleCreate}>
-                + Новая программа
-            </Button>
+    return user && <div className="page stack">
+        <h1>Программы</h1>
 
-            {programs.map((p) => (
-                <ProgramCard
-                    key={p.id}
-                    name={p.name}
-                    active={p.is_active}
-                    onOpen={() => navigate(`/programs/${p.id}`)}
-                    onActivate={() => handleActivate(p.id, p.name)}
-                    onRename={() => handleRename(p.id, p.name)}
-                    onDelete={() => handleDelete(p.id)}
-                />
-            ))}
+        <Button variant="active" onClick={handleCreate}>
+            + Новая программа
+        </Button>
 
-            {toast && <div className="toast">{toast}</div>}
-        </div>
-    );
+        {programs.map((p) => (
+            <ProgramCard
+                key={p.id}
+                name={p.name}
+                active={p.is_active}
+                onOpen={() => navigate(`/programs/${p.id}`)}
+                onActivate={() => handleActivate(p.id, p.name)}
+                onRename={() => handleRename(p.id, p.name)}
+                onDelete={() => handleDelete(p.id)}
+            />
+        ))}
+
+        {toast && <div className="toast">{toast}</div>}
+    </div>;
 }

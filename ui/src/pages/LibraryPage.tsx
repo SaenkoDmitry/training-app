@@ -3,9 +3,11 @@ import {useAuth} from '../context/AuthContext';
 import SafeTextRenderer from "../components/SafeTextRenderer.tsx";
 import {getExerciseGroups, getExerciseTypesByGroup} from "../api/exercises.ts";
 import Button from "../components/Button.tsx";
+import {useNavigate} from "react-router-dom";
 
 const LibraryPage: React.FC = () => {
-    const {user} = useAuth();
+    const {user, loading: authLoading} = useAuth();
+    const navigate = useNavigate();
 
     const [groups, setGroups] = useState<Group[]>([]);
     const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
@@ -35,113 +37,120 @@ const LibraryPage: React.FC = () => {
         })
     }, [selectedGroup]);
 
-    if (!user) return <h3>Войдите через Telegram 👆</h3>;
+    // -------- login --------
+    useEffect(() => {
+        if (!authLoading && !user) {
+            navigate('/profile');
+        }
+    }, [authLoading, user]);
 
-    return (
-        <div>
-            <h1>Библиотека упражнений</h1>
+    return user && <div>
+        <h1>Библиотека упражнений</h1>
 
-            {/* ---------- GROUP TABS ---------- */}
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-                    gap: 12,          // ← больше расстояние
-                    padding: '4px 2px',
-                    marginBottom: 20
-                }}
-            >
-                {groups.map(g => (
-                    <Button
-                        variant={selectedGroup === g.code ? "primary" : "ghost"}
-                        key={g.code}
-                        onClick={() => setSelectedGroup(g.code)}
+        {/* ---------- GROUP TABS ---------- */}
+        <div
+            style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                gap: 12,          // ← больше расстояние
+                padding: '4px 2px',
+                marginBottom: 20
+            }}
+        >
+            {groups.map(g => (
+                <Button
+                    variant={selectedGroup === g.code ? "primary" : "ghost"}
+                    key={g.code}
+                    onClick={() => setSelectedGroup(g.code)}
+                >
+                    {g.name}
+                </Button>
+            ))}
+        </div>
+
+        {/* ---------- EXERCISES ---------- */}
+        {loading && <p>Загрузка...</p>}
+
+        <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
+            {exercises.map((ex, index) => {
+                const isOpen = openedId === ex.id;
+                const softBg = index % 2 === 0 ? '#fff' : '#f9f9f9'; // мягкое чередование
+
+                return (
+                    <div
+                        key={ex.id}
+                        style={{
+                            border: '1px solid #eee',
+                            borderRadius: 12,
+                            padding: 12,
+                            transition: 'all 0.2s ease',
+                            boxShadow: isOpen ? '0 6px 12px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.05)',
+                            backgroundColor: isOpen ? 'var(--color-primary-soft)' : softBg,
+                            cursor: 'pointer',
+                        }}
+                        onClick={() => setOpenedId(prev => (prev === ex.id ? null : ex.id))}
+                        onMouseEnter={e => {
+                            if (!isOpen) e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                            if (!isOpen) e.currentTarget.style.backgroundColor = '#f6f6f6';
+                        }}
+                        onMouseLeave={e => {
+                            if (!isOpen) e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+                            if (!isOpen) e.currentTarget.style.backgroundColor = softBg;
+                        }}
                     >
-                        {g.name}
-                    </Button>
-                ))}
-            </div>
-
-            {/* ---------- EXERCISES ---------- */}
-            {loading && <p>Загрузка...</p>}
-
-            <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
-                {exercises.map((ex, index) => {
-                    const isOpen = openedId === ex.id;
-                    const softBg = index % 2 === 0 ? '#fff' : '#f9f9f9'; // мягкое чередование
-
-                    return (
-                        <div
-                            key={ex.id}
-                            style={{
-                                border: '1px solid #eee',
-                                borderRadius: 12,
-                                padding: 12,
-                                transition: 'all 0.2s ease',
-                                boxShadow: isOpen ? '0 6px 12px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.05)',
-                                backgroundColor: isOpen ? 'var(--color-primary-soft)' : softBg,
-                                cursor: 'pointer',
-                            }}
-                            onClick={() => setOpenedId(prev => (prev === ex.id ? null : ex.id))}
-                            onMouseEnter={e => {
-                                if (!isOpen) e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
-                                if (!isOpen) e.currentTarget.style.backgroundColor = '#f6f6f6';
-                            }}
-                            onMouseLeave={e => {
-                                if (!isOpen) e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
-                                if (!isOpen) e.currentTarget.style.backgroundColor = softBg;
-                            }}
-                        >
-                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                                <strong>{ex.name}</strong>
-                                {/* стрелка */}
-                                <span
-                                    style={{
-                                        display: 'inline-block',
-                                        transition: 'transform 0.3s ease',
-                                        transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
-                                    }}
-                                >
-            ▶
-          </span>
-                            </div>
-
-                            {/* раскрытие с плавным эффектом */}
-                            <div
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                            <strong>{ex.name}</strong>
+                            {/* стрелка */}
+                            <span
                                 style={{
-                                    maxHeight: isOpen ? 1000 : 0,
-                                    overflow: 'hidden',
-                                    transition: 'max-height 0.3s ease',
-                                    marginTop: isOpen ? 10 : 0,
+                                    display: 'inline-block',
+                                    transition: 'transform 0.3s ease',
+                                    transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)',
                                 }}
                             >
-                                {ex.description && (
-                                    <p>
-                                        <SafeTextRenderer html={ex.description}/>
-                                    </p>
-                                )}
-
-                                <p>
-                                    {ex.rest_in_seconds > 0 && <div style={{marginBottom: 10}}><b>Отдых: </b>{ex.rest_in_seconds} секунд</div>}
-                                    <div><b>Единицы измерения:</b> {ex.units.split(',').map(field => unitTypes[field]).join(", ")}</div>
-                                </p>
-
-                                {ex.url && (
-                                    <Button
-                                        variant={"primary"}
-                                        style={{color: "black", backgroundColor: "gold"}}
-                                        onClick={() => window.open(ex.url)}
-                                    >
-                                        Смотреть технику 🤓
-                                    </Button>
-                                )}
-                            </div>
+            ▶
+          </span>
                         </div>
-                    );
-                })}
-            </div>
+
+                        {/* раскрытие с плавным эффектом */}
+                        <div
+                            style={{
+                                maxHeight: isOpen ? 1000 : 0,
+                                overflow: 'hidden',
+                                transition: 'max-height 0.3s ease',
+                                marginTop: isOpen ? 10 : 0,
+                            }}
+                        >
+                            {ex.description && (
+                                <p>
+                                    <SafeTextRenderer html={ex.description}/>
+                                </p>
+                            )}
+
+                            <p>
+                                {ex.rest_in_seconds > 0 &&
+                                    <div style={{marginBottom: 10}}><b>Отдых: </b>{ex.rest_in_seconds} секунд
+                                    </div>}
+                                <div><b>Единицы
+                                    измерения:</b> {ex.units.split(',').map(field => unitTypes[field]).join(", ")}
+                                </div>
+                            </p>
+
+                            {ex.url && (
+                                <Button
+                                    variant={"primary"}
+                                    style={{color: "black", backgroundColor: "gold"}}
+                                    onClick={() => window.open(ex.url)}
+                                >
+                                    Смотреть технику 🤓
+                                </Button>
+                            )}
+                        </div>
+                    </div>
+                );
+            })}
         </div>
-    );
+    </div>;
 };
 
 export default LibraryPage;
