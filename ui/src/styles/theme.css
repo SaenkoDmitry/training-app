@@ -4,8 +4,14 @@
     --color-primary-hover: #084c7a;
     --color-primary-soft: #eef4fc;
 
+    --color-active: #6dc774;
+    --color-active-hover: #45ce51;
+
     --color-danger: #e36565;
     --color-danger-hover: #ff1f1f;
+
+    --color-ghost: #e3e3e3;
+    --color-ghost-hover: #bbbbbb;
 
     --color-bg: #f6f8fa;
     --color-card: #ffffff;

@@ -100,7 +100,7 @@ const Home: React.FC = () => {
                     variant="primary"
                     onClick={() => alert('Начало новой тренировки!')}
                 >
-                    Начать тренировку
+                    ▶️ Начать новую тренировку
                 </Button>
             )}
 
@@ -111,16 +111,31 @@ const Home: React.FC = () => {
                         onClick={() => navigate(`/workout/${w.id}`)}
                         className="workout-item"
                     >
-                        <WorkoutCard w={w} idx={idx + 1}/>
+                        <WorkoutCard w={w} idx={idx + 1} />
 
-                        <Button
-                            variant={"danger"}
-                            style={{position: "absolute", bottom: 8, right: 8}}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(w.id);
-                            }}
-                        >🗑️</Button>
+                        <div className="workout-actions">
+                            {!w.completed && (
+                                <Button
+                                    variant="active"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        // handleStart(w.id);
+                                    }}
+                                >
+                                    ▶️
+                                </Button>
+                            )}
+
+                            <Button
+                                variant="danger"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDelete(w.id);
+                                }}
+                            >
+                                🗑️
+                            </Button>
+                        </div>
                     </div>
                 ))}
             </div>

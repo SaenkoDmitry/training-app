@@ -33,7 +33,7 @@ export default function ProgramCard({
             <div className="row-actions">
                 <Button
                     onClick={onActivate}
-                    variant={active ? "primary" : "ghost"}
+                    variant={active ? "active" : "ghost"}
                 >
                     ⭐
                 </Button>

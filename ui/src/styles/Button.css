@@ -24,6 +24,16 @@
     background: var(--color-primary-hover);
 }
 
+/* active */
+.btn-active {
+    background: var(--color-active);
+    color: white;
+}
+
+.btn-active:hover {
+    background: var(--color-active-hover);
+}
+
 /* danger */
 .btn-danger {
     background: var(--color-danger);
@@ -35,31 +45,13 @@
     color: white;
 }
 
-/* FAB */
-.fab-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-
-    width: 56px;
-    height: 56px;
-
-    border-radius: 50%;
-    border: none;
-
-    background: var(--color-primary);
+/* ghost */
+.btn-ghost {
+    background: var(--color-ghost);
     color: white;
-
-    font-size: 26px;
-    box-shadow: var(--shadow-md);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    cursor: pointer;
 }
 
-.fab-button:active {
-    transform: scale(0.95);
+.btn-ghost:hover {
+    background: var(--color-ghost-hover);
+    color: white;
 }

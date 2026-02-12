@@ -4,6 +4,7 @@ interface Workout {
     started_at?: string;
     duration?: string;
     status?: string;
+    completed: boolean;
 }
 
 interface Pagination {

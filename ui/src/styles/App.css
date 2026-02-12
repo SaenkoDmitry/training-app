@@ -34,3 +34,12 @@
 
   cursor: pointer;
 }
+
+.workout-actions {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+
+  display: flex;
+  gap: 8px;
+}
