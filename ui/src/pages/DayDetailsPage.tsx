@@ -7,10 +7,43 @@ import Button from "../components/Button";
 import "../styles/DayDetailsPage.css";
 import {Loader} from "lucide-react";
 
+import {closestCenter, DndContext} from "@dnd-kit/core";
+
+import {arrayMove, SortableContext, useSortable, verticalListSortingStrategy,} from "@dnd-kit/sortable";
+
+import {CSS} from "@dnd-kit/utilities";
+
+
+// ================= SORTABLE ITEM =================
+
+function SortableExercise({id, children}: any) {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({id});
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <div ref={setNodeRef} style={style} {...attributes}>
+            {children(listeners)}
+        </div>
+    );
+}
+
+
+// ================= PAGE =================
+
 export default function DayDetailsPage() {
-    const [loading, setLoading] = useState(false);
     const {programId, dayId} = useParams();
 
+    const [loading, setLoading] = useState(false);
     const [exercises, setExercises] = useState<any[]>([]);
     const [dayName, setDayName] = useState("");
 
@@ -24,22 +57,26 @@ export default function DayDetailsPage() {
     const autosaveTimer = useRef<any>(null);
     const firstLoad = useRef(true);
 
-    // ---------------- LOAD ----------------
+
+    // ================= LOAD =================
+
     const fetchDay = async () => {
         const program = await getProgram(Number(programId));
-        const day = program.day_types.find((d) => d.id === Number(dayId));
+        const day = program.day_types.find((d: any) => d.id === Number(dayId));
         if (!day) return;
 
         setDayName(day.name);
 
         if (day.preset) {
             setLoading(true);
-            const parsed = await parsePreset(day.preset).finally(() => {
-                setLoading(false);
-            });
+
+            const parsed = await parsePreset(day.preset).finally(() =>
+                setLoading(false)
+            );
 
             setExercises(
-                parsed.exercises.map((ex: any) => ({
+                parsed.exercises.map((ex: any, i: number) => ({
+                    uid: `${ex.id}-${i}`, // 🔥 уникальный id для dnd
                     id: ex.id,
                     name: ex.name,
                     sets: ex.sets,
@@ -52,10 +89,12 @@ export default function DayDetailsPage() {
 
     useEffect(() => {
         fetchDay();
-        getExerciseGroups().then((groups: Group[]) => setGroups(groups));
+        getExerciseGroups().then(setGroups);
     }, []);
 
-    // ---------------- AUTOSAVE (debounce 500ms) ----------------
+
+    // ================= AUTOSAVE =================
+
     useEffect(() => {
         if (firstLoad.current) return;
 
@@ -71,89 +110,79 @@ export default function DayDetailsPage() {
         }, 500);
     }, [exercises]);
 
+
     const showToast = (text: string) => {
         setToast(text);
         setTimeout(() => setToast(null), 1500);
     };
 
-    // ---------------- DRAG ----------------
-    const onDragStart = (e: any, i: number) => {
-        e.dataTransfer.setData("index", i);
+
+    // ================= DRAG END =================
+
+    const handleDragEnd = (event: any) => {
+        const {active, over} = event;
+
+        if (!over || active.id === over.id) return;
+
+        const oldIndex = exercises.findIndex(e => e.uid === active.id);
+        const newIndex = exercises.findIndex(e => e.uid === over.id);
+
+        setExercises(arrayMove(exercises, oldIndex, newIndex));
     };
 
-    const onDrop = (e: any, i: number) => {
-        const from = Number(e.dataTransfer.getData("index"));
-        const copy = [...exercises];
-        const [moved] = copy.splice(from, 1);
-        copy.splice(i, 0, moved);
-        setExercises(copy);
-    };
 
-    // ---------------- EXERCISE ADD ----------------
+    // ================= EXERCISE ADD =================
+
     const loadTypes = async (code: string) => {
         setSelectedGroup(code);
-        const exerciseTypes = await getExerciseTypesByGroup(code);
-        setTypes(exerciseTypes);
+        setTypes(await getExerciseTypesByGroup(code));
     };
 
     const addExercise = () => {
-        const ex: ExerciseType = types.find((t) => t.id === Number(selectedType));
+        const ex: any = types.find(t => t.id === Number(selectedType));
         if (!ex) return;
 
-        let reps = ex.units.includes("reps") ? 10 : 0
-        let weight = ex.units.includes("weight") ? 10 : 0
-        let minutes = ex.units.includes("minutes") ? 10 : 0
-        let meters = ex.units.includes("meters") ? 10 : 0
         setExercises([
             ...exercises,
             {
+                uid: crypto.randomUUID(), // 🔥 уникальный ключ
                 id: ex.id,
                 name: ex.name,
-                sets: [{reps: reps, weight: weight, minutes: minutes, meters: meters}],
+                sets: [{reps: 10, weight: 0, minutes: 0, meters: 0}],
             },
         ]);
     };
 
     const removeExercise = (i: number) => {
-        const confirmed = window.confirm("Вы уверены, что хотите удалить упражнение?");
-        if (!confirmed) return;
-
+        if (!window.confirm("Удалить упражнение?")) return;
         setExercises(exercises.filter((_, idx) => idx !== i));
-    }
+    };
 
-    // ---------------- SET OPS ----------------
+
+    // ================= SET OPS =================
+
     const updateSet = (ei: number, si: number, field: string, value: number) => {
         const copy = [...exercises];
         copy[ei].sets[si][field] = value;
         setExercises(copy);
     };
 
-    const addSet = (ei: number, sets: SetDTO[]) => {
+    const addSet = (ei: number) => {
         const copy = [...exercises];
-        let reps = 0
-        let weight = 0
-        let minutes = 0
-        let meters = 0
-        if (sets.length > 0) {
-            reps = sets[sets.length-1].reps
-            weight = sets[sets.length-1].weight
-            minutes = sets[sets.length-1].minutes
-            meters = sets[sets.length-1].meters
-        }
-        copy[ei].sets.push({reps: reps, weight: weight, minutes: minutes, meters: meters});
+        copy[ei].sets.push({reps: 0, weight: 0, minutes: 0, meters: 0});
         setExercises(copy);
     };
 
     const removeSet = (ei: number, si: number) => {
-        if (si == 0) {
-            return
-        }
+        if (si === 0) return;
         const copy = [...exercises];
         copy[ei].sets.splice(si, 1);
         setExercises(copy);
     };
 
-    // ---------------- PRESET ----------------
+
+    // ================= PRESET =================
+
     const buildPreset = () =>
         exercises
             .map((ex) => {
@@ -168,138 +197,105 @@ export default function DayDetailsPage() {
             })
             .join(";");
 
-    // ---------------- UI ----------------
+
+    // ================= UI =================
+
     return (
         <div className="page stack">
             <h2>{dayName}</h2>
 
-            {/* selector */}
             <div className="selector">
-                <select style={{minHeight: "var(--tap-size)"}} onChange={(e) => loadTypes(e.target.value)}>
+                <select onChange={(e) => loadTypes(e.target.value)}>
                     <option>Группа</option>
                     {groups.map((g) => (
-                        <option key={g.code} value={g.code}>
-                            {g.name}
-                        </option>
+                        <option key={g.code} value={g.code}>{g.name}</option>
                     ))}
                 </select>
 
-                <select style={{minHeight: "var(--tap-size)"}} onChange={(e) => setSelectedType(e.target.value)}>
+                <select onChange={(e) => setSelectedType(e.target.value)}>
                     <option>Упражнение</option>
                     {types.map((t) => (
-                        <option key={t.id} value={t.id}>
-                            {t.name}
-                        </option>
+                        <option key={t.id} value={t.id}>{t.name}</option>
                     ))}
                 </select>
 
-                <Button variant={"active"} onClick={addExercise}>➕️ Добавить</Button>
+                <Button variant="active" onClick={addExercise}>
+                    ➕️ Добавить
+                </Button>
             </div>
 
-            {loading && <Loader />}
+            {loading && <Loader/>}
 
-            {exercises.map((ex, ei) => (
-                <div
-                    key={ex.id}
-                    className="card exercise-card animate"
-                    onDragOver={(e) => e.preventDefault()}
-                    onDrop={(e) => onDrop(e, ei)}
+            <DndContext
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext
+                    items={exercises.map(e => e.uid)}
+                    strategy={verticalListSortingStrategy}
                 >
-                    <div className="exercise-header">
-                        <div
-                            className="drag-handle"
-                            draggable
-                            onDragStart={(e) => onDragStart(e, ei)}
-                        >
-                            ☰
-                        </div>
+                    {exercises.map((ex, ei) => (
+                        <SortableExercise key={ex.uid} id={ex.uid}>
+                            {(listeners: any) => (
+                                <div className="card exercise-card animate">
 
-                        <h3>{ex.name}</h3>
+                                    <div className="exercise-header">
+                                        <div
+                                            className="drag-handle"
+                                            {...listeners}
+                                        >
+                                            ☰
+                                        </div>
 
-                        <Button
-                            variant="danger"
-                            onClick={() => removeExercise(ei)}
-                        >
-                            ✕
-                        </Button>
-                    </div>
+                                        <h3>{ex.name}</h3>
 
-                    <div className="sets">
-                        {ex.sets.map((s: any, si: number) => (
-                            <div key={si} className="set-row">
-                                {s.meters > 0 && <div>
-                                    <input
-                                        type="number"
-                                        value={s.meters}
-                                        onChange={(e) =>
-                                            updateSet(
-                                                ei,
-                                                si,
-                                                "meters",
-                                                +e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span> метр.</span>
-                                </div>}
-                                {s.minutes > 0 && <div>
-                                    <input
-                                        type="number"
-                                        value={s.minutes}
-                                        onChange={(e) =>
-                                            updateSet(
-                                                ei,
-                                                si,
-                                                "minutes",
-                                                +e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span> мин.</span>
-                                </div>}
-                                {s.weight > 0 && <div>
-                                    <input
-                                        type="number"
-                                        value={s.reps}
-                                        onChange={(e) =>
-                                            updateSet(
-                                                ei,
-                                                si,
-                                                "reps",
-                                                +e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span> × </span>
-                                    <input
-                                        type="number"
-                                        value={s.weight}
-                                        onChange={(e) =>
-                                            updateSet(
-                                                ei,
-                                                si,
-                                                "weight",
-                                                +e.target.value
-                                            )
-                                        }
-                                    />
-                                    <span> кг</span>
-                                </div>}
-                                <button
-                                    className="minus"
-                                    onClick={() => removeSet(ei, si)}
-                                >
-                                    🗑
-                                </button>
-                            </div>
-                        ))}
+                                        <Button
+                                            variant="danger"
+                                            onClick={() => removeExercise(ei)}
+                                        >
+                                            ✕
+                                        </Button>
+                                    </div>
 
-                        <Button onClick={() => addSet(ei, ex.sets)}>
-                            + сет
-                        </Button>
-                    </div>
-                </div>
-            ))}
+                                    <div className="sets">
+                                        {ex.sets.map((s: any, si: number) => (
+                                            <div key={si} className="set-row">
+
+                                                <input
+                                                    type="number"
+                                                    value={s.reps}
+                                                    onChange={(e) =>
+                                                        updateSet(ei, si, "reps", +e.target.value)
+                                                    }
+                                                />
+
+                                                <input
+                                                    type="number"
+                                                    value={s.weight}
+                                                    onChange={(e) =>
+                                                        updateSet(ei, si, "weight", +e.target.value)
+                                                    }
+                                                />
+
+                                                <button
+                                                    className="minus"
+                                                    onClick={() => removeSet(ei, si)}
+                                                >
+                                                    🗑
+                                                </button>
+                                            </div>
+                                        ))}
+
+                                        <Button onClick={() => addSet(ei)}>
+                                            + сет
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </SortableExercise>
+                    ))}
+                </SortableContext>
+            </DndContext>
 
             {toast && <div className="toast">{toast}</div>}
         </div>

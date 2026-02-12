@@ -1,8 +1,7 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
-import { VitePWA } from 'vite-plugin-pwa'
+import {VitePWA} from 'vite-plugin-pwa'
 
-// https://vite.dev/config/
 export default defineConfig({
     plugins: [
         react(),
@@ -30,23 +29,30 @@ export default defineConfig({
             }
         })
     ],
+
+    // 🔥 ВАЖНО — фикс двойного React
+    resolve: {
+        dedupe: ['react', 'react-dom']
+    },
+
     build: {
-        outDir: "../internal/web/dist", // если embed
+        outDir: "../internal/web/dist",
         emptyOutDir: true,
     },
+
     server: {
-        // разрешаем локальный сервер для туннельных хостов
         host: true,
         strictPort: false,
         port: 5173,
         allowedHosts: [
             'localhost',
             '127.0.0.1',
-            '7fd9106822e35e.lhr.life', // ваш туннельный host, чтобы работал telegram widget
+            '7fd9106822e35e.lhr.life',
         ],
         proxy: {
             '/api': 'http://localhost:8080',
         },
     },
-    base: "/", // важно!
+
+    base: "/",
 })

@@ -129,3 +129,8 @@
         font-size: 13px;
     }
 }
+
+.drag-handle {
+    cursor: grab;
+    touch-action: none;
+}
