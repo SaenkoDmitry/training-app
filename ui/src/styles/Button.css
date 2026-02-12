@@ -48,10 +48,10 @@
 /* ghost */
 .btn-ghost {
     background: var(--color-ghost);
-    color: white;
+    color: black;
 }
 
 .btn-ghost:hover {
     background: var(--color-ghost-hover);
-    color: white;
+    color: black;
 }
