@@ -136,6 +136,12 @@ interface Measurement {
     weight: number;
 }
 
+interface FindWithOffsetLimitMeasurement {
+    items: Measurement[];
+    count: number;
+}
+
+
 interface ToCreateMeasurement {
     user_id: number;
     shoulders: number;

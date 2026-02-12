@@ -1,12 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import '../styles/MeasurementsPage.css';
 import Button from "../components/Button.tsx";
-import {deleteMeasurement as apiDeleteMeasurement} from "../api/measurements.ts";
+import {deleteMeasurement as apiDeleteMeasurement, getMeasurements} from "../api/measurements.ts";
 import {useAuth} from "../context/AuthContext.tsx";
-import {useNavigate} from "react-router-dom";
 import {Loader} from "lucide-react";
 
-const PAGE_SIZE = 15;
+const LIMIT = 10;
 
 const fields: { key: keyof ToCreateMeasurement; label: string }[] = [
     {key: 'shoulders', label: 'Плечи'},
@@ -42,9 +41,7 @@ const MeasurementsPage: React.FC = () => {
     const fetchMeasurements = async (offset: number) => {
         try {
             setLoading(true);
-            const res = await fetch(`/api/measurements?offset=${offset}&limit=${PAGE_SIZE}`);
-            if (!res.ok) throw new Error("Ошибка при загрузке измерений");
-            const data = await res.json() as { items: Measurement[]; count: number };
+            const data: FindWithOffsetLimitMeasurement = await getMeasurements(offset, LIMIT);
 
             setMeasurements(prev => {
                 const ids = new Set(prev.map(m => m.id));
@@ -74,7 +71,7 @@ const MeasurementsPage: React.FC = () => {
         if (tableObserver.current) tableObserver.current.disconnect();
 
         tableObserver.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) setOffset(prev => prev + PAGE_SIZE);
+            if (entries[0].isIntersecting) setOffset(prev => prev + LIMIT);
         });
 
         if (node) tableObserver.current.observe(node);
@@ -85,7 +82,7 @@ const MeasurementsPage: React.FC = () => {
         if (cardObserver.current) cardObserver.current.disconnect();
 
         cardObserver.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) setOffset(prev => prev + PAGE_SIZE);
+            if (entries[0].isIntersecting) setOffset(prev => prev + LIMIT);
         });
 
         if (node) cardObserver.current.observe(node);
@@ -219,7 +216,7 @@ const MeasurementsPage: React.FC = () => {
                     </tr>
                 ))}
 
-                {loading && <Loader />}
+                {loading && <Loader/>}
                 </tbody>
             </table>
         </div>
@@ -246,7 +243,7 @@ const MeasurementsPage: React.FC = () => {
                 </div>
             )}
 
-            {loading && <Loader />}
+            {loading && <Loader/>}
 
             {measurements.map((m, idx) => (
                 <div
