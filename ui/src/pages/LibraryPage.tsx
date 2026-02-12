@@ -63,7 +63,7 @@ const LibraryPage: React.FC = () => {
         {loading && <p>Загрузка...</p>}
 
         <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
-            {exercises.map((ex, index) => {
+            {!loading && exercises.map((ex, index) => {
                 const isOpen = openedId === ex.id;
                 const softBg = index % 2 === 0 ? '#fff' : '#f9f9f9'; // мягкое чередование
 

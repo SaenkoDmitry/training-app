@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {useAuth} from '../context/AuthContext';
 import Button from "./Button.tsx";
 
@@ -22,6 +22,7 @@ const tabs = [
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const location = useLocation();
     const {user, logout, loading} = useAuth();
+    const navigate = useNavigate();
 
     const isMobile = window.innerWidth <= 768;
 
@@ -75,7 +76,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({children}) => {
 
                         {user && (
                             <>
-                                <b>{user.first_name} 👋</b>
+                                <Button variant={"ghost"} onClick={() => navigate('/profile')}>{user.first_name} 👋</Button>
                                 <Button variant={"danger"} onClick={logout}>
                                     Выйти
                                 </Button>
