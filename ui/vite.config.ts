@@ -29,12 +29,9 @@ export default defineConfig({
             }
         })
     ],
-
-    // 🔥 ВАЖНО — фикс двойного React
     resolve: {
         dedupe: ['react', 'react-dom']
     },
-
     build: {
         outDir: "../internal/web/dist",
         emptyOutDir: true,
