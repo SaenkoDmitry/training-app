@@ -12,8 +12,11 @@ export const createProgram = (name: string) =>
 export const deleteProgram = (id: number) =>
     api(`/api/programs/${id}`, {method: "DELETE"});
 
-export const renameProgram = (id: number, newName: string) =>
-    api(`/api/programs/${id}/rename/${encodeURIComponent(newName)}`, {method: "POST"});
+export const renameProgram = (id: number, name: string) =>
+    api(`/api/programs/${id}/rename`, {
+        method: "POST",
+        body: JSON.stringify({name}),
+    });
 
 export const chooseProgram = (id: number) =>
     api(`/api/programs/${id}/choose`, {method: "POST"});

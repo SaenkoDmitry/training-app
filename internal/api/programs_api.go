@@ -154,9 +154,17 @@ func (s *serviceImpl) RenameProgram(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newProgramName := r.PathValue("program_new_name")
+	// Разбираем JSON из тела запроса
+	var input struct {
+		Name string `json:"name"`
+	}
 
-	err = s.container.RenameProgramUC.Execute(programID, newProgramName)
+	if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
+		http.Error(w, "bad request", http.StatusBadRequest)
+		return
+	}
+
+	err = s.container.RenameProgramUC.Execute(programID, input.Name)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return

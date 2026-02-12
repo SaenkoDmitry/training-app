@@ -167,7 +167,7 @@ func initServer(container *usecase.Container) {
 		r.Post("/{program_id}/choose", s.ChooseProgram)
 		r.Delete("/{program_id}", s.DeleteProgram)
 		r.Get("/{program_id}", s.GetProgram)
-		r.Post("/{program_id}/rename/{program_new_name}", s.RenameProgram)
+		r.Post("/{program_id}/rename", s.RenameProgram)
 
 		r.Post("/{program_id}/days", s.CreateProgramDay)
 		r.Delete("/{program_id}/days/{day_type_id}", s.DeleteProgramDay)
