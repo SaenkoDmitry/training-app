@@ -4,6 +4,7 @@ import Button from "../components/Button.tsx";
 import {deleteMeasurement as apiDeleteMeasurement} from "../api/measurements.ts";
 import {useAuth} from "../context/AuthContext.tsx";
 import {useNavigate} from "react-router-dom";
+import {Loader} from "lucide-react";
 
 const PAGE_SIZE = 15;
 
@@ -23,7 +24,6 @@ const fields: { key: keyof ToCreateMeasurement; label: string }[] = [
 
 const MeasurementsPage: React.FC = () => {
     const {user, loading: authLoading} = useAuth();
-    const navigate = useNavigate();
     const [measurements, setMeasurements] = useState<Measurement[]>([]);
     const [count, setCount] = useState(0);
     const [offset, setOffset] = useState(0);
@@ -219,11 +219,7 @@ const MeasurementsPage: React.FC = () => {
                     </tr>
                 ))}
 
-                {loading && (
-                    <tr>
-                        <td colSpan={14}>Загрузка...</td>
-                    </tr>
-                )}
+                {loading && <Loader />}
                 </tbody>
             </table>
         </div>
@@ -249,6 +245,8 @@ const MeasurementsPage: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {loading && <Loader />}
 
             {measurements.map((m, idx) => (
                 <div

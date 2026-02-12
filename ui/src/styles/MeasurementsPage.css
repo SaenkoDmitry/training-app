@@ -6,11 +6,6 @@
     color: #111827;
 }
 
-/* ===== BUTTON ===== */
-.measurements-page > button {
-    margin-bottom: 24px; /* отступ между кнопкой и таблицей/карточками */
-}
-
 /* ===== TABLE (DESKTOP) ===== */
 .table-wrapper {
     overflow-x: auto;

@@ -5,6 +5,7 @@ import {useAuth} from '../context/AuthContext';
 import '../styles/App.css';
 import Button from "../components/Button.tsx";
 import {deleteWorkout} from "../api/workouts.ts";
+import {Loader} from "lucide-react";
 
 const LIMIT = 10;
 
@@ -128,9 +129,7 @@ const Home: React.FC = () => {
             ))}
         </div>
 
-        <div ref={loaderRef} style={{padding: 20}}>
-            {loading && 'Загрузка...'}
-        </div>
+        {loading && <Loader />}
 
         {pagination && (
             <p>

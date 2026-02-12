@@ -1,12 +1,14 @@
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router-dom";
 import {getProgram} from "../api/days";
 import {parsePreset, savePreset} from "../api/presets";
 import {getExerciseGroups, getExerciseTypesByGroup} from "../api/exercises";
 import Button from "../components/Button";
 import "../styles/DayDetailsPage.css";
+import {Loader} from "lucide-react";
 
 export default function DayDetailsPage() {
+    const [loading, setLoading] = useState(false);
     const {programId, dayId} = useParams();
 
     const [exercises, setExercises] = useState<any[]>([]);
@@ -23,7 +25,7 @@ export default function DayDetailsPage() {
     const firstLoad = useRef(true);
 
     // ---------------- LOAD ----------------
-    const load = async () => {
+    const fetchDay = async () => {
         const program = await getProgram(Number(programId));
         const day = program.day_types.find((d) => d.id === Number(dayId));
         if (!day) return;
@@ -31,7 +33,10 @@ export default function DayDetailsPage() {
         setDayName(day.name);
 
         if (day.preset) {
-            const parsed = await parsePreset(day.preset);
+            setLoading(true);
+            const parsed = await parsePreset(day.preset).finally(() => {
+                setLoading(false);
+            });
 
             setExercises(
                 parsed.exercises.map((ex: any) => ({
@@ -46,7 +51,7 @@ export default function DayDetailsPage() {
     };
 
     useEffect(() => {
-        load();
+        fetchDay();
         getExerciseGroups().then((groups: Group[]) => setGroups(groups));
     }, []);
 
@@ -190,6 +195,8 @@ export default function DayDetailsPage() {
 
                 <Button variant={"active"} onClick={addExercise}>➕️ Добавить</Button>
             </div>
+
+            {loading && <Loader />}
 
             {exercises.map((ex, ei) => (
                 <div

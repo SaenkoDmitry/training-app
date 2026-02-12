@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import {Loader} from "lucide-react";
 
 const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user, loading } = useAuth();
@@ -13,7 +14,7 @@ const RequireAuth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         }
     }, [user, loading]);
 
-    if (loading || !user) return <p>Загрузка...</p>; // пока проверяем авторизацию
+    if (loading || !user) return <Loader />; // пока проверяем авторизацию
     return <>{children}</>;
 };
 

@@ -1,6 +1,7 @@
 import {useParams} from 'react-router-dom';
 import React, {useEffect, useState} from 'react';
 import SafeTextRenderer from "../components/SafeTextRenderer.tsx";
+import {Loader} from "lucide-react";
 
 const WorkoutPage = () => {
     const {id} = useParams<{ id: string }>();
@@ -26,7 +27,7 @@ const WorkoutPage = () => {
         fetchWorkout();
     }, [id]);
 
-    if (loading) return <p>Загрузка...</p>;
+    if (loading) return <Loader />;
     if (error) return <p style={{color: 'red'}}>{error}</p>;
     if (!data) return <p>Данные тренировки не найдены</p>;
 

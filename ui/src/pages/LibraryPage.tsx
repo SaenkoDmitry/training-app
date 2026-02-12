@@ -3,6 +3,7 @@ import {useAuth} from '../context/AuthContext';
 import SafeTextRenderer from "../components/SafeTextRenderer.tsx";
 import {getExerciseGroups, getExerciseTypesByGroup} from "../api/exercises.ts";
 import Button from "../components/Button.tsx";
+import {Loader} from "lucide-react";
 
 const LibraryPage: React.FC = () => {
     const {user, loading: authLoading} = useAuth();
@@ -50,7 +51,7 @@ const LibraryPage: React.FC = () => {
         >
             {groups.map(g => (
                 <Button
-                    variant={selectedGroup === g.code ? "primary" : "ghost"}
+                    variant={selectedGroup === g.code ? "active" : "ghost"}
                     key={g.code}
                     onClick={() => setSelectedGroup(g.code)}
                 >
@@ -59,8 +60,9 @@ const LibraryPage: React.FC = () => {
             ))}
         </div>
 
-        {/* ---------- EXERCISES ---------- */}
-        {loading && <p>Загрузка...</p>}
+        {/* ---------- EXERCISES ---------- */
+        }
+        {loading && <Loader />}
 
         <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
             {!loading && exercises.map((ex, index) => {
@@ -141,7 +143,8 @@ const LibraryPage: React.FC = () => {
                 );
             })}
         </div>
-    </div>;
+    </div>
+        ;
 };
 
 export default LibraryPage;

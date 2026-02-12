@@ -4,6 +4,7 @@ import ProgramCard from "../components/ProgramCard";
 import Button from "../components/Button";
 import {useNavigate} from "react-router-dom";
 import "../styles/ProgramBase.css";
+import {Loader} from "lucide-react";
 
 const ProgramsPage: React.FC = () => {
     const navigate = useNavigate();
@@ -81,8 +82,6 @@ const ProgramsPage: React.FC = () => {
         }
     };
 
-    if (loading) return <p>Загрузка...</p>;
-
     return (
         <div className="page stack">
             <h1>Программы</h1>
@@ -90,6 +89,8 @@ const ProgramsPage: React.FC = () => {
             <Button variant="active" onClick={handleCreate}>
                 + Новая программа
             </Button>
+
+            {loading && <Loader />}
 
             {programs.map((p) => (
                 <ProgramCard
