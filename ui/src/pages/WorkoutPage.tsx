@@ -1,13 +1,15 @@
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import React, {useEffect, useState} from 'react';
 import SafeTextRenderer from "../components/SafeTextRenderer.tsx";
 import {Loader} from "lucide-react";
+import Button from "../components/Button.tsx";
 
 const WorkoutPage = () => {
     const {id} = useParams<{ id: string }>();
     const [data, setData] = useState<ReadWorkoutDTO | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchWorkout = async () => {
@@ -27,56 +29,55 @@ const WorkoutPage = () => {
         fetchWorkout();
     }, [id]);
 
-    if (loading) return <Loader />;
+    if (loading) return <Loader/>;
     if (error) return <p style={{color: 'red'}}>{error}</p>;
     if (!data) return <p>Данные тренировки не найдены</p>;
 
     const {progress, Stats} = data;
     const {workout, ProgressPercent, RemainingMin, SessionStarted, CompletedExercises, TotalExercises} = progress;
 
-    return <div style={{maxWidth: '700px', margin: '0 auto', padding: '1rem'}}>
+    return <div className={"page stack"}>
         <h2>{workout.day_type_name || `Тренировка ${workout.id}`}</h2>
-        <p>
+        <span>
             Статус: {workout.status} {progress?.workout?.duration &&
             <span><span>~ </span>{progress.workout.duration}</span>}
-        </p>
-        <p>{workout.started_at}</p>
-        {RemainingMin !== undefined && RemainingMin > 0 && <p>Оставшееся время: {RemainingMin} мин</p>}
+        </span>
+        <span>{workout.started_at}</span>
+        {RemainingMin !== undefined && RemainingMin > 0 && <span>Оставшееся время: {RemainingMin} мин</span>}
 
         {/* Прогресс тренировки */}
-        <div style={{margin: '1rem 0'}}>
+        <div>
             <div style={{background: '#eee', borderRadius: '8px', overflow: 'hidden', height: '20px'}}>
                 <div
                     style={{
                         width: `${ProgressPercent}%`,
-                        background: '#4caf50',
+                        background: ProgressPercent == 100 ? '#4caf50' : 60 < ProgressPercent && ProgressPercent < 85 ? '#dae551' : '#af4c6f',
                         height: '100%',
-                        transition: 'width 0.3s',
                     }}
                 />
             </div>
-            <p>{ProgressPercent}% выполнено</p>
+            <div style={{marginTop: 10}}>{ProgressPercent}% выполнено</div>
         </div>
 
         {/* Упражнения */}
         <h3>Упражнения ({CompletedExercises}/{TotalExercises})</h3>
-        <ul style={{listStyle: "none", padding: 0}}>
+        <div style={{listStyle: "none", padding: 0}}>
             {workout.exercises?.map((ex: FormattedExercise) => (
-                <li
-                    key={ex.id}
-                    style={{
-                        border: "1px solid #ddd",
-                        borderRadius: "8px",
-                        padding: "0.5rem",
-                        marginBottom: "0.5rem",
-                    }}
+                <div className="card"
+                     key={ex.id}
+                     style={{
+                         border: "1px solid #ddd",
+                         borderRadius: "8px",
+                         padding: "1rem",
+                         marginBottom: "0.5rem",
+                     }}
                 >
-                    <strong>{ex.name}</strong>
-                    <ul style={{paddingLeft: "1rem"}}>
-                        {ex.sets?.map((set: any) => {
-                                return <li key={set.ID} style={{marginBottom: "0.5rem"}}>
+                    <div className={"card-header"}>{ex.name}</div>
+                    <div className={"card-body"}>
+                        {ex.sets?.map((set: FormattedSet) => {
+                                return <div key={set.id} style={{listStyle: "none", padding: 0, margin: "1rem 0rem"}}>
                                     <SafeTextRenderer html={set.formatted_string}/>
-                                </li>
+                                </div>
                             }
                         )}
                         <div
@@ -94,17 +95,20 @@ const WorkoutPage = () => {
                                 transition: "width 0.3s",
                             }}/>
                         </div>
-                    </ul>
-                </li>
+                    </div>
+                </div>
             ))}
-        </ul>
-
-        {(Stats.CardioTime > 0 || Stats.TotalWeight > 0) && <h3>Статистика</h3>}
-
-        <div>
-            {Stats.CardioTime > 0 && <p><strong>🫀 Время кардио:</strong> {Stats.CardioTime} мин</p>}
-            {Stats.TotalWeight > 0 && <p><strong>🏋 Общий вес:</strong> {Stats.TotalWeight} кг</p>}
         </div>
+
+        {data.progress.SessionStarted && <Button variant={"active"} onClick={() => navigate(`/session/${data?.progress.workout.id}`)}>К тренировке</Button>}
+
+        {!data.progress.SessionStarted && <div>
+            {(Stats.CardioTime > 0 || Stats.TotalWeight > 0) && <h3>Статистика</h3>}
+            <div>
+                {Stats.CardioTime > 0 && <p><strong>🫀 Время кардио:</strong> {Stats.CardioTime} мин</p>}
+                {Stats.TotalWeight > 0 && <p><strong>🏋 Общий вес:</strong> {Stats.TotalWeight} кг</p>}
+            </div>
+        </div>}
     </div>;
 };
 

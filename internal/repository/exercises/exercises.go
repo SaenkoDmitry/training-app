@@ -30,7 +30,7 @@ func NewRepo(db *gorm.DB) Repo {
 
 func (u *repoImpl) Get(exerciseID int64) (models.Exercise, error) {
 	var exercise models.Exercise
-	u.db.Preload("ExerciseType").Preload("Sets", func(db *gorm.DB) *gorm.DB {
+	u.db.Preload("WorkoutDay").Preload("ExerciseType").Preload("Sets", func(db *gorm.DB) *gorm.DB {
 		return db.Order("sets.index ASC")
 	}).First(&exercise, exerciseID)
 	return exercise, nil

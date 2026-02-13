@@ -86,7 +86,10 @@ func (uc *ShowProgressUseCase) Execute(workoutID int64) (*dto.WorkoutProgress, e
 		groupsMap[v.Code] = v.Name
 	}
 
-	session, _ := uc.sessionsRepo.GetByWorkoutID(workoutID)
+	session, err := uc.sessionsRepo.GetByWorkoutID(workoutID)
+	if err != nil {
+		return nil, err
+	}
 
 	return &dto.WorkoutProgress{
 		Workout:            dto.MapToFormattedWorkout(w, groupsMap),

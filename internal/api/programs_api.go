@@ -218,7 +218,7 @@ func (s *serviceImpl) validateAccessToProgram(w http.ResponseWriter, chatID int6
 	// check access
 	if program.UserID != user.ID {
 		http.Error(w, "access denied", http.StatusForbidden)
-		return errors.New("no access")
+		return errors.New("no access to program")
 	}
 
 	return nil

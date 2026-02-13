@@ -14,6 +14,8 @@ import LibraryPage from './pages/LibraryPage';
 import ProfilePage from './pages/ProfilePage';
 
 import RequireAuth from './components/RequireAuth';
+import StartWorkout from "./pages/StartWorkout.tsx";
+import WorkoutSession from "./pages/WorkoutSession.tsx";
 
 const App = () => (
     <AuthProvider>
@@ -83,6 +85,22 @@ const App = () => (
                 element={
                     <RequireAuth>
                         <MainLayout><LibraryPage/></MainLayout>
+                    </RequireAuth>
+                }
+            />
+            <Route
+                path="/start"
+                element={
+                    <RequireAuth>
+                        <MainLayout><StartWorkout/></MainLayout>
+                    </RequireAuth>
+                }
+            />
+            <Route
+                path="/session/:id"
+                element={
+                    <RequireAuth>
+                        <MainLayout><WorkoutSession/></MainLayout>
                     </RequireAuth>
                 }
             />

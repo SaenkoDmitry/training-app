@@ -23,7 +23,7 @@ type Handler struct {
 	commonPresenter   *common.Presenter
 	exercisePresenter *presenter.Presenter
 
-	completeSetUC   *setusecases.CompleteUseCase
+	completeSetUC   *setusecases.CompleteLastUseCase
 	addOneMoreSetUC *setusecases.AddOneMoreUseCase
 	removeLastSetUC *setusecases.RemoveLastUseCase
 
@@ -35,7 +35,7 @@ type Handler struct {
 
 func NewHandler(
 	bot *tgbotapi.BotAPI,
-	completeSetUC *setusecases.CompleteUseCase,
+	completeSetUC *setusecases.CompleteLastUseCase,
 	addOneMoreSetUC *setusecases.AddOneMoreUseCase,
 	removeLastSetUC *setusecases.RemoveLastUseCase,
 	showCurrentSessionUC *exercisecases.ShowCurrentExerciseSessionUseCase,

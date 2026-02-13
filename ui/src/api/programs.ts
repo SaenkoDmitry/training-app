@@ -4,7 +4,7 @@ export const getPrograms = () =>
     api<ProgramDTO[]>("/api/programs");
 
 export const GetActiveProgramForUser = () =>
-    api<ProgramDTO[]>("/api/programs/active");
+    api<ProgramDTO>("/api/programs/active");
 
 export const createProgram = (name: string) =>
     api("/api/programs", {

@@ -171,7 +171,7 @@ func initServer(container *usecase.Container) {
 		r.Get("/", s.GetUserPrograms)
 		r.Post("/", s.CreateProgram)
 
-		r.Post("/active", s.GetActiveProgramForUser)
+		r.Get("/active", s.GetActiveProgramForUser)
 
 		r.Post("/{program_id}/choose", s.ChooseProgram)
 		r.Delete("/{program_id}", s.DeleteProgram)
@@ -182,6 +182,15 @@ func initServer(container *usecase.Container) {
 		r.Delete("/{program_id}/days/{day_type_id}", s.DeleteProgramDay)
 		r.Post("/{program_id}/days/{day_type_id}", s.UpdateProgramDay)
 		r.Get("/{program_id}/days/{day_type_id}", s.GetProgramDay)
+	})
+
+	r.Route("/api/sets", func(r chi.Router) {
+		r.Use(middlewares.Auth)
+
+		r.Post("/{exercise_id}", s.AddSet)
+		r.Delete("/{id}", s.DeleteSet)
+		r.Post("/{id}/complete", s.CompleteSet)
+		r.Post("/{id}/change", s.ChangeSet)
 	})
 
 	// UI (React build)

@@ -54,7 +54,7 @@ func (s *serviceImpl) MoveToExerciseSession(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	workoutID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+	workoutID, err := strconv.ParseInt(r.PathValue("workout_id"), 10, 64)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
 		return

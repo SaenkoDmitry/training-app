@@ -1,0 +1,43 @@
+.set-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 12px;
+    background: var(--color-card);
+}
+
+.set-index {
+    width: 24px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* контейнер для значений */
+.set-values {
+    display: flex;
+    gap: 6px;
+    flex-wrap: nowrap; /* не переносим на новую строку */
+}
+
+/* input не растягиваем */
+.edit-input {
+    width: 60px; /* фиксированная ширина, чтобы все в одну строку */
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* кнопки всегда справа */
+.set-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: auto; /* прижимает к правому краю */
+}
+
+.set-row.done .done-highlight {
+    font-weight: 600;
+    color: green;
+}

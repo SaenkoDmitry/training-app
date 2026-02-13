@@ -33,7 +33,7 @@ func NewUpdateNextUseCase(
 }
 
 func (uc *UpdateNextUseCase) Name() string {
-	return "Изменить следующий повтор"
+	return "Изменить следующий подход"
 }
 
 var (

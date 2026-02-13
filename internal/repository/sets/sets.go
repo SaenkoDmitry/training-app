@@ -6,6 +6,7 @@ import (
 )
 
 type Repo interface {
+	Get(id int64) (*models.Set, error)
 	Delete(id int64) error
 	DeleteAllBy(exerciseID int64) error
 	Save(set *models.Set) error
@@ -19,6 +20,12 @@ func NewRepo(db *gorm.DB) Repo {
 	return &repoImpl{
 		db: db,
 	}
+}
+
+func (u *repoImpl) Get(id int64) (*models.Set, error) {
+	var set models.Set
+	u.db.Preload("Exercise").Preload("Exercise.ExerciseType").Preload("Sets").First(&set, id)
+	return &set, nil
 }
 
 func (u *repoImpl) Delete(id int64) error {

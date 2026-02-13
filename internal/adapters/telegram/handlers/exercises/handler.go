@@ -27,7 +27,7 @@ type Handler struct {
 	findTypesByGroupUC      *exercises.FindTypesByGroupUseCase
 	confirmDeleteExerciseUC *exercises.ConfirmDeleteUseCase
 	deleteExerciseUC        *exercises.DeleteUseCase
-	getExerciseUC           *exercises.GetUseCase
+	getExerciseUC           *exercises.GetTypeUseCase
 	createExerciseUC        *exercises.CreateUseCase
 	workoutsHandler         *workouts.Handler
 }
@@ -40,7 +40,7 @@ func NewHandler(
 	confirmDeleteExerciseUC *exercises.ConfirmDeleteUseCase,
 	deleteExerciseUC *exercises.DeleteUseCase,
 	moveToExerciseSessionUC *sessionusecases.MoveToUseCase,
-	getExerciseUC *exercises.GetUseCase,
+	getTypeExerciseUC *exercises.GetTypeUseCase,
 	showGroupTypeListUC *groups.GetAllUseCase,
 	createExerciseUC *exercises.CreateUseCase,
 	workoutsHandler *workouts.Handler,
@@ -54,7 +54,7 @@ func NewHandler(
 		confirmDeleteExerciseUC: confirmDeleteExerciseUC,
 		deleteExerciseUC:        deleteExerciseUC,
 		moveToExerciseSessionUC: moveToExerciseSessionUC,
-		getExerciseUC:           getExerciseUC,
+		getExerciseUC:           getTypeExerciseUC,
 		getAllGroupsUC:          showGroupTypeListUC,
 		createExerciseUC:        createExerciseUC,
 		workoutsHandler:         workoutsHandler,

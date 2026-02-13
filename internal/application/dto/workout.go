@@ -89,6 +89,14 @@ func MapToFormattedExercise(ex models.Exercise, groupsMap map[string]string) *Fo
 		}
 		newSet := &FormattedSet{
 			ID:              s.ID,
+			Reps:            s.Reps,
+			FactReps:        s.FactReps,
+			Weight:          s.Weight,
+			FactWeight:      s.FactWeight,
+			Minutes:         s.Minutes,
+			FactMinutes:     s.FactMinutes,
+			Meters:          s.Meters,
+			FactMeters:      s.FactMeters,
 			FormattedString: s.String(ex.WorkoutDay.Completed),
 			Completed:       s.Completed,
 			Index:           s.Index,
@@ -106,6 +114,7 @@ func MapToFormattedExercise(ex models.Exercise, groupsMap map[string]string) *Fo
 		RestInSeconds: ex.ExerciseType.RestInSeconds,
 		Accent:        ex.ExerciseType.Accent,
 		Description:   ex.ExerciseType.Description,
+		Url:           ex.ExerciseType.Url,
 		SumWeight:     sumWeight,
 		Index:         ex.Index,
 		Sets:          sets,
@@ -127,11 +136,19 @@ type FormattedExercise struct {
 }
 
 type FormattedSet struct {
-	ID              int64  `json:"id"`
-	FormattedString string `json:"formatted_string"`
-	Completed       bool   `json:"completed"`
-	CompletedAt     string `json:"completed_at"`
-	Index           int    `json:"index"`
+	ID              int64   `json:"id"`
+	Reps            int     `json:"reps"`
+	FactReps        int     `json:"fact_reps"`
+	Weight          float32 `json:"weight"`
+	FactWeight      float32 `json:"fact_weight"`
+	Minutes         int     `json:"minutes"`
+	FactMinutes     int     `json:"fact_minutes"`
+	Meters          int     `json:"meters"`
+	FactMeters      int     `json:"fact_meters"`
+	FormattedString string  `json:"formatted_string"`
+	Completed       bool    `json:"completed"`
+	CompletedAt     string  `json:"completed_at"`
+	Index           int     `json:"index"`
 }
 
 type WorkoutProgress struct {

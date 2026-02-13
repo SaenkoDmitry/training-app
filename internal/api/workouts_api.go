@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/api/helpers"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/middlewares"
@@ -137,27 +138,13 @@ func (s *serviceImpl) DeleteWorkout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	workoutIDStr := r.PathValue("workout_id")
-	workoutID, err := strconv.ParseInt(workoutIDStr, 10, 64)
+	workoutID, err := helpers.ParseInt64Param("workout_id", w, r)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
-	progress, err := s.container.ShowWorkoutProgressUC.Execute(workoutID)
+	err = s.validateAccessToWorkout(w, claims.ChatID, workoutID)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
-	user, err := s.container.GetUserUC.Execute(claims.ChatID)
-	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
-	if progress.Workout.UserID != user.ID {
-		http.Error(w, "access denied", http.StatusForbidden)
 		return
 	}
 
@@ -178,27 +165,13 @@ func (s *serviceImpl) FinishWorkout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	workoutIDStr := r.PathValue("workout_id")
-	workoutID, err := strconv.ParseInt(workoutIDStr, 10, 64)
+	workoutID, err := helpers.ParseInt64Param("workout_id", w, r)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
 		return
 	}
 
-	progress, err := s.container.ShowWorkoutProgressUC.Execute(workoutID)
+	err = s.validateAccessToWorkout(w, claims.ChatID, workoutID)
 	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
-	user, err := s.container.GetUserUC.Execute(claims.ChatID)
-	if err != nil {
-		http.Error(w, "internal error", http.StatusInternalServerError)
-		return
-	}
-
-	if progress.Workout.UserID != user.ID {
-		http.Error(w, "access denied", http.StatusForbidden)
 		return
 	}
 
@@ -210,4 +183,26 @@ func (s *serviceImpl) FinishWorkout(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write([]byte("{}"))
+}
+
+func (s *serviceImpl) validateAccessToWorkout(w http.ResponseWriter, chatID int64, workoutID int64) error {
+	progress, err := s.container.ShowWorkoutProgressUC.Execute(workoutID)
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return err
+	}
+
+	user, err := s.container.GetUserUC.Execute(chatID)
+	if err != nil {
+		http.Error(w, "internal error", http.StatusInternalServerError)
+		return err
+	}
+
+	// check access
+	if progress.Workout.UserID != user.ID {
+		http.Error(w, "access denied", http.StatusForbidden)
+		return errors.New("no access to workout")
+	}
+
+	return nil
 }

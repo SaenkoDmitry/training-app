@@ -68,7 +68,7 @@ const Home: React.FC = () => {
             {user && (
                 <Button
                     variant="active"
-                    onClick={() => alert('Начало новой тренировки!')}
+                    onClick={() => navigate('/start')}
                 >
                     ▶️ Начать новую тренировку
                 </Button>

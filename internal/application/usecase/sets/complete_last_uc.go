@@ -9,25 +9,25 @@ import (
 	"time"
 )
 
-type CompleteUseCase struct {
+type CompleteLastUseCase struct {
 	setsRepo          sets.Repo
 	exercisesRepo     exercises.Repo
 	exerciseTypesRepo exercisetypes.Repo
 }
 
-func NewCompleteUseCase(
+func NewCompleteLastUseCase(
 	setsRepo sets.Repo,
 	exercisesRepo exercises.Repo,
 	exerciseTypesRepo exercisetypes.Repo,
-) *CompleteUseCase {
-	return &CompleteUseCase{
+) *CompleteLastUseCase {
+	return &CompleteLastUseCase{
 		setsRepo:          setsRepo,
 		exercisesRepo:     exercisesRepo,
 		exerciseTypesRepo: exerciseTypesRepo,
 	}
 }
 
-func (uc *CompleteUseCase) Name() string {
+func (uc *CompleteLastUseCase) Name() string {
 	return "Завершить подход"
 }
 
@@ -35,7 +35,7 @@ var (
 	DoNothingErr = errors.New("do nothing")
 )
 
-func (uc *CompleteUseCase) Execute(exerciseID int64) (*dto.CompleteSet, error) {
+func (uc *CompleteLastUseCase) Execute(exerciseID int64) (*dto.CompleteSet, error) {
 	exercise, err := uc.exercisesRepo.Get(exerciseID)
 	if err != nil {
 		return nil, err

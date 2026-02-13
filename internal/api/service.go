@@ -31,6 +31,10 @@ type Service interface {
 	SavePreset(w http.ResponseWriter, r *http.Request)
 	ShowCurrentExerciseSession(w http.ResponseWriter, r *http.Request)
 	MoveToExerciseSession(w http.ResponseWriter, r *http.Request)
+	AddSet(w http.ResponseWriter, r *http.Request)
+	DeleteSet(w http.ResponseWriter, r *http.Request)
+	CompleteSet(w http.ResponseWriter, r *http.Request)
+	ChangeSet(w http.ResponseWriter, r *http.Request)
 }
 
 type serviceImpl struct {

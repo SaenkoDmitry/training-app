@@ -167,7 +167,7 @@ func (p *Presenter) CompleteAllExercises(chatID, workoutID int64) {
 	p.bot.Send(msg)
 }
 
-func (p *Presenter) ShowHint(chatID int64, res *dto.GetExercise, workoutID int64) {
+func (p *Presenter) ShowHint(chatID int64, res *dto.GetExerciseType, workoutID int64) {
 	exerciseType := res.ExerciseType
 	buttons := make([][]tgbotapi.InlineKeyboardButton, 0)
 	if workoutID == 0 {

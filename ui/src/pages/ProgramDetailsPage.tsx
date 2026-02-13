@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {createDay, deleteDay, getProgram} from "../api/days";
 import Button from "../components/Button";
 import DayCard from "../components/DayCard";
@@ -8,7 +8,6 @@ import {useAuth} from "../context/AuthContext.tsx";
 
 export default function ProgramDetailsPage() {
     const {user, loading: authLoading} = useAuth();
-    const navigate = useNavigate();
     const {id} = useParams();
     const [program, setProgram] = useState<ProgramDTO | null>(null);
     const [toast, setToast] = useState<string | null>(null);

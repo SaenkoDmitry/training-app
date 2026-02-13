@@ -1,0 +1,57 @@
+.edit-value {
+    text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 6px 0;
+}
+
+.edit-input {
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.value-text {
+    font-weight: 600;
+    text-align: center;
+}
+
+.done-highlight {
+    color: #4caf50;
+}
+
+.edit-input {
+    width: 100%;
+    height: 30px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.edit-value {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.editable-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px; /* расстояние между input и суффиксом */
+    min-width: 60px; /* можно подстроить под маленькие input-ы */
+}
+
+.edit-input {
+    width: 50px; /* фиксированная ширина, чтобы не растягивался */
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    text-align: center;
+    font-size: 14px;
+}
+
+.input-suffix {
+    white-space: nowrap; /* суффикс всегда рядом с input */
+    font-size: 14px;
+}

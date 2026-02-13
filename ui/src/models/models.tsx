@@ -112,11 +112,19 @@ interface FormattedExercise {
 }
 
 interface FormattedSet {
-    id: number
-    formatted_string: string
-    completed: boolean
-    completed_at: string
-    index: number
+    id: number;
+    reps: number;
+    fact_reps: number;
+    weight: number;
+    fact_weight: number;
+    minutes: number;
+    fact_minutes: number;
+    meters: number;
+    fact_meters: number;
+    formatted_string: string;
+    completed: boolean;
+    completed_at: string;
+    index: number;
 }
 
 interface Measurement {

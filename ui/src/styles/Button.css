@@ -55,3 +55,8 @@
     background: var(--color-ghost-hover);
     color: black;
 }
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

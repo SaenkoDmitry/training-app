@@ -3,21 +3,15 @@ package exercises
 import (
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/exercises"
-	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/exercisetypes"
 )
 
 type GetUseCase struct {
-	exercisesRepo     exercises.Repo
-	exerciseTypesRepo exercisetypes.Repo
+	exercisesRepo exercises.Repo
 }
 
-func NewGetUseCase(
-	exercisesRepo exercises.Repo,
-	exerciseTypesRepo exercisetypes.Repo,
-) *GetUseCase {
+func NewGetUseCase(exercisesRepo exercises.Repo) *GetUseCase {
 	return &GetUseCase{
-		exercisesRepo:     exercisesRepo,
-		exerciseTypesRepo: exerciseTypesRepo,
+		exercisesRepo: exercisesRepo,
 	}
 }
 
@@ -25,11 +19,11 @@ func (uc *GetUseCase) Name() string {
 	return "Показать данные об упражнении"
 }
 
-func (uc *GetUseCase) Execute(exerciseTypeID int64) (*dto.GetExercise, error) {
-	exType, err := uc.exerciseTypesRepo.Get(exerciseTypeID)
+func (uc *GetUseCase) Execute(exerciseID int64) (*dto.GetExercise, error) {
+	ex, err := uc.exercisesRepo.Get(exerciseID)
 	if err != nil {
 		return nil, err
 	}
 
-	return &dto.GetExercise{ExerciseType: exType}, nil
+	return &dto.GetExercise{Exercise: ex}, nil
 }

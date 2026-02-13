@@ -56,7 +56,7 @@ func New(token string, useCases *usecase.Container) (*App, error) {
 		useCases.ConfirmDeleteExerciseUC,
 		useCases.DeleteExerciseUC,
 		useCases.MoveSessionToExerciseUC,
-		useCases.GetExerciseUC,
+		useCases.GetTypeExerciseUC,
 		useCases.GetAllGroupsUC,
 		useCases.CreateExerciseUC,
 		workoutsHandler,
@@ -67,7 +67,7 @@ func New(token string, useCases *usecase.Container) (*App, error) {
 	statsHandler := stats.NewHandler(bot, useCases.PeriodStatsUC)
 
 	setsHandler := sets.NewHandler(bot,
-		useCases.CompleteSetUC, useCases.AddOneMoreSetUC, useCases.RemoveLastSetUC,
+		useCases.CompleteLastSetUC, useCases.AddOneMoreSetUC, useCases.RemoveLastSetUC,
 		useCases.ShowCurrentExerciseSessionUC, exercisesHandler, timersHandler,
 	)
 

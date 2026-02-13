@@ -50,7 +50,7 @@ type Container struct {
 	FindTypesByGroupUC           *exerciseusecases.FindTypesByGroupUseCase
 	ConfirmDeleteExerciseUC      *exerciseusecases.ConfirmDeleteUseCase
 	DeleteExerciseUC             *exerciseusecases.DeleteUseCase
-	GetExerciseUC                *exerciseusecases.GetUseCase
+	GetTypeExerciseUC            *exerciseusecases.GetTypeUseCase
 	CreateExerciseUC             *exerciseusecases.CreateUseCase
 
 	// timers
@@ -65,10 +65,15 @@ type Container struct {
 	PeriodStatsUC *statsusecases.GetPeriodStatsUseCase
 
 	// sets
-	CompleteSetUC   *setusecases.CompleteUseCase
-	AddOneMoreSetUC *setusecases.AddOneMoreUseCase
-	RemoveLastSetUC *setusecases.RemoveLastUseCase
-	UpdateNextSetUC *setusecases.UpdateNextUseCase
+	CompleteLastSetUC *setusecases.CompleteLastUseCase
+	AddOneMoreSetUC   *setusecases.AddOneMoreUseCase
+	RemoveLastSetUC   *setusecases.RemoveLastUseCase
+	UpdateNextSetUC   *setusecases.UpdateNextUseCase
+
+	GetSetByIDUC      *setusecases.GetByIDUseCase
+	CompleteByIDSetUC *setusecases.CompleteByIDUseCase
+	RemoveSetByIDUC   *setusecases.RemoveByIDUseCase
+	UpdateSetByIDUC   *setusecases.UpdateByIDUseCase
 
 	// programs
 	DeleteProgramUC         *programusecases.DeleteUseCase
@@ -103,6 +108,7 @@ type Container struct {
 	FindAllMeasurementsUC   *measurementsusecases.FindAllByUserUseCase
 	GetMeasurementByIDUC    *measurementsusecases.GetByIDUseCase
 	DeleteMeasurementByIDUC *measurementsusecases.DeleteByIDUseCase
+	GetExerciseUC           *exerciseusecases.GetUseCase
 }
 
 func NewContainer(db *gorm.DB) *Container {
@@ -140,8 +146,9 @@ func NewContainer(db *gorm.DB) *Container {
 		FindTypesByGroupUC:      exerciseusecases.NewFindTypesByGroupUseCase(exerciseTypesRepo, exerciseGroupTypesRepo),
 		ConfirmDeleteExerciseUC: exerciseusecases.NewConfirmDeleteUseCase(exerciseTypesRepo, exercisesRepo),
 		DeleteExerciseUC:        exerciseusecases.NewDeleteUseCase(exercisesRepo),
-		GetExerciseUC:           exerciseusecases.NewGetUseCase(exercisesRepo, exerciseTypesRepo),
+		GetTypeExerciseUC:       exerciseusecases.NewGetTypeUseCase(exercisesRepo, exerciseTypesRepo),
 		CreateExerciseUC:        exerciseusecases.NewCreateUseCase(exercisesRepo, workoutsRepo, exerciseTypesRepo),
+		GetExerciseUC:           exerciseusecases.NewGetUseCase(exercisesRepo),
 
 		// timers
 		StopTimerUC:  timerusecases.NewStopUseCase(timerStore),
@@ -156,10 +163,15 @@ func NewContainer(db *gorm.DB) *Container {
 		PeriodStatsUC: statsusecases.NewGetPeriodStatsUseCase(usersRepo, workoutsRepo),
 
 		// sets
-		CompleteSetUC:   setusecases.NewCompleteUseCase(setsRepo, exercisesRepo, exerciseTypesRepo),
-		AddOneMoreSetUC: setusecases.NewAddOneMoreUseCase(setsRepo, exercisesRepo),
-		RemoveLastSetUC: setusecases.NewRemoveLastUseCase(setsRepo, exercisesRepo),
-		UpdateNextSetUC: setusecases.NewUpdateNextUseCase(setsRepo, exercisesRepo),
+		CompleteLastSetUC: setusecases.NewCompleteLastUseCase(setsRepo, exercisesRepo, exerciseTypesRepo),
+		AddOneMoreSetUC:   setusecases.NewAddOneMoreUseCase(setsRepo, exercisesRepo),
+		RemoveLastSetUC:   setusecases.NewRemoveLastUseCase(setsRepo, exercisesRepo),
+		UpdateNextSetUC:   setusecases.NewUpdateNextUseCase(setsRepo, exercisesRepo),
+
+		CompleteByIDSetUC: setusecases.NewCompleteByIDUseCase(setsRepo),
+		GetSetByIDUC:      setusecases.NewGetByIDUseCase(setsRepo),
+		RemoveSetByIDUC:   setusecases.NewRemoveByIDUseCase(setsRepo),
+		UpdateSetByIDUC:   setusecases.NewUpdateByIDUseCase(setsRepo),
 
 		// programs
 		DeleteProgramUC:         programusecases.NewDeleteUseCase(programsRepo, usersRepo),
