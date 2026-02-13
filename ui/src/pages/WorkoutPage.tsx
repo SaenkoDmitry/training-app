@@ -100,7 +100,7 @@ const WorkoutPage = () => {
             ))}
         </div>
 
-        {data.progress.SessionStarted && <Button variant={"active"} onClick={() => navigate(`/session/${data?.progress.workout.id}`)}>К тренировке</Button>}
+        {data.progress.SessionStarted && <Button variant={"active"} onClick={() => navigate(`/sessions/${data?.progress.workout.id}`)}>К тренировке</Button>}
 
         {!data.progress.SessionStarted && <div>
             {(Stats.CardioTime > 0 || Stats.TotalWeight > 0) && <h3>Статистика</h3>}

@@ -97,7 +97,7 @@ const App = () => (
                 }
             />
             <Route
-                path="/session/:id"
+                path="/sessions/:id"
                 element={
                     <RequireAuth>
                         <MainLayout><WorkoutSession/></MainLayout>

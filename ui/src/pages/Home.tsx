@@ -87,7 +87,10 @@ const Home: React.FC = () => {
                             {!w.completed && (
                                 <Button
                                     variant="active"
-                                    onClick={(e) => e.stopPropagation()}
+                                    onClick={(e) => {
+                                        navigate(`/sessions/${w.id}`);
+                                        e.stopPropagation();
+                                    }}
                                 >
                                     ▶️
                                 </Button>

@@ -24,7 +24,7 @@ export default function StartWorkout() {
 
     const handleStart = async (dayId: number) => {
         const res = await startWorkout(dayId);
-        navigate(`/session/${res.workout_id}`);
+        navigate(`/sessions/${res.workout_id}`);
     };
 
     return (
