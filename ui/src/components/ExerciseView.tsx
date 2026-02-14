@@ -5,6 +5,7 @@ import RestTimer from "./RestTimer.tsx";
 import Button from "./Button.tsx";
 import Toast from "./Toast.tsx";
 import "../styles/workout.css";
+import {deleteExercise} from "../api/exercises.ts";
 
 export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
     const [sets, setSets] = useState(session.exercise.sets);
@@ -49,14 +50,20 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
         }
     };
 
+    const handleDeleteExercise = async (id: number) => {
+        if (!window.confirm("Вы уверены, что хотите удалить упражнение из тренировки?")) return;
+
+        try {
+            await deleteExercise(id);
+            onReload();
+        } catch {
+            showError();
+        }
+    };
 
     // ---------- DELETE ----------
-    const handleDelete = async (id: number) => {
+    const handleDeleteSet = async (id: number) => {
         const old = sets;
-
-        // if (sets.length == 1) {
-        //     return // не разрешаем удалить единственный подход
-        // }
 
         setSets(prev => prev.filter(s => s.id !== id));
 
@@ -69,7 +76,7 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
     };
 
     // ---------- COMPLETE ----------
-    const handleComplete = async (id: number) => {
+    const handleCompleteSet = async (id: number) => {
         const old = sets; // для rollback
 
         let updatedSets: FormattedSet[] = [];
@@ -135,8 +142,8 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
                         key={s.id}
                         set={s}
                         index={i}
-                        onDelete={() => handleDelete(s.id)}
-                        onComplete={() => handleComplete(s.id)}
+                        onDelete={() => handleDeleteSet(s.id)}
+                        onComplete={() => handleCompleteSet(s.id)}
                         onChange={handleChange}
                     />
                 ))}
@@ -147,9 +154,12 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
                 onFinish={() => setToast("Отдых закончен 💪")}
             />
 
-            <Button variant={"primary"}
-                    onClick={() => handleAdd(ex.id, sets.length > 0 ? sets[sets.length - 1] : null)}>+ Добавить
-                подход</Button>
+            <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px"}}>
+                <Button variant={"ghost"}
+                        onClick={() => handleAdd(ex.id, sets.length > 0 ? sets[sets.length - 1] : null)}
+                >+ Добавить подход</Button>
+                <Button variant={"danger"} onClick={() => handleDeleteExercise(ex.id)}>Убрать упражнение</Button>
+            </div>
 
             {toast && <Toast message={toast} onClose={() => setToast(null)}/>}
         </div>

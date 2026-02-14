@@ -193,6 +193,12 @@ func initServer(container *usecase.Container) {
 		r.Post("/{id}/change", s.ChangeSet)
 	})
 
+	r.Route("/api/exercises", func(r chi.Router) {
+		r.Use(middlewares.Auth)
+
+		r.Delete("/{id}", s.DeleteExercise)
+	})
+
 	// UI (React build)
 	web.MountSPA(r, "/")
 

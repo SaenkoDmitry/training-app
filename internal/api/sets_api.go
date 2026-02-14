@@ -21,6 +21,7 @@ func (s *serviceImpl) AddSet(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+
 	_, err = s.container.AddOneMoreSetUC.Execute(exerciseID)
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)

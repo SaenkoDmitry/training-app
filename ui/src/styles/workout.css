@@ -3,12 +3,12 @@
 .exercise-card-view {
     background: var(--color-card);
     border-radius: 20px;
-    padding: 18px;
+    padding: 8px;
     box-shadow: var(--shadow-md);
 
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
 }
 
 /* ============ HEADER ============ */
@@ -16,18 +16,20 @@
 .exercise-card-view-header {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    padding: 8px;
 }
 
 .exercise-card-view-title {
     font-size: 20px;
     font-weight: 700;
+    padding: 8px;
 }
 
 .exercise-card-view-link {
     font-size: 13px;
     opacity: .6;
     text-decoration: underline;
+    padding: 8px;
 }
 
 /* ============ CONTROLS ============ */

@@ -69,8 +69,7 @@ func (uc *MoveToUseCase) Execute(workoutID int64, next bool) error {
 	}
 
 	if session.CurrentExerciseIndex >= len(exerciseObjs) {
-		session.CurrentExerciseIndex = 0
-		return YouCompletedAllExercises
+		session.CurrentExerciseIndex = len(exerciseObjs) - 1
 	}
 
 	err = uc.sessionsRepo.Save(&session)

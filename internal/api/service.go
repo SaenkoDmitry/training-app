@@ -35,6 +35,7 @@ type Service interface {
 	DeleteSet(w http.ResponseWriter, r *http.Request)
 	CompleteSet(w http.ResponseWriter, r *http.Request)
 	ChangeSet(w http.ResponseWriter, r *http.Request)
+	DeleteExercise(w http.ResponseWriter, r *http.Request)
 }
 
 type serviceImpl struct {

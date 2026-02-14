@@ -27,10 +27,10 @@ export default function WorkoutControls({ onPrev, onNext, onFinish, disablePrev,
                 Вперед ➡
             </Button>
             <Button
-                variant="danger"
+                variant="primary"
                 onClick={onFinish}
             >
-                Завершить все
+                🏁 Завершить все
             </Button>
         </div>
     );
