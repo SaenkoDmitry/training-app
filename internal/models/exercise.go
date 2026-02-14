@@ -29,14 +29,16 @@ func (e *Exercise) CloneSets() []Set {
 			Meters:  set.GetRealMeters(),
 			Index:   set.Index,
 		}
-		switch {
-		case newSet.Reps == 0 && e.ExerciseType.ContainsReps():
+		if newSet.Reps == 0 && e.ExerciseType.ContainsReps() {
 			newSet.Reps = constants.DefaultReps
-		case newSet.Weight == 0 && e.ExerciseType.ContainsWeight():
+		}
+		if newSet.Weight == 0 && e.ExerciseType.ContainsWeight() {
 			newSet.Weight = constants.DefaultWeight
-		case newSet.Minutes == 0 && e.ExerciseType.ContainsMinutes():
+		}
+		if newSet.Minutes == 0 && e.ExerciseType.ContainsMinutes() {
 			newSet.Minutes = constants.DefaultMinutes
-		case newSet.Meters == 0 && e.ExerciseType.ContainsMeters():
+		}
+		if newSet.Meters == 0 && e.ExerciseType.ContainsMeters() {
 			newSet.Meters = constants.DefaultMeters
 		}
 		sets = append(sets, newSet)

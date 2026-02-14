@@ -59,14 +59,16 @@ func (uc *CreateUseCase) Execute(workoutID, exerciseTypeID int64) (*dto.CreateEx
 	} else {
 		// ставим хотя бы дефолты
 		newExercise.Sets = []models.Set{{Index: 1}}
-		switch {
-		case exerciseObj.ContainsReps():
+		if exerciseObj.ContainsReps() {
 			newExercise.Sets[0].Reps = constants.DefaultReps
-		case exerciseObj.ContainsWeight():
+		}
+		if exerciseObj.ContainsWeight() {
 			newExercise.Sets[0].Weight = constants.DefaultWeight
-		case exerciseObj.ContainsMinutes():
+		}
+		if exerciseObj.ContainsMinutes() {
 			newExercise.Sets[0].Minutes = constants.DefaultMinutes
-		case exerciseObj.ContainsMeters():
+		}
+		if exerciseObj.ContainsMeters() {
 			newExercise.Sets[0].Meters = constants.DefaultMeters
 		}
 	}

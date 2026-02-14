@@ -95,7 +95,7 @@ func (u *repoImpl) FindPreviousByType(exerciseTypeID, activeProgramID int64) (mo
 	var exercise models.Exercise
 	err := u.db.Joins("JOIN sets ON sets.exercise_id = exercises.id"+
 		" JOIN workout_days wd ON wd.id = workout_day_id JOIN workout_day_types wdt ON wdt.id = wd.workout_day_type_id").
-		Where("exercise_type_id = ? AND sets.completed = true AND wdt.workout_program_id = ?", exerciseTypeID, activeProgramID).
+		Where("exercise_type_id = ? AND sets.completed = true AND wd.completed = true AND wdt.workout_program_id = ?", exerciseTypeID, activeProgramID).
 		Preload("ExerciseType").
 		Preload("Sets", func(db *gorm.DB) *gorm.DB {
 			return db.Order("sets.index ASC")

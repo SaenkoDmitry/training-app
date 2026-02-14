@@ -1,6 +1,7 @@
 package models
 
 import (
+	"cmp"
 	"fmt"
 	"math"
 	"strings"
@@ -63,11 +64,18 @@ func (s *Set) String(done bool) string {
 	return text.String()
 }
 
-func (s *Set) FormatReps() string {
-	if !s.Completed || s.FactReps == s.Reps {
-		return fmt.Sprintf("%d", s.FactReps)
+func strikePlanned[T cmp.Ordered](planned, actual T, completed bool) string {
+	if !completed {
+		return fmt.Sprintf("%v", planned)
 	}
-	return fmt.Sprintf("<strike>%d</strike> <b>%d</b>", s.Reps, s.FactReps)
+	if planned == actual {
+		return fmt.Sprintf("%v", actual)
+	}
+	return fmt.Sprintf("<strike>%v</strike> <b>%v</b>", planned, actual)
+}
+
+func (s *Set) FormatReps() string {
+	return strikePlanned(s.Reps, s.FactReps, s.Completed)
 }
 
 func formatWeight(weight float32) string {
@@ -80,24 +88,15 @@ func formatWeight(weight float32) string {
 }
 
 func (s *Set) FormatWeight() string {
-	if !s.Completed || s.FactWeight == s.Weight {
-		return formatWeight(s.Weight)
-	}
-	return fmt.Sprintf("<strike>%s</strike> <b>%s</b>", formatWeight(s.Weight), formatWeight(s.FactWeight))
+	return strikePlanned(formatWeight(s.Weight), formatWeight(s.FactWeight), s.Completed)
 }
 
 func (s *Set) FormatMinutes() string {
-	if !s.Completed || s.FactMinutes == s.Minutes {
-		return fmt.Sprintf("%d", s.Minutes)
-	}
-	return fmt.Sprintf("<strike>%d</strike> <b>%d</b>", s.Minutes, s.FactMinutes)
+	return strikePlanned(s.Minutes, s.FactMinutes, s.Completed)
 }
 
 func (s *Set) FormatMeters() string {
-	if !s.Completed || s.FactMeters == s.Meters {
-		return fmt.Sprintf("%d", s.Meters)
-	}
-	return fmt.Sprintf("<strike>%d</strike> <b>%d</b>", s.Meters, s.FactMeters)
+	return strikePlanned(s.Meters, s.FactMeters, s.Completed)
 }
 
 func (s *Set) GetRealReps() int {
