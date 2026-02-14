@@ -93,8 +93,17 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
             return updatedSets;
         });
 
+        const currentSet = sets.find(s => s.id === id);
+        if (currentSet) {
+            let reps = currentSet.fact_reps > 0 ? currentSet.fact_reps : currentSet.reps;
+            let weight = currentSet.fact_weight > 0 ? currentSet.fact_weight : currentSet.weight;
+            let minutes = currentSet.fact_minutes > 0 ? currentSet.fact_minutes : currentSet.minutes;
+            let meters = currentSet.fact_meters > 0 ? currentSet.fact_meters : currentSet.meters;
+            await handleChange(id, reps, weight, minutes, meters);
+        }
+
         try {
-            await completeSet(id); // 🔥 ВОТ ЭТОГО НЕ ХВАТАЛО
+            await completeSet(id);
         } catch {
             showError();
             setSets(old); // rollback

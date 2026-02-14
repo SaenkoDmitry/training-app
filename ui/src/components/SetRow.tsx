@@ -21,6 +21,7 @@ export default function SetRow({ set, index, onDelete, onComplete, onChange }: P
                     fact={set.fact_reps}
                     planned={set.reps}
                     suffix="повт."
+                    typeParam="int"
                     completed={set.completed}
                     onSave={(v) => onChange(set.id, v, set.fact_weight, set.fact_minutes, set.fact_meters)}
                 />
@@ -31,6 +32,7 @@ export default function SetRow({ set, index, onDelete, onComplete, onChange }: P
                     fact={set.fact_weight}
                     planned={set.weight}
                     suffix="кг"
+                    typeParam="float"
                     completed={set.completed}
                     onSave={(v) => onChange(set.id, set.fact_reps, v, set.fact_minutes, set.fact_meters)}
                 />
@@ -41,6 +43,7 @@ export default function SetRow({ set, index, onDelete, onComplete, onChange }: P
                     fact={set.fact_minutes}
                     planned={set.minutes}
                     suffix="мин"
+                    typeParam="int"
                     completed={set.completed}
                     onSave={(v) => onChange(set.id, set.fact_reps, set.fact_weight, v, set.fact_meters)}
                 />
@@ -51,6 +54,7 @@ export default function SetRow({ set, index, onDelete, onComplete, onChange }: P
                     fact={set.fact_meters}
                     planned={set.meters}
                     suffix="м"
+                    typeParam="int"
                     completed={set.completed}
                     onSave={(v) => onChange(set.id, set.fact_reps, set.fact_weight, set.fact_minutes, v)}
                 />

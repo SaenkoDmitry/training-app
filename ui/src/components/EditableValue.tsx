@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import "../styles/EditableValue.css";
 
 type Props = {
     fact: number;       // фактическое значение
     planned?: number;   // запланированное
     suffix: string;
+    typeParam: string;
     completed?: boolean;
     onSave?: (v: number) => void;
 };
@@ -13,6 +14,7 @@ export default function EditableValue({
                                           fact,
                                           planned,
                                           suffix,
+                                          typeParam,
                                           completed,
                                           onSave,
                                       }: Props) {
@@ -32,6 +34,14 @@ export default function EditableValue({
             onSave(valueToSend);
         }
     };
+
+    const matchInt = (input: string): boolean => {
+        return /^\d*$/.test(input)
+    }
+
+    const matchFloat = (input: string): boolean => {
+        return /^\d*\.?\d?$/.test(input)
+    }
 
     if (completed) {
         return (
@@ -58,12 +68,14 @@ export default function EditableValue({
                 placeholder={planned?.toString()}
                 className="edit-input"
                 onChange={e => {
-                    let val = e.target.value;
+                    let value = e.target.value;
 
-                    // Разрешаем цифры, пустую строку и точку с максимум 1 цифрой после
-                    if (/^\d*\.?\d?$/.test(val)) {
-                        setLocalStr(val);  // сохраняем как строку
+                    if (typeParam == 'int' && (!matchInt(value) || parseInt(value) <= 0)) {
+                        return;
+                    } else if (typeParam == 'float' && (!matchFloat(value) || parseFloat(value) <= 0)) {
+                        return;
                     }
+                    setLocalStr(value);  // сохраняем как строку
                 }}
                 onKeyDown={e => {
                     if (e.key === "Enter") {
