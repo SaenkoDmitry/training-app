@@ -1,5 +1,7 @@
 import EditableValue from "./EditableValue";
 import Button from "./Button.tsx";
+import "../styles/SetRow.css";
+import "../styles/workout.css";
 
 type Props = {
     set: FormattedSet;

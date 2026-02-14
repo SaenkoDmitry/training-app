@@ -54,9 +54,10 @@ func (s *serviceImpl) ParsePreset(w http.ResponseWriter, r *http.Request) {
 			})
 		}
 		result.Exercises = append(result.Exercises, &dto.ExerciseDTO{
-			ID:   ex.ID,
-			Name: exercisesMap[ex.ID].Name,
-			Sets: sets,
+			ID:    ex.ID,
+			Units: exercisesMap[ex.ID].Units,
+			Name:  exercisesMap[ex.ID].Name,
+			Sets:  sets,
 		})
 	}
 

@@ -1,6 +1,6 @@
 /* ============ CARD ============ */
 
-.exercise-card {
+.exercise-card-view {
     background: var(--color-card);
     border-radius: 20px;
     padding: 18px;
@@ -13,96 +13,21 @@
 
 /* ============ HEADER ============ */
 
-.exercise-header {
+.exercise-card-view-header {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-.exercise-title {
+.exercise-card-view-title {
     font-size: 20px;
     font-weight: 700;
 }
 
-.exercise-link {
+.exercise-card-view-link {
     font-size: 13px;
     opacity: .6;
     text-decoration: underline;
-}
-
-/* ============ SETS TABLE ============ */
-
-.sets {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.set-row {
-    display: grid;
-    grid-template-columns: 30px 1fr 1fr 40px 40px;
-    gap: 8px;
-    align-items: center;
-
-    padding: 8px 10px;
-    border-radius: 12px;
-    background: rgba(0,0,0,0.04);
-}
-
-.set-row.done {
-    opacity: .45;
-    text-decoration: line-through;
-}
-
-/* номер */
-.set-index {
-    font-weight: 600;
-    opacity: .6;
-}
-
-/* inputs */
-
-.set-row input {
-    width: 100%;
-    height: 34px;
-
-    border-radius: 8px;
-    border: 1px solid #ddd;
-
-    text-align: center;
-    font-size: 14px;
-}
-
-/* кнопки */
-
-.icon-btn {
-    height: 34px;
-    width: 34px;
-
-    border-radius: 8px;
-    border: none;
-
-    cursor: pointer;
-}
-
-.icon-btn.complete {
-    background: #4caf50;
-    color: white;
-}
-
-.icon-btn.delete {
-    background: #ff4d4f;
-    color: white;
-}
-
-/* ============ ADD BUTTON ============ */
-
-.add-set {
-    height: 38px;
-    border-radius: 12px;
-    border: 2px dashed #ddd;
-    background: transparent;
-    cursor: pointer;
 }
 
 /* ============ CONTROLS ============ */

@@ -60,9 +60,6 @@ export default function EditableValue({
                 onChange={e => {
                     let val = e.target.value;
 
-                    // Заменяем запятую на точку
-                    val = val.replace(",", ".");
-
                     // Разрешаем цифры, пустую строку и точку с максимум 1 цифрой после
                     if (/^\d*\.?\d?$/.test(val)) {
                         setLocalStr(val);  // сохраняем как строку

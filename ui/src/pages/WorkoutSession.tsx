@@ -98,10 +98,10 @@ export default function WorkoutSession() {
 
             {!loading && session && (
                 <div>
-                    <div>
+                    <b>
                         {session.exercise_index + 1} /{" "}
                         {session.workout.exercises.length}
-                    </div>
+                    </b>
                     <ExerciseView
                         session={session}
                         onAllSetsCompleted={() => move(true)}

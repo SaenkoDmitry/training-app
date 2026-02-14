@@ -5,9 +5,10 @@ type PresetListDTO struct {
 }
 
 type ExerciseDTO struct {
-	ID   int64     `json:"id"`
-	Name string    `json:"name"`
-	Sets []*SetDTO `json:"sets"`
+	ID    int64     `json:"id"`
+	Name  string    `json:"name"`
+	Sets  []*SetDTO `json:"sets"`
+	Units string    `json:"units"`
 }
 
 type SetDTO struct {

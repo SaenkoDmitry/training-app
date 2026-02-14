@@ -208,6 +208,7 @@ type SetDTO = {
 type ExerciseDTO = {
     id: number;
     name: string;
+    units: string;
     sets: SetDTO[];
 };
 

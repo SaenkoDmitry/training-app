@@ -1,9 +1,10 @@
 import {useEffect, useState} from "react";
 import {addSet, changeSet, completeSet, deleteSet,} from "../api/sets";
-import Toast from "./Toast";
 import SetRow from "./SetRow.tsx";
 import RestTimer from "./RestTimer.tsx";
 import Button from "./Button.tsx";
+import Toast from "./Toast.tsx";
+import "../styles/workout.css";
 
 export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
     const [sets, setSets] = useState(session.exercise.sets);
@@ -53,9 +54,9 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
     const handleDelete = async (id: number) => {
         const old = sets;
 
-        if (sets.length == 1) {
-            return // не разрешаем удалить единственный подход
-        }
+        // if (sets.length == 1) {
+        //     return // не разрешаем удалить единственный подход
+        // }
 
         setSets(prev => prev.filter(s => s.id !== id));
 
@@ -118,12 +119,12 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
     const ex = session.exercise;
 
     return (
-        <div className="exercise-card">
+        <div className="exercise-card-view">
 
-            <div className="exercise-header">
-                <div className="exercise-title">{ex.name}</div>
+            <div className="exercise-card-view-header">
+                <div className="exercise-card-view-title">{ex.name}</div>
 
-                {ex.url && <a className="exercise-link" href={ex.url}>
+                {ex.url && <a className="exercise-card-view-link" href={ex.url}>
                     Техника упражнения ↗
                 </a>}
             </div>

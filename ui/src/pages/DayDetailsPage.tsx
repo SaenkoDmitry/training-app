@@ -8,12 +8,7 @@ import "../styles/DayDetailsPage.css";
 import {Loader} from "lucide-react";
 
 import {closestCenter, DndContext} from "@dnd-kit/core";
-import {
-    arrayMove,
-    SortableContext,
-    useSortable,
-    verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import {arrayMove, SortableContext, useSortable, verticalListSortingStrategy,} from "@dnd-kit/sortable";
 import {CSS} from "@dnd-kit/utilities";
 
 // ================= SORTABLE ITEM =================
@@ -71,6 +66,7 @@ export default function DayDetailsPage() {
                     id: ex.id,
                     name: ex.name,
                     sets: ex.sets,
+                    units: ex.units,
                 }))
             );
         }
@@ -146,19 +142,36 @@ export default function DayDetailsPage() {
         setExercises(exercises.filter((_, idx) => idx !== i));
     };
 
+    const matchInt = (input: string): boolean => {
+        return /^\d*$/.test(input)
+    }
+
+    const matchFloat = (input: string): boolean => {
+        return /^\d*\.?\d?$/.test(input)
+    }
+
     // ================= SET OPS =================
-    const updateSet = (ei: number, si: number, field: string, value: number) => {
+    const updateSet = (ei: number, si: number, field: string, value: string, typeParam: string) => {
+        if (value == "") {
+            return;
+        }
+
+        if (typeParam == 'int' && (!matchInt(value) || parseInt(value) <= 0)) {
+            return;
+        } else if (typeParam == 'float' && (!matchFloat(value) || parseFloat(value) <= 0)) {
+            return;
+        }
         const copy = [...exercises];
-        copy[ei].sets[si][field] = value;
+        copy[ei].sets[si][field] = +value;
         setExercises(copy);
     };
 
-    const addSet = (ei: number, sets: SetDTO[]) => {
+    const addSet = (ei: number, sets: SetDTO[], units: string) => {
         const copy = [...exercises];
-        let reps = 0;
-        let weight = 0;
-        let minutes = 0;
-        let meters = 0;
+        let reps = units.includes('reps') ? 10 : 0;
+        let weight = units.includes('weight') ? 10 : 0;
+        let minutes = units.includes('minutes') ? 10 : 0;
+        let meters = units.includes('meters') ? 10 : 0;
         if (sets.length > 0) {
             reps = sets[sets.length - 1].reps;
             weight = sets[sets.length - 1].weight;
@@ -170,7 +183,6 @@ export default function DayDetailsPage() {
     };
 
     const removeSet = (ei: number, si: number) => {
-        if (si === 0) return;
         const copy = [...exercises];
         copy[ei].sets.splice(si, 1);
         setExercises(copy);
@@ -224,14 +236,14 @@ export default function DayDetailsPage() {
                     {exercises.map((ex, ei) => (
                         <SortableExercise key={ex.uid} id={ex.uid}>
                             {({listeners, attributes}: any) => (
-                                <div className="card exercise-card animate">
+                                <div className="card exercise-card-edit animate">
 
                                     {/* 🔥 drag handle только на ручку */}
                                     <div className="drag-handle" {...listeners} {...attributes}>
                                         ☰
                                     </div>
 
-                                    <div className="exercise-header">
+                                    <div className="exercise-card-edit-header">
                                         <h3>{ex.name}</h3>
                                         <Button
                                             variant="danger"
@@ -249,7 +261,7 @@ export default function DayDetailsPage() {
                                                         <input
                                                             type="number"
                                                             value={s.reps}
-                                                            onChange={(e) => updateSet(ei, si, "reps", +e.target.value)}
+                                                            onChange={(e) => updateSet(ei, si, "reps", e.target.value, 'int')}
                                                             onPointerDown={(e) => e.stopPropagation()}
                                                         />
                                                         <span>повт.</span>
@@ -260,7 +272,7 @@ export default function DayDetailsPage() {
                                                         <input
                                                             type="number"
                                                             value={s.weight}
-                                                            onChange={(e) => updateSet(ei, si, "weight", +e.target.value)}
+                                                            onChange={(e) => updateSet(ei, si, "weight", e.target.value, 'float')}
                                                             onPointerDown={(e) => e.stopPropagation()}
                                                         />
                                                         <span>кг</span>
@@ -271,7 +283,7 @@ export default function DayDetailsPage() {
                                                         <input
                                                             type="number"
                                                             value={s.meters}
-                                                            onChange={(e) => updateSet(ei, si, "meters", +e.target.value)}
+                                                            onChange={(e) => updateSet(ei, si, "meters", e.target.value, 'int')}
                                                             onPointerDown={(e) => e.stopPropagation()}
                                                         />
                                                         <span>м</span>
@@ -282,7 +294,7 @@ export default function DayDetailsPage() {
                                                         <input
                                                             type="number"
                                                             value={s.minutes}
-                                                            onChange={(e) => updateSet(ei, si, "minutes", +e.target.value)}
+                                                            onChange={(e) => updateSet(ei, si, "minutes", e.target.value, 'int')}
                                                             onPointerDown={(e) => e.stopPropagation()}
                                                         />
                                                         <span>мин</span>
@@ -304,7 +316,7 @@ export default function DayDetailsPage() {
                                         <Button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                addSet(ei, ex.sets);
+                                                addSet(ei, ex.sets, ex.units);
                                             }}
                                         >
                                             + сет

@@ -1,5 +1,5 @@
 /* ================= CARD ================= */
-.exercise-card {
+.exercise-card-edit {
     width: 100%;
     padding: 12px;
     touch-action: auto; /* теперь карточка пропускает скролл */
@@ -23,47 +23,11 @@
 }
 
 /* ================= HEADER ================= */
-.exercise-header {
+.exercise-card-edit-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-}
-
-/* ================= SETS ================= */
-.sets {
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.set-row {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: nowrap;
-}
-
-.set-row > div {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
-}
-
-/* интерактивные элементы блокируют drag */
-.set-row input,
-.minus,
-button {
-    touch-action: auto;
-}
-
-/* компактные инпуты */
-.set-row input {
-    width: 56px;
-    padding: 6px 4px;
-    font-size: 14px;
 }
 
 /* корзина вправо */
@@ -104,7 +68,7 @@ button {
 
 /* ================= MOBILE ================= */
 @media (max-width: 480px) {
-    .exercise-card {
+    .exercise-card-edit {
         padding: 10px;
     }
 

@@ -64,8 +64,12 @@ func SplitPreset(preset string) []Exercise {
 			ID: exerciseTypeID,
 		})
 
-		approaches := strings.Split(second[1:len(second)-1], ",")
+		tempInner := second[1 : len(second)-1]
+		approaches := strings.Split(tempInner, ",")
 		for _, approach := range approaches {
+			if approach == "" {
+				continue
+			}
 			if strings.Contains(approach, "*") {
 				temp2 := strings.Split(approach, "*")
 				reps, _ := strconv.ParseInt(temp2[0], 10, 64)
