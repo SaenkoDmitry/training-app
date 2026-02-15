@@ -34,7 +34,7 @@ export default function StartWorkout() {
         <div className="page stack">
             <h1>Выбор дня</h1>
 
-            {isEmpty && <div>
+            {!loading && isEmpty && <div>
                 <div style={{marginBottom: 24}}>Сначала настройте программу и добавьте дни!</div>
 
                 <Button variant={"active"} onClick={() => {

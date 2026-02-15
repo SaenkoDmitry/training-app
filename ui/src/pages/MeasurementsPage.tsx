@@ -176,7 +176,7 @@ const MeasurementsPage: React.FC = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {isEmpty && !adding && (
+                {isEmpty && !adding && !loading && (
                     <div>
                         <div style={{marginTop: 20, fontSize: 18, marginBottom: 20}}>У вас пока нет ни одного замера.</div>
                     </div>
@@ -245,7 +245,7 @@ const MeasurementsPage: React.FC = () => {
                 )}
             </div>
 
-            {isEmpty && (
+            {isEmpty && !adding && !loading && (
                 <div>
                     <div style={{marginTop: 30, fontSize: 18}}>У вас пока нет ни одного замера.</div>
                 </div>
