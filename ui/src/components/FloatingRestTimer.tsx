@@ -3,6 +3,12 @@ import { useRestTimer } from "../context/RestTimerContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/FloatingRestTimer.css";
 
+// 🔹 Константы размера и позиции круга
+const TIMER_SIZE = 100; // размер SVG
+const RADIUS = 45;      // радиус круга
+const CENTER = TIMER_SIZE / 2;
+const TEXT_Y = CENTER + 6; // вертикальное положение текста
+
 export default function FloatingRestTimer() {
     const { remaining, seconds, running } = useRestTimer();
     const location = useLocation();
@@ -10,7 +16,12 @@ export default function FloatingRestTimer() {
 
     const [position, setPosition] = useState({ x: 20, y: 100 });
     const [blinking, setBlinking] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const touchRef = useRef<{ startX: number; startY: number } | null>(null);
+
+    useEffect(() => {
+        setMounted(true); // для плавного появления прогресса
+    }, []);
 
     useEffect(() => {
         const saved = localStorage.getItem("floatingTimerPosition");
@@ -37,32 +48,28 @@ export default function FloatingRestTimer() {
         }
     }, [remaining, running, shouldRender]);
 
-    if (!shouldRender) return null;
+    if (!shouldRender || seconds <= 0) return null; // защищаем от "0 секунд"
 
-    const progress = seconds > 0 ? 1 - remaining / seconds : 0;
-    const radius = 34; // увеличенный радиус
-    const circumference = 2 * Math.PI * radius;
+    // 🔹 расчёт прогресса
+    const safeProgress = Math.max(0, Math.min(1, 1 - remaining / seconds));
+    const circumference = 2 * Math.PI * RADIUS;
+    const strokeOffset = mounted ? circumference * (1 - safeProgress) : circumference;
 
     // touch для перемещения
     const onTouchStart = (e: React.TouchEvent) => {
         const touch = e.touches[0];
         touchRef.current = { startX: touch.clientX - position.x, startY: touch.clientY - position.y };
     };
-
     const onTouchMove = (e: React.TouchEvent) => {
         if (!touchRef.current) return;
         const touch = e.touches[0];
         setPosition({ x: touch.clientX - touchRef.current.startX, y: touch.clientY - touchRef.current.startY });
     };
-
     const onTouchEnd = () => { touchRef.current = null; };
 
     const handleClick = () => {
-        // Переход на текущую тренировку
-        let link = localStorage.getItem("floatingTimerLink");
-        if (link != "") {
-            navigate(link);
-        }
+        const link = localStorage.getItem("floatingTimerLink");
+        if (link) navigate(link);
     };
 
     const minutes = Math.floor(remaining / 60);
@@ -77,17 +84,17 @@ export default function FloatingRestTimer() {
             onTouchEnd={onTouchEnd}
             onClick={handleClick}
         >
-            <svg>
-                <circle r={radius} cx="40" cy="40" />
+            <svg width={TIMER_SIZE} height={TIMER_SIZE}>
+                <circle r={RADIUS} cx={CENTER} cy={CENTER} />
                 <circle
                     className="progress"
-                    r={radius}
-                    cx="40"
-                    cy="40"
+                    r={RADIUS}
+                    cx={CENTER}
+                    cy={CENTER}
                     strokeDasharray={circumference}
-                    strokeDashoffset={circumference * (1 - progress)}
+                    strokeDashoffset={strokeOffset}
                 />
-                <text x="40" y="46" textAnchor="middle" className="timer-text">
+                <text x={CENTER} y={TEXT_Y} textAnchor="middle" className="timer-text">
                     {remaining > 0 ? `${minutes}:${secs}` : ""}
                 </text>
             </svg>

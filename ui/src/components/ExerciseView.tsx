@@ -93,7 +93,6 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
 
             // 🔥 если подход завершён — запускаем отдых
             if (justCompleted) {
-                localStorage.setItem("floatingTimerLink", `/sessions/${session.id}`);
                 setRestTrigger(Date.now());
             }
 
@@ -185,6 +184,7 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
                 seconds={ex.rest_in_seconds}
                 autoStartTrigger={restTrigger}
                 onFinish={() => setToast("Отдых закончен 💪")}
+                onStartUrl={`/sessions/${session.id}`}
             />
 
             <div style={{display: "grid", gridTemplateColumns: "1fr", gap: "8px"}}>

@@ -3,7 +3,7 @@
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%) scale(0.8);
-    background: linear-gradient(135deg, #ff6b6b, #f06595);
+    background: linear-gradient(135deg, var(--color-primary-hover), var(--color-primary));
     color: #fff;
     font-size: 20px;
     font-weight: 700;

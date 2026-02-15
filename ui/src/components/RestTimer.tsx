@@ -8,9 +8,10 @@ import { toast } from "react-hot-toast";
 type Props = {
     seconds: number;
     autoStartTrigger?: number;
+    onStartUrl: string;
 };
 
-export default function RestTimer({ seconds, autoStartTrigger }: Props) {
+export default function RestTimer({ seconds, autoStartTrigger, onStartUrl }: Props) {
     const {
         remaining,
         running,
@@ -23,6 +24,7 @@ export default function RestTimer({ seconds, autoStartTrigger }: Props) {
     // 🔥 автостарт после завершения подхода
     useEffect(() => {
         if (!autoStartTrigger) return;
+        localStorage.setItem("floatingTimerLink", onStartUrl);
         start(seconds);
     }, [autoStartTrigger]);
 
@@ -31,6 +33,9 @@ export default function RestTimer({ seconds, autoStartTrigger }: Props) {
         if (remaining === 0 && running) {
             // Вибрация
             navigator.vibrate?.([300, 150, 300]);
+
+            // сбрасываем localStorage link
+            localStorage.setItem("floatingTimerLink", "");
 
             // Toast уведомление
             toast.success("Таймер завершён!");
@@ -94,6 +99,7 @@ export default function RestTimer({ seconds, autoStartTrigger }: Props) {
                             } else if (remaining > 0) {
                                 start(remaining);
                             } else {
+                                localStorage.setItem("floatingTimerLink", onStartUrl);
                                 start(seconds);
                             }
                         }}
