@@ -4,7 +4,8 @@ import { GetActiveProgramForUser } from "../api/programs";
 import { startWorkout } from "../api/workouts";
 import DayTypeCard from "../components/DayTypeCard";
 import "../styles/workout.css";
-import {Loader} from "lucide-react";
+import {FolderKanban, Loader} from "lucide-react";
+import Button from "../components/Button.tsx";
 
 export default function StartWorkout() {
     const [days, setDays] = useState<WorkoutDayTypeDTO[]>([]);
@@ -27,13 +28,23 @@ export default function StartWorkout() {
         navigate(`/sessions/${res.workout_id}`);
     };
 
+    const isEmpty = days.length === 0;
+
     return (
         <div className="page stack">
-            <h1>Выбери день</h1>
+            <h1>Выбор дня</h1>
+
+            {isEmpty && <div>
+                <div style={{marginBottom: 24}}>Сначала настройте программу и добавьте дни!</div>
+
+                <Button variant={"active"} onClick={() => {
+                    navigate(`/programs`);
+                }}><FolderKanban size={18}/>Настроить программу</Button>
+            </div>}
 
             {loading && <Loader/>}
 
-            {days.map(day => (
+            {!isEmpty && days.map(day => (
                 <DayTypeCard key={day.id} day={day} onClick={() => handleStart(day.id)} />
             ))}
         </div>

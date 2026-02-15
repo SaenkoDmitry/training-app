@@ -5,6 +5,9 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/users"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/golang-jwt/jwt/v4"
 	"net/http"
 	"os"
@@ -20,15 +23,17 @@ var (
 )
 
 type TelegramUser struct {
-	ID        int64  `json:"id"`
-	FirstName string `json:"first_name"`
-	Username  string `json:"username"`
-	PhotoURL  string `json:"photo_url"`
-	AuthDate  int64  `json:"auth_date"`
-	Hash      string `json:"hash"`
+	ID           int64  `json:"id"`
+	FirstName    string `json:"first_name"`
+	LastName     string `json:"last_name"`
+	Username     string `json:"username"`
+	LanguageCode string `json:"language_code"`
+	PhotoURL     string `json:"photo_url"`
+	AuthDate     int64  `json:"auth_date"`
+	Hash         string `json:"hash"`
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
+func (s *serviceImpl) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	var tgUser TelegramUser
 	if err := json.NewDecoder(r.Body).Decode(&tgUser); err != nil {
 		http.Error(w, "bad request: "+err.Error(), http.StatusBadRequest)
@@ -46,6 +51,17 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		"name":      tgUser.FirstName,
 		"photo_url": tgUser.PhotoURL,
 		"exp":       time.Now().Add(7 * 24 * time.Hour).Unix(),
+	}
+
+	if _, err := s.container.GetUserUC.Execute(tgUser.ID); err != nil && errors.Is(err, users.NotFoundUserErr) {
+		s.container.CreateUserUC.Execute(tgUser.ID, &tgbotapi.User{
+			ID:           tgUser.ID,
+			IsBot:        false,
+			FirstName:    tgUser.FirstName,
+			LastName:     tgUser.LastName,
+			UserName:     tgUser.Username,
+			LanguageCode: tgUser.LanguageCode,
+		})
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

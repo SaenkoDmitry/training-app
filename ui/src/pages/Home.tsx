@@ -61,20 +61,20 @@ const Home: React.FC = () => {
         return () => observer.disconnect();
     }, [user, hasMore, loading]);
 
+    const isEmpty = pagination && pagination.total === 0;
+
     return (
         <div className="page stack">
             <h1>Мои тренировки</h1>
 
-            {user && (
-                <Button
-                    variant="active"
-                    onClick={() => navigate('/start')}
-                >
-                    <Play/> Начать новую тренировку
-                </Button>
-            )}
+            <Button
+                variant="active"
+                onClick={() => navigate('/start')}
+            >
+                <Play/> Начать новую тренировку
+            </Button>
 
-            <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
+            {!isEmpty && <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>
                 {workouts.map((w, idx) => (
                     <div
                         key={w.id}
@@ -108,14 +108,21 @@ const Home: React.FC = () => {
                         </div>
                     </div>
                 ))}
-            </div>
+            </div>}
 
             {loading && <Loader/>}
+
+            {isEmpty && (
+                <div>
+                    <div style={{marginTop: 18, fontSize: 18}}>У вас пока нет ни одной тренировки.</div>
+                    <h2>Пора начать! 💪</h2>
+                </div>
+            )}
 
             {/* IntersectionObserver смотрит сюда */}
             <div ref={loaderRef} style={{height: 20}}/>
 
-            {pagination && (
+            {pagination && pagination.total > 0 && (
                 <p>
                     {Math.min(offsetRef.current, pagination.total)} из {pagination.total}
                 </p>

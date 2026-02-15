@@ -139,6 +139,8 @@ const MeasurementsPage: React.FC = () => {
         }
     };
 
+    const isEmpty = measurements.length === 0;
+
     return <div className="measurements-page">
 
         {/* ===== HEADER (одинаковый с Home/Programs) ===== */}
@@ -174,6 +176,11 @@ const MeasurementsPage: React.FC = () => {
                 </tr>
                 </thead>
                 <tbody>
+                {isEmpty && !adding && (
+                    <div>
+                        <div style={{marginTop: 20, fontSize: 18, marginBottom: 20}}>У вас пока нет ни одного замера.</div>
+                    </div>
+                )}
                 {adding && (
                     <tr className="new-measurement-row">
                         <td>-</td>
@@ -237,6 +244,12 @@ const MeasurementsPage: React.FC = () => {
                     </Button>
                 )}
             </div>
+
+            {isEmpty && (
+                <div>
+                    <div style={{marginTop: 30, fontSize: 18}}>У вас пока нет ни одного замера.</div>
+                </div>
+            )}
 
             {adding && (
                 <div className="card-form">

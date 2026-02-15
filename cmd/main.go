@@ -114,8 +114,9 @@ func initServer(container *usecase.Container) {
 	s := api.New(container)
 
 	r.Route("/api/login", func(r chi.Router) {
-		r.Post("/", api.LoginHandler)
+		r.Post("/", s.LoginHandler)
 	})
+
 	r.Route("/api/logout", func(r chi.Router) {
 		r.Post("/", api.LogoutHandler)
 	})

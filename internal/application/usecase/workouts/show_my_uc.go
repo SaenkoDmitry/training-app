@@ -41,10 +41,6 @@ func (uc *FindMyUseCase) Execute(chatID int64, offset, limit int) (*dto.ShowMyWo
 		return nil, err
 	}
 
-	if len(workoutObjs) == 0 {
-		return nil, NotFoundAllErr
-	}
-
 	items := make([]dto.WorkoutItem, 0, len(workoutObjs))
 	for _, w := range workoutObjs {
 		duration := ""

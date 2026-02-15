@@ -72,7 +72,7 @@ export default function ProgramDetailsPage() {
                 />
             ))
         ) : (
-            <div>Дней пока нет</div>
+            <div style={{marginTop: 18, fontSize: 18}}>У вас пока нет ни одного дня.</div>
         )}
 
         {toast && <div className="toast">{toast}</div>}

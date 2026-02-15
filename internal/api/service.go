@@ -6,6 +6,7 @@ import (
 )
 
 type Service interface {
+	LoginHandler(w http.ResponseWriter, r *http.Request)
 	GetAllWorkouts(w http.ResponseWriter, r *http.Request)
 	StartWorkout(w http.ResponseWriter, r *http.Request)
 	FinishWorkout(w http.ResponseWriter, r *http.Request)
