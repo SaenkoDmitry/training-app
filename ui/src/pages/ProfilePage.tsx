@@ -99,15 +99,6 @@ const ProfilePage: React.FC = () => {
                         Включить уведомления
                     </Button>
 
-                    <button
-                        onClick={async () => {
-                            const p = await Notification.requestPermission();
-                            console.log("permission:", p);
-                        }}
-                    >
-                        TEST PERMISSION
-                    </button>
-
                     {toast && <Toast message={toast} onClose={() => setToast(null)}/>}
                 </>
             )}
