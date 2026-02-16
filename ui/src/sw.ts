@@ -7,7 +7,9 @@ precacheAndRoute(self.__WB_MANIFEST)
 
 // PUSH
 self.addEventListener('push', (event) => {
-    const data = event.data?.json() || {}
+    console.log('Push received in SW:', event.data?.text());
+    const data = event.data?.json() || {};
+    console.log('Push data', data);
 
     const options: NotificationOptions = {
         body: data.body || 'Таймер завершён!',

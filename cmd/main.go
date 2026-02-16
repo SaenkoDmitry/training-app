@@ -207,7 +207,7 @@ func initServer(container *usecase.Container, db *gorm.DB) {
 		r.Post("/subscribe", s.PushSubscribe)
 	})
 
-	r.Route("/api/timer", func(r chi.Router) {
+	r.Route("/api/timers", func(r chi.Router) {
 		r.Use(middlewares.Auth)
 
 		r.Post("/start", s.StartTimer)

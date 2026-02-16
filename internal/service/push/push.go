@@ -21,7 +21,7 @@ func NewService(db *gorm.DB) *Service {
 func (p *Service) SendWorkoutFinished(userID, workoutID int64) error {
 	var workout models.WorkoutDay
 
-	if err := p.db.First(&workout, workoutID).Error; err != nil {
+	if err := p.db.Preload("WorkoutDayType").First(&workout, workoutID).Error; err != nil {
 		return err
 	}
 

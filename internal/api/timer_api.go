@@ -28,7 +28,13 @@ func (s *serviceImpl) StartTimer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	timer, err := s.timerManager.Start(claims.ChatID, req.WorkoutID, req.Seconds)
+	user, err := s.container.GetUserUC.Execute(claims.ChatID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	timer, err := s.timerManager.Start(user.ID, req.WorkoutID, req.Seconds)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

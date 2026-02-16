@@ -4,31 +4,47 @@ import Button from "./Button";
 import "../styles/RestTimer.css";
 import { Pause, Play, RotateCcw } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { api } from "../api/client.ts";
+import {startTimer} from "../api/timers.ts"; // твой fetch wrapper
 
 type Props = {
     seconds: number;
     autoStartTrigger?: number;
-    workoutID?: number | string;
+    workoutID?: number;
 };
 
 export default function RestTimer({ seconds, autoStartTrigger, workoutID }: Props) {
     const {
         remaining,
         running,
-        start,
+        start: localStart,
         pause,
         reset,
         seconds: totalSeconds
     } = useRestTimer();
 
+    // 🔥 функция старта с API
+    const start = async (secs: number) => {
+        localStart(secs); // локальный таймер
+
+        // серверный таймер и push
+        if (!workoutID) return;
+        try {
+            await startTimer(workoutID, secs);
+        } catch (err) {
+            console.error("Failed to start server timer", err);
+            toast.error("Не удалось зарегистрировать таймер на сервере");
+        }
+    };
+
     // 🔥 автостарт после завершения подхода
     useEffect(() => {
-        if (!autoStartTrigger || !workoutID) return; // защита
+        if (!autoStartTrigger || !workoutID) return;
         localStorage.setItem("floatingTimerWorkoutID", workoutID.toString());
         start(seconds);
     }, [autoStartTrigger, workoutID]);
 
-    // 🔹 уведомление и вибрация при завершении таймера
+    // 🔹 уведомление и вибрация при завершении таймера (только локально)
     useEffect(() => {
         if (remaining === 0 && running) {
             // Вибрация
@@ -99,7 +115,7 @@ export default function RestTimer({ seconds, autoStartTrigger, workoutID }: Prop
                             } else if (remaining > 0) {
                                 start(remaining);
                             } else {
-                                localStorage.setItem("floatingTimerWorkoutID", workoutID.toString());
+                                localStorage.setItem("floatingTimerWorkoutID", workoutID?.toString() ?? "");
                                 start(seconds);
                             }
                         }}
