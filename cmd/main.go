@@ -117,6 +117,10 @@ func initServer(container *usecase.Container, db *gorm.DB) {
 		r.Post("/", s.LoginHandler)
 	})
 
+	r.Route("/api/telegram", func(r chi.Router) {
+		r.Get("/callback", s.TelegramCallbackHandler)
+	})
+
 	r.Route("/api/logout", func(r chi.Router) {
 		r.Post("/", api.LogoutHandler)
 	})

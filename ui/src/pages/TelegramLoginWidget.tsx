@@ -10,13 +10,9 @@ const TelegramLoginWidget: React.FC = () => {
 
         widgetRef.current.innerHTML = '';
 
-        const isDev = process.env.NODE_ENV === 'development';
-
-        const botUsername = isDev
+        const botUsername = process.env.NODE_ENV === 'development'
             ? 'fitness_gym_buddy_dev_bot'
             : 'form_journey_bot';
-
-        console.log("botUsername", botUsername);
 
         const script = document.createElement('script');
         script.src = 'https://telegram.org/js/telegram-widget.js?15';
@@ -24,14 +20,17 @@ const TelegramLoginWidget: React.FC = () => {
         script.setAttribute('data-telegram-login', botUsername);
         script.setAttribute('data-size', 'large');
         script.setAttribute('data-userpic', 'true');
-        script.setAttribute('data-request-access', 'write');
+        // ключевое для redirect flow
+        const origin = window.location.origin; // dev: https://ff06670896d562.lhr.life, prod: https://form-journey.ru
+        const callbackUrl = `${origin}/api/telegram/callback`;
+        script.setAttribute('data-auth-url', callbackUrl);
 
         widgetRef.current.appendChild(script);
     }, [user]);
 
     if (user) return null;
-
     return <div ref={widgetRef}/>;
 };
+
 
 export default TelegramLoginWidget;
