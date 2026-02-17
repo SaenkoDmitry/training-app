@@ -62,9 +62,10 @@ func sendPush(sub *models.PushSubscription, payload []byte) (int, error) {
 
 	options := &webpush.Options{
 		TTL:             3600,
+		Urgency:         webpush.UrgencyHigh,
 		VAPIDPrivateKey: os.Getenv("VAPID_PRIVATE_KEY"),
 		VAPIDPublicKey:  os.Getenv("VAPID_PUBLIC_KEY"),
-		Subscriber:      "https://your-domain.com",
+		Subscriber:      "https://form-journey.ru",
 	}
 
 	resp, err := webpush.SendNotification(payload, subscription, options)
