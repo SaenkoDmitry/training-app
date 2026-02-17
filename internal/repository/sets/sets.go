@@ -24,7 +24,7 @@ func NewRepo(db *gorm.DB) Repo {
 
 func (u *repoImpl) Get(id int64) (*models.Set, error) {
 	var set models.Set
-	u.db.Preload("Exercise").Preload("Exercise.ExerciseType").Preload("Sets").First(&set, id)
+	u.db.Preload("Exercise").Preload("Exercise.ExerciseType").First(&set, id)
 	return &set, nil
 }
 

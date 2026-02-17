@@ -77,15 +77,19 @@ func sendPush(sub *models.PushSubscription, payload []byte) (int, error) {
 		Subscriber:      constants.Domain,
 	}
 
+	fmt.Println("push payload:", string(payload))
+
 	resp, err := webpush.SendNotification(payload, subscription, options)
 	if err != nil {
+		fmt.Println("push error:", err.Error())
 		if resp != nil {
+			fmt.Println("push error status:", resp.StatusCode)
 			return resp.StatusCode, err
 		}
 		return 0, err
 	}
 
 	defer resp.Body.Close()
-	fmt.Println("Push status:", resp.StatusCode)
+	fmt.Println("push status:", resp.StatusCode)
 	return resp.StatusCode, nil
 }
