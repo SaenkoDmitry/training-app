@@ -72,7 +72,6 @@ func sendPush(sub *models.PushSubscription, payload []byte) (int, error) {
 	options := &webpush.Options{
 		TTL:             3600,
 		Urgency:         webpush.UrgencyHigh,
-		Topic:           constants.Topic,
 		VAPIDPrivateKey: os.Getenv("VAPID_PRIVATE_KEY"),
 		VAPIDPublicKey:  os.Getenv("VAPID_PUBLIC_KEY"),
 		Subscriber:      constants.Domain,
