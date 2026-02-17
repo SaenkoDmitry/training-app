@@ -215,3 +215,7 @@ type ExerciseDTO = {
 type PresetListDTO = {
     exercises: ExerciseDTO[];
 };
+
+type TimerDTO = {
+    id: number;
+}

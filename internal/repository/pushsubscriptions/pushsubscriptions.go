@@ -10,7 +10,7 @@ import (
 
 type Repo interface {
 	Create(userID int64, sub dto.PushSubscription) error
-	Delete(subID int64) error
+	Delete(userID int64, endpoint string) error
 	FindAll(userID int64) ([]*models.PushSubscription, error)
 }
 
@@ -42,6 +42,6 @@ func (r *repoImpl) FindAll(userID int64) ([]*models.PushSubscription, error) {
 	return subs, err
 }
 
-func (r *repoImpl) Delete(subID int64) error {
-	return r.db.Where("id = ?", subID).Delete(&models.PushSubscription{}).Error
+func (r *repoImpl) Delete(userID int64, endpoint string) error {
+	return r.db.Where("user_id = ? and endpoint = ?", userID, endpoint).Delete(&models.PushSubscription{}).Error
 }

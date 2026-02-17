@@ -42,6 +42,7 @@ type Service interface {
 	DeleteExercise(w http.ResponseWriter, r *http.Request)
 	AddExercise(w http.ResponseWriter, r *http.Request)
 	PushSubscribe(w http.ResponseWriter, r *http.Request)
+	PushUnsubscribe(w http.ResponseWriter, r *http.Request)
 	StartTimer(w http.ResponseWriter, r *http.Request)
 	CancelTimer(w http.ResponseWriter, r *http.Request)
 }

@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useAuth} from "../context/AuthContext";
 import TelegramLoginWidget from "./TelegramLoginWidget";
 import Button from "../components/Button";
-import {subscribePush} from "../api/subscribePush.ts";
+import {subscribePush, unsubscribePush} from "../api/subscribePush.ts";
 import Toast from "../components/Toast.tsx";
 
 const VAPID_PUBLIC_KEY = 'BK0VOgS6oooJu5aKXkg0Amn6zVTWqEjjHjlxFJE4lMygZ_Wyp_D1LCVR3LkCEiOF4hHsCRDCNEa-TMlkR22LEms';
@@ -10,6 +10,51 @@ const VAPID_PUBLIC_KEY = 'BK0VOgS6oooJu5aKXkg0Amn6zVTWqEjjHjlxFJE4lMygZ_Wyp_D1LC
 const ProfilePage: React.FC = () => {
     const {user, logout, loading} = useAuth();
     const [toast, setToast] = useState<string | null>(null);
+    const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+    const [checking, setChecking] = useState(true);
+
+    // Проверяем есть ли активная подписка
+    useEffect(() => {
+        const checkSubscription = async () => {
+            if (!("serviceWorker" in navigator)) {
+                setChecking(false);
+                return;
+            }
+
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+            setNotificationsEnabled(!!subscription);
+            setChecking(false);
+        };
+
+        checkSubscription();
+    }, []);
+
+    const toggleNotifications = async () => {
+        if (!("serviceWorker" in navigator)) return;
+
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+
+        // Если подписка есть → отключаем
+        if (subscription) {
+            await subscription.unsubscribe();
+            await unsubscribePush();
+            setNotificationsEnabled(false);
+            setToast("Уведомления выключены ❌");
+            return;
+        }
+
+        // Если нет → включаем
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+            await subscribePush(VAPID_PUBLIC_KEY);
+            setNotificationsEnabled(true);
+            setToast("Уведомления включены ✅");
+        } else {
+            setToast("Разрешение на уведомления не выдано");
+        }
+    };
 
     return (
         <div
@@ -87,17 +132,28 @@ const ProfilePage: React.FC = () => {
                         Выйти из аккаунта
                     </Button>
 
-                    <Button
-                        onClick={async () => {
-                            const permission = await Notification.requestPermission();
-                            if (permission === 'granted') {
-                                await subscribePush(VAPID_PUBLIC_KEY);
-                                setToast("Пуши включены ✅");
-                            }
-                        }}
-                    >
-                        Включить уведомления
-                    </Button>
+                    {!checking && (
+                        <Button
+                            variant={notificationsEnabled ? "ghost" : "active"}
+                            onClick={toggleNotifications}
+                        >
+                            {notificationsEnabled
+                                ? "Выключить уведомления"
+                                : "Включить уведомления"}
+                        </Button>
+                    )}
+
+                    {/*<Button*/}
+                    {/*    onClick={async () => {*/}
+                    {/*        const permission = await Notification.requestPermission();*/}
+                    {/*        if (permission === 'granted') {*/}
+                    {/*            await subscribePush(VAPID_PUBLIC_KEY);*/}
+                    {/*            setToast("Пуши включены ✅");*/}
+                    {/*        }*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    Включить уведомления*/}
+                    {/*</Button>*/}
 
                     {toast && <Toast message={toast} onClose={() => setToast(null)}/>}
                 </>

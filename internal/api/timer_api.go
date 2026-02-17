@@ -3,11 +3,10 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/api/helpers"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/middlewares"
-	"github.com/go-chi/chi/v5"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 )
 
 func (s *serviceImpl) StartTimer(w http.ResponseWriter, r *http.Request) {
@@ -50,14 +49,18 @@ func (s *serviceImpl) CancelTimer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	timerIDStr := chi.URLParam(r, "id")
-	timerID, err := strconv.ParseInt(timerIDStr, 10, 64)
+	timerID, err := helpers.ParseInt64Param("id", w, r)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	err = s.timerManager.Cancel(timerID, claims.ChatID)
+	user, err := s.container.GetUserUC.Execute(claims.ChatID)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = s.timerManager.Cancel(timerID, user.ID)
 	if err != nil {
 		switch {
 		case errors.Is(err, gorm.ErrRecordNotFound):

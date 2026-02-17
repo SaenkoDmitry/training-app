@@ -28,3 +28,21 @@ export async function subscribePush(VAPID_PUBLIC_KEY: string) {
 
     return subscription;
 }
+
+export async function unsubscribePush() {
+    if (!("serviceWorker" in navigator) || !('PushManager' in window)) return;
+
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.getSubscription();
+
+    if (subscription) {
+        const unsubscribed = await subscription.unsubscribe();
+        if (unsubscribed) {
+            // Удаляем с сервера
+            await api('/api/push/unsubscribe', {
+                method: 'POST',
+                body: JSON.stringify({endpoint: subscription.endpoint}),
+            });
+        }
+    }
+}

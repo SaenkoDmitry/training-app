@@ -26,7 +26,7 @@ func NewTimerManager(db *gorm.DB, push *push.Service) *TimerManager {
 	}
 }
 
-func (tm *TimerManager) Start(userID, workoutID int64, seconds int) (*models.RestTimer, error) {
+func (tm *TimerManager) Start(userID, workoutID int64, seconds int) (*TimerDTO, error) {
 	timer := models.RestTimer{
 		UserID:    userID,
 		WorkoutID: workoutID,
@@ -39,7 +39,29 @@ func (tm *TimerManager) Start(userID, workoutID int64, seconds int) (*models.Res
 
 	tm.schedule(&timer)
 
-	return &timer, nil
+	return mapTimerDTO(timer), nil
+}
+
+func mapTimerDTO(timer models.RestTimer) *TimerDTO {
+	return &TimerDTO{
+		ID:        timer.ID,
+		UserID:    timer.UserID,
+		WorkoutID: timer.WorkoutID,
+		EndsAt:    timer.EndsAt,
+		Canceled:  timer.Canceled,
+		Sent:      timer.Sent,
+		CreatedAt: timer.CreatedAt,
+	}
+}
+
+type TimerDTO struct {
+	ID        int64     `json:"id"`
+	UserID    int64     `json:"user_id"`
+	WorkoutID int64     `json:"workout_id"`
+	EndsAt    time.Time `json:"ends_at"`
+	Canceled  bool      `json:"canceled"`
+	Sent      bool      `json:"sent"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func (tm *TimerManager) Restore() error {

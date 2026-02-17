@@ -1,4 +1,5 @@
 import React, {createContext, useContext, useEffect, useRef, useState} from "react";
+import {cancelTimer} from "../api/timers.ts";
 
 const STORAGE_KEY = "rest_timer_end";
 
@@ -6,7 +7,7 @@ type RestTimerContextType = {
     seconds: number;
     remaining: number;
     running: boolean;
-    start: (seconds: number) => void;
+    start: (seconds: number, timerID: number) => void;
     pause: () => void;
     reset: () => void;
 };
@@ -24,6 +25,7 @@ export const RestTimerProvider = ({children}) => {
     const [remaining, setRemaining] = useState(0);
     const [endTime, setEndTime] = useState<number | null>(null);
     const [running, setRunning] = useState(false);
+    const [timerID, setTimerID] = useState(0);
 
     const intervalRef = useRef<number | null>(null);
 
@@ -54,11 +56,12 @@ export const RestTimerProvider = ({children}) => {
         };
     }, [running, endTime]);
 
-    const start = (secs: number) => {
+    const start = (secs: number, timerID: number) => {
         const newEnd = Date.now() + secs * 1000;
         setSeconds(secs);
         setRemaining(secs);
         setEndTime(newEnd);
+        setTimerID(timerID);
         setRunning(true);
         localStorage.setItem(STORAGE_KEY, String(newEnd));
     };
@@ -76,12 +79,19 @@ export const RestTimerProvider = ({children}) => {
         setRunning(false);
         setEndTime(null);
         setRemaining(0);
+        setTimerID(0);
+        console.log("timerID", timerID);
+        if (timerID != 0) {
+            cancelTimer(timerID);
+        }
         localStorage.removeItem(STORAGE_KEY);
     };
 
     const finish = () => {
         reset();
         navigator.vibrate?.([300, 150, 300]);
+        localStorage.removeItem("currentTimerID");
+        setTimerID(0);
 
         window.dispatchEvent(new Event("rest_timer_finished"));
     };

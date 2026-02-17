@@ -205,13 +205,14 @@ func initServer(container *usecase.Container, db *gorm.DB) {
 		r.Use(middlewares.Auth)
 
 		r.Post("/subscribe", s.PushSubscribe)
+		r.Post("/unsubscribe", s.PushUnsubscribe)
 	})
 
 	r.Route("/api/timers", func(r chi.Router) {
 		r.Use(middlewares.Auth)
 
 		r.Post("/start", s.StartTimer)
-		r.Post("/cancel", s.CancelTimer)
+		r.Post("/cancel/{id}", s.CancelTimer)
 	})
 
 	// UI (React build)

@@ -4,8 +4,7 @@ import Button from "./Button";
 import "../styles/RestTimer.css";
 import { Pause, Play, RotateCcw } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { api } from "../api/client.ts";
-import {startTimer} from "../api/timers.ts"; // твой fetch wrapper
+import {startTimer} from "../api/timers.ts";
 
 type Props = {
     seconds: number;
@@ -25,12 +24,17 @@ export default function RestTimer({ seconds, autoStartTrigger, workoutID }: Prop
 
     // 🔥 функция старта с API
     const start = async (secs: number) => {
-        localStart(secs); // локальный таймер
 
         // серверный таймер и push
         if (!workoutID) return;
         try {
-            await startTimer(workoutID, secs);
+            await startTimer(workoutID, secs).then((resp: TimerDTO) => {
+                console.log("started timer:", resp.id)
+                if (resp?.id != null) {
+                    localStorage.setItem("currentTimerID", resp.id.toString());
+                }
+                localStart(secs, resp.id); // локальный таймер
+            });
         } catch (err) {
             console.error("Failed to start server timer", err);
             toast.error("Не удалось зарегистрировать таймер на сервере");

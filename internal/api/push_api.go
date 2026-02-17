@@ -29,3 +29,25 @@ func (s *serviceImpl) PushSubscribe(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 }
+
+func (s *serviceImpl) PushUnsubscribe(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("PushUnsubscribe")
+	claims, ok := middlewares.FromContext(r.Context())
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	var sub dto.PushUnsubscribe
+	if err := json.NewDecoder(r.Body).Decode(&sub); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	err := s.container.DeletePushSubscriptionUC.Execute(claims.ChatID, sub.Endpoint)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

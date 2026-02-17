@@ -183,7 +183,6 @@ export default function ExerciseView({session, onAllSetsCompleted, onReload}) {
             <RestTimer
                 seconds={ex.rest_in_seconds}
                 autoStartTrigger={restTrigger}
-                onFinish={() => setToast("Отдых закончен 💪")}
                 workoutID={session.workout.id}
             />
 

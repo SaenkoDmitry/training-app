@@ -7,3 +7,7 @@ type PushSubscription struct {
 		Auth   string `json:"auth"`
 	} `json:"keys"`
 }
+
+type PushUnsubscribe struct {
+	Endpoint string `json:"endpoint"`
+}
