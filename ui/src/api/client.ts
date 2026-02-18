@@ -1,11 +1,21 @@
+export async function api<T>(
+    url: string,
+    options: RequestInit = {}
+): Promise<T> {
 
-export async function api<T>(url: string, options?: RequestInit): Promise<T> {
+    const token = localStorage.getItem("token");
+
+    const headers = new Headers(options.headers || {});
+
+    headers.set("Content-Type", "application/json");
+
+    if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+    }
+
     const res = await fetch(url, {
-        credentials: "include",
-        headers: {
-            "Content-Type": "application/json",
-        },
         ...options,
+        headers,
     });
 
     if (!res.ok) {

@@ -18,12 +18,15 @@ import StartWorkout from "./pages/StartWorkout.tsx";
 import WorkoutSession from "./pages/WorkoutSession.tsx";
 import AddExercisePage from "./pages/AddExercisePage.tsx";
 import {RestTimerProvider} from "./context/RestTimerContext.tsx";
+import AuthSuccess from "./pages/AuthAccess.tsx";
 
 const App = () => {
     return (
         <AuthProvider>
             <RestTimerProvider>
                 <Routes>
+                    <Route path="/auth-success" element={<AuthSuccess />} />
+
                     {/* Публичная страница профиля */}
                     <Route path="/profile" element={<MainLayout><ProfilePage/></MainLayout>}/>
 

@@ -11,18 +11,34 @@ const AuthContext = createContext<AuthContextType>(null as any);
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
-    
+
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     const loadMe = async () => {
-        const res = await fetch('/api/me', {credentials: 'include'});
-        if (res.status !== 200) return setUser(null);
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            setUser(null);
+            return;
+        }
+
+        const res = await fetch('/api/me', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        if (res.status !== 200) {
+            setUser(null);
+            return;
+        }
+
         setUser(await res.json());
     };
 
     const logout = async () => {
-        await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+        localStorage.removeItem("token");
         setUser(null);
     };
 

@@ -4,16 +4,19 @@ import (
 	"encoding/json"
 	"github.com/golang-jwt/jwt/v4"
 	"net/http"
+	"strings"
 )
 
 func MeHandler(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("session")
-	if err != nil {
+	authHeader := r.Header.Get("Authorization")
+	if authHeader == "" {
 		http.Error(w, "unauthorized", 401)
 		return
 	}
 
-	token, err := jwt.Parse(cookie.Value, func(t *jwt.Token) (interface{}, error) {
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
 	})
 	if err != nil || !token.Valid {

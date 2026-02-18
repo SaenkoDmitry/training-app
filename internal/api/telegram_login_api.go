@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/users"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/golang-jwt/jwt/v4"
@@ -54,28 +55,18 @@ func (s *serviceImpl) TelegramCallbackHandler(w http.ResponseWriter, r *http.Req
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	signed, _ := token.SignedString(jwtSecret)
 
-	http.SetCookie(w, &http.Cookie{
-		Name:     "session",
-		Value:    signed,
-		Path:     "/",
-		HttpOnly: true,
-		Secure:   true, // true на проде
-		SameSite: http.SameSiteLaxMode,
-	})
-
-	// Редиректим обратно на SPA (например на /profile)
 	w.Header().Set("Content-Type", "text/html")
-	w.Write([]byte(`
+	w.Write([]byte(fmt.Sprintf(`
 			<!DOCTYPE html>
 			<html>
 			<head>
 			<meta charset="utf-8" />
 			<script>
-			  window.location.replace("/");
+			  window.location.replace("/auth-success?token=%s");
 			</script>
 			</head>
 			<body></body>
 			</html>
-`))
+	`, signed)))
 
 }
