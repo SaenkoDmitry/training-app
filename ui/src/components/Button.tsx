@@ -2,7 +2,7 @@ import "../styles/index.css";
 import "../styles/Button.css";
 
 type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    variant?: "primary" | "danger" | "ghost" | "active";
+    variant?: "primary" | "danger" | "ghost" | "active" | "attention";
 };
 
 export default function Button({

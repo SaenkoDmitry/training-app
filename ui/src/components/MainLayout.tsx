@@ -8,7 +8,7 @@ import {
     FolderKanban,
     Ruler,
     BookOpen,
-    User
+    User, Smile
 } from "lucide-react";
 import FloatingRestTimer from "./FloatingRestTimer.tsx";
 import Toast from "./Toast.tsx";
@@ -85,7 +85,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({children}) => {
 
                         {user && (
                             <>
-                                <Button variant={"ghost"} onClick={() => navigate('/profile')}>{user.first_name} 👋</Button>
+                                <Button variant={"active"} onClick={() => navigate('/profile')}>{user.first_name} <Smile /></Button>
                             </>
                         )}
                     </div>

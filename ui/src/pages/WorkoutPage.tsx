@@ -51,7 +51,7 @@ const WorkoutPage = () => {
                 <div
                     style={{
                         width: `${ProgressPercent}%`,
-                        background: ProgressPercent == 100 ? '#4caf50' : 60 < ProgressPercent && ProgressPercent < 85 ? '#dae551' : '#af4c6f',
+                        background: ProgressPercent >= 85 ? 'var(--color-active)' : 50 < ProgressPercent && ProgressPercent < 85 ? 'var(--color-attention)' : 'var(--color-danger)',
                         height: '100%',
                     }}
                 />
@@ -96,7 +96,7 @@ const WorkoutPage = () => {
                             <div style={{
                                 width: `${ex.sets?.filter((set: FormattedSet) => set.completed).length / ex.sets?.length * 100}%`,
                                 height: "100%",
-                                background: "#4caf50",
+                                background: "var(--color-active)",
                                 transition: "width 0.3s",
                             }}/>
                         </div>

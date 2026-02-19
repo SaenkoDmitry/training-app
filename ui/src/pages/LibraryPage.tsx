@@ -119,8 +119,8 @@ const LibraryPage: React.FC = () => {
 
                             {ex.url && (
                                 <Button
-                                    variant={"primary"}
-                                    style={{color: "black", backgroundColor: "gold"}}
+                                    variant={"attention"}
+                                    style={{marginTop: 16, marginBottom: 8}}
                                     onClick={() => window.open(ex.url)}
                                 >
                                     Смотреть технику 🤓
