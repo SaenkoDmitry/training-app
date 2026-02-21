@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
 	"net/http"
@@ -16,7 +15,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/SaenkoDmitry/training-tg-bot/internal/repository/users"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -39,12 +37,7 @@ func (s *serviceImpl) TelegramLoginHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	chatID := tgUser.ID
-
-	user, err := s.container.GetUserUC.Execute(chatID)
-	if err != nil && errors.Is(err, users.NotFoundUserErr) {
-		user, err = s.container.GetOrCreateUserByTelegramUC.Execute(tgUser)
-	}
+	user, err := s.container.GetOrCreateUserByTelegramUC.Execute(tgUser)
 	if user == nil || err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

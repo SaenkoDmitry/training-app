@@ -44,25 +44,28 @@ func (s *serviceImpl) YandexLoginHandler(w http.ResponseWriter, r *http.Request)
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "bad request", 400)
+		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
 
 	tokenResp, err := exchangeCodeForToken(body.Code)
 	if err != nil {
-		http.Error(w, "token exchange failed", 500)
+		fmt.Println("yandex token exchange failed error:", err.Error())
+		http.Error(w, "token exchange failed", http.StatusInternalServerError)
 		return
 	}
 
 	profile, err := getYandexProfile(tokenResp.AccessToken)
 	if err != nil {
-		http.Error(w, "profile fetch failed", 500)
+		fmt.Println("get yandex profile error:", err.Error())
+		http.Error(w, "profile fetch failed", http.StatusInternalServerError)
 		return
 	}
 
 	user, err := s.container.GetOrCreateUserByYandexUC.Execute(profile)
 	if err != nil {
-		http.Error(w, "user error", 500)
+		fmt.Println("create yandex user error:", err.Error())
+		http.Error(w, "user error", http.StatusInternalServerError)
 		return
 	}
 
