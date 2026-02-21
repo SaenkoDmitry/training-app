@@ -17,6 +17,8 @@ const ProgramsPage: React.FC = () => {
             setLoading(true);
             const data = await getPrograms();
             setPrograms(data);
+        } catch (e) {
+            // handle e
         } finally {
             setLoading(false);
         }
@@ -74,6 +76,7 @@ const ProgramsPage: React.FC = () => {
 
         try {
             await deleteProgram(id);
+            setPrograms(prev => prev.filter(p => p.id !== id));
             showToast("✅ Программа удалена");
             await load();
         } catch (e) {
@@ -91,6 +94,8 @@ const ProgramsPage: React.FC = () => {
             </Button>
 
             {loading && <Loader />}
+
+            {!loading && programs.length == 0 && <div style={{marginTop: 18, fontSize: 18}}>У вас пока нет ни одной программы.</div>}
 
             {programs.map((p) => (
                 <ProgramCard

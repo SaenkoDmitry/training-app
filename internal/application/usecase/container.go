@@ -107,6 +107,10 @@ type Container struct {
 	FindUserUC    *userusecases.FindUseCase
 	ChangeIconUC  *userusecases.ChangeIconUseCase
 
+	// auth
+	GetOrCreateUserByTelegramUC *userusecases.GetOrCreateUserByTelegramUseCase
+	GetOrCreateUserByYandexUC   *userusecases.GetOrCreateUserByYandexUseCase
+
 	// measurements
 	CreateMeasurementUC     *measurementsusecases.CreateUseCase
 	FindAllMeasurementsUC   *measurementsusecases.FindAllByUserUseCase
@@ -214,6 +218,10 @@ func NewContainer(db *gorm.DB) *Container {
 		GetUserUC:     userusecases.NewGetUseCase(usersRepo),
 		GetUserByIDUC: userusecases.NewGetByIDUseCase(usersRepo),
 		ChangeIconUC:  userusecases.NewChangeIconUseCase(usersRepo),
+
+		// auth
+		GetOrCreateUserByTelegramUC: userusecases.NewGetOrCreateUserByTelegramUseCase(usersRepo),
+		GetOrCreateUserByYandexUC:   userusecases.NewGetOrCreateUserByYandexUseCase(usersRepo),
 
 		// measurements
 		CreateMeasurementUC:     measurementsusecases.NewCreateUseCase(measurementsRepo),

@@ -33,6 +33,8 @@ type Router struct {
 	adminsHandler       *admins.Handler
 	createUserUC        *userusecases.CreateUseCase
 	getUserUC           *userusecases.GetUseCase
+
+	getOrCreateTelegramUserUC *userusecases.GetOrCreateUserByTelegramUseCase
 }
 
 func New(

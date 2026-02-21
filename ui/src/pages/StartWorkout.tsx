@@ -14,10 +14,16 @@ export default function StartWorkout() {
 
     useEffect(() => {
         const load = async () => {
-            const programs = await GetActiveProgramForUser();
-            setDays(programs.day_types);
-
-            setLoading(false);
+            try {
+                const programDTO = await GetActiveProgramForUser();
+                if (programDTO?.day_types) {
+                    setDays(programDTO.day_types);
+                }
+            } catch (e) {
+                console.log("e", e)
+            } finally {
+                setLoading(false);
+            }
         };
 
         load();

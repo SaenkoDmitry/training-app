@@ -21,6 +21,7 @@ import {RestTimerProvider} from "./context/RestTimerContext.tsx";
 import AuthTelegram from "./pages/AuthTelegram.tsx";
 import {UserIconProvider} from "./context/UserIconContext.tsx";
 import {ThemeProvider} from "./context/ThemeContext.tsx";
+import AuthYandex from "./pages/AuthYandex.tsx";
 
 const App = () => {
     return (
@@ -30,6 +31,7 @@ const App = () => {
                     <RestTimerProvider>
                         <Routes>
                             <Route path="/auth-telegram" element={<AuthTelegram/>}/>
+                            <Route path="/auth-yandex" element={<AuthYandex/>}/>
 
                             {/* Публичная страница профиля */}
                             <Route path="/profile" element={<MainLayout><ProfilePage/></MainLayout>}/>

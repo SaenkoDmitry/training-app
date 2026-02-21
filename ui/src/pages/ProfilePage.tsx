@@ -127,7 +127,7 @@ const ProfilePage: React.FC = () => {
                         background: "var(--color-card)",
                         borderRadius: "var(--radius-lg)",
                         padding: "2rem 1.5rem",
-                        boxShadow: "var(--shadow-md)",
+                        boxShadow: "var(--shadow-sm)",
                         textAlign: "center",
                     }}
                 >
@@ -137,17 +137,32 @@ const ProfilePage: React.FC = () => {
                         Войдите в аккаунт
                     </div>
 
-                    <Button
-                        variant="primary"
-                        onClick={() => {
-                            const origin = window.location.origin;
-                            window.location.href = `/api/telegram/login?origin=${encodeURIComponent(
-                                origin
-                            )}`;
-                        }}
-                    >
-                        Войти через Telegram
-                    </Button>
+                    <div className={"stack"}>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                const origin = window.location.origin;
+                                const state = crypto.randomUUID();
+                                localStorage.setItem("oauth_state", state);
+                                window.location.href = `/api/telegram/login?origin=${encodeURIComponent(origin)}&state=${state}`;
+                            }}
+                        >
+                            Войти через Telegram
+                        </Button>
+
+                        <Button
+                            variant="danger"
+                            onClick={() => {
+                                const origin = window.location.origin;
+                                const state = crypto.randomUUID();
+                                localStorage.setItem("oauth_state", state);
+                                window.location.href = `/api/yandex/login?origin=${encodeURIComponent(origin)}&state=${state}`;
+                            }}
+                        >
+                            Войти через Yandex <span style={{color: "black"}}>ID</span>
+                        </Button>
+                    </div>
+
                 </div>
             )}
 

@@ -2,40 +2,30 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/middlewares"
 	"net/http"
-	"strings"
-
-	"github.com/golang-jwt/jwt/v4"
 )
 
-func MeHandler(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	if authHeader == "" {
+func (s *serviceImpl) MeHandler(w http.ResponseWriter, r *http.Request) {
+	claims, ok := middlewares.FromContext(r.Context())
+	if !ok {
 		http.Error(w, "unauthorized", 401)
 		return
 	}
 
-	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+	userID := claims.UserID
 
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
-	})
-	if err != nil || !token.Valid {
-		http.Error(w, "unauthorized", 401)
+	user, err := s.container.GetUserByIDUC.Execute(userID) // из БД
+	if err != nil {
+		http.Error(w, "not found", 404)
 		return
 	}
-
-	claims := token.Claims.(jwt.MapClaims)
-	//if claims["photo_url"] != "" {
-	//resImg, err := http.Get(fmt.Sprintf("https://api.telegram.org/bot%s/getUserProfilePhotos?user_id=%s&limit=1", botToken, claims["id"]))
-	//}
 
 	resp := map[string]interface{}{
-		"id":         claims["id"],
-		"first_name": claims["name"],
-		"photo_url":  claims["photo_url"],
+		"id":         user.ID,
+		"first_name": user.FirstName,
+		"last_name":  user.LastName,
 	}
 
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(resp)
 }

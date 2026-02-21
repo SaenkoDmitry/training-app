@@ -108,7 +108,7 @@ const Home: React.FC = () => {
                 <Play/> Начать новую тренировку
             </Button>
 
-            {status != 'error' && workouts.length == 0 && <div style={{marginTop: 18, fontSize: 18}}>У вас пока нет ни одного дня.</div>}
+            {status == 'idle' && workouts.length == 0 && <div style={{marginTop: 18, fontSize: 18}}>У вас пока нет ни одного дня.</div>}
 
             {!isEmpty && (
                 <div style={{display: 'flex', flexDirection: 'column', gap: 12}}>

@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"github.com/SaenkoDmitry/training-tg-bot/internal/application/dto"
 	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -14,10 +15,18 @@ type Repo interface {
 	GetTop10() ([]models.User, error)
 	FindTopN(offset, limit int) ([]UserWithCount, error)
 	Save(user *models.User) error
-	Create(chatID int64, from *tgbotapi.User) (*models.User, error)
 	GetByID(ID int64) (*models.User, error)
-	GetByChatID(chatID int64) (*models.User, error)
 	ChangeIcon(userID int64, name string) error
+
+	// ----- telegram -----
+
+	CreateTelegram(from *tgbotapi.User) (*models.User, error)
+	GetByChatID(chatID int64) (*models.User, error)
+
+	// ----- yandex -----
+
+	CreateYandex(profile *dto.YandexProfile) (*models.User, error)
+	GetByProfileID(chatID string) (*models.User, error)
 }
 
 type repoImpl struct {
@@ -35,14 +44,29 @@ func (u *repoImpl) Save(user *models.User) error {
 	return nil
 }
 
-func (u *repoImpl) Create(chatID int64, from *tgbotapi.User) (*models.User, error) {
+func (u *repoImpl) CreateTelegram(from *tgbotapi.User) (*models.User, error) {
 	user := models.User{
-		ChatID:       chatID,
+		ChatID:       from.ID,
 		Username:     from.UserName,
 		FirstName:    from.FirstName,
 		LastName:     from.LastName,
 		LanguageCode: from.LanguageCode,
 		CreatedAt:    time.Now(),
+	}
+	err := u.db.Transaction(func(tx *gorm.DB) error {
+		return tx.Create(&user).Error
+	})
+	return &user, err
+}
+
+func (u *repoImpl) CreateYandex(profile *dto.YandexProfile) (*models.User, error) {
+	user := models.User{
+		YandexID:    profile.ID,
+		YandexLogin: profile.Login,
+		FirstName:   profile.FirstName,
+		LastName:    profile.LastName,
+		Email:       profile.DefaultEmail,
+		CreatedAt:   time.Now(),
 	}
 	err := u.db.Transaction(func(tx *gorm.DB) error {
 		return tx.Create(&user).Error
@@ -58,6 +82,17 @@ func (u *repoImpl) GetByChatID(chatID int64) (*models.User, error) {
 	var user models.User
 
 	result := u.db.Where("chat_id = ?", chatID).First(&user)
+
+	if result.Error != nil {
+		return nil, NotFoundUserErr
+	}
+	return &user, nil
+}
+
+func (u *repoImpl) GetByProfileID(profileID string) (*models.User, error) {
+	var user models.User
+
+	result := u.db.Where("profile_id = ?", profileID).First(&user)
 
 	if result.Error != nil {
 		return nil, NotFoundUserErr

@@ -25,8 +25,8 @@ const AuthTelegram = () => {
             .then(res => res.json())
             .then(data => {
                 localStorage.setItem("token", data.token);
-                refreshUser();       // ← обновляем user сразу
-                navigate("/");             // ← редирект на главную
+                refreshUser();
+                navigate("/");
             });
     }, []);
 

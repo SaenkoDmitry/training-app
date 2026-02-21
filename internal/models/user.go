@@ -7,16 +7,22 @@ import (
 )
 
 type User struct {
-	ID              int64 `gorm:"primaryKey;autoIncrement"`
-	Username        string
-	ChatID          int64
+	ID int64 `gorm:"primaryKey;autoIncrement"`
+
+	Username string // telegram
+	ChatID   int64  // telegram
+
 	FirstName       string
 	LastName        string
+	Email           string
 	LanguageCode    string
 	Icon            string
 	ActiveProgramID *int64
 	CreatedAt       time.Time
 	Programs        []WorkoutProgram `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+
+	YandexID    string // yandex
+	YandexLogin string // yandex
 }
 
 func (u *User) TableName() string {

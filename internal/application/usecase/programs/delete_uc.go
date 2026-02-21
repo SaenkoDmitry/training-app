@@ -37,7 +37,7 @@ func (uc *DeleteUseCase) Execute(userID, programID int64) error {
 		return err
 	}
 
-	if *user.ActiveProgramID == programID {
+	if user.ActiveProgramID != nil && *user.ActiveProgramID == programID {
 		return CannotDeleteCurrentProgramErr
 	}
 

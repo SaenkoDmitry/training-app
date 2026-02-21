@@ -28,7 +28,7 @@ func (uc *CreateUseCase) Execute(chatID int64, from *tgbotapi.User) (*models.Use
 	user, err := uc.usersRepo.GetByChatID(chatID)
 	if err != nil {
 		if errors.Is(err, users.NotFoundUserErr) {
-			createdUser, createErr := uc.usersRepo.Create(chatID, from)
+			createdUser, createErr := uc.usersRepo.CreateTelegram(from)
 			if createErr != nil {
 				return nil, createErr
 			}

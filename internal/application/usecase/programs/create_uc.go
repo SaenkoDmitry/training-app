@@ -35,9 +35,22 @@ func (uc *CreateUseCase) Execute(userID int64, name string) error {
 		name = fmt.Sprintf("#%d", len(programObjs)+1)
 	}
 
-	_, err = uc.programsRepo.Create(userID, name)
+	program, err := uc.programsRepo.Create(userID, name)
 	if err != nil {
 		return err
+	}
+
+	if len(programObjs) == 0 {
+		user, getUserErr := uc.usersRepo.GetByID(userID)
+		if getUserErr != nil {
+			return getUserErr
+		}
+
+		user.ActiveProgramID = &program.ID
+		err = uc.usersRepo.Save(user)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

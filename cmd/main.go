@@ -113,9 +113,16 @@ func initServer(container *usecase.Container, db *gorm.DB) {
 
 	s := api.New(container, db)
 
+	// авторизация через Telegram
 	r.Route("/api/telegram", func(r chi.Router) {
 		r.Get("/login", s.TelegramRedirectHandler) // редирект на Telegram
 		r.Post("/login", s.TelegramLoginHandler)   // принимает JSON от фронта и выдает JWT
+	})
+
+	// авторизация через Yandex ID
+	r.Route("/api/yandex", func(r chi.Router) {
+		r.Get("/login", s.YandexRedirectHandler)
+		r.Post("/login", s.YandexLoginHandler)
 	})
 
 	r.Route("/api/logout", func(r chi.Router) {
@@ -125,7 +132,7 @@ func initServer(container *usecase.Container, db *gorm.DB) {
 	r.Route("/api/me", func(r chi.Router) {
 		r.Use(middlewares.Auth)
 
-		r.Get("/", api.MeHandler)
+		r.Get("/", s.MeHandler)
 	})
 
 	r.Route("/api/users", func(r chi.Router) {
